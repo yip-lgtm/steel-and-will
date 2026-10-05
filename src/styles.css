@@ -1,0 +1,116 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@500;600&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0c0d0f;
+  --color-surface: #141618;
+  --color-elevated: #1c1f24;
+  --color-fg: #e8e6e1;
+  --color-muted: #a3a29b;
+  --color-subtle: #76756f;
+  --color-accent: #9aafbf;
+  --color-accent-fg: #121416;
+  --color-line: #2c3036;
+  --color-danger: #b5524a;
+  --color-ok: #7f9a76;
+  --font-sans: "Noto Sans TC", "PingFang TC", "Noto Sans CJK TC", system-ui, sans-serif;
+  --font-display: "Noto Serif TC", "Songti TC", "Noto Serif CJK TC", serif;
+  --font-mono: ui-monospace, "SFMono-Regular", menlo, consolas, monospace;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  html,
+  body {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    min-height: 100%;
+  }
+  body {
+    text-rendering: optimizeLegibility;
+    overscroll-behavior: none;
+  }
+}
+
+.phone-stage {
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
+  background: var(--color-bg);
+}
+
+.phone-shell {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 28rem;
+  height: 100dvh;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.phone-scroll {
+  min-height: 0;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem 1.25rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.phone-nav {
+  display: flex;
+  flex-shrink: 0;
+  border-top: 1px solid var(--color-line);
+  background: var(--color-surface);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.phone-dock {
+  flex-shrink: 0;
+  max-height: 46%;
+  overflow-y: auto;
+  border-top: 1px solid var(--color-line);
+  background: var(--color-surface);
+  padding: 0.75rem 1rem max(0.75rem, env(safe-area-inset-bottom));
+}
+
+@media (min-width: 48rem) {
+  .phone-stage {
+    padding: 1.5rem;
+  }
+  .phone-shell {
+    height: min(100dvh - 3rem, 52rem);
+    border: 1px solid var(--color-line);
+    border-radius: 1.75rem;
+  }
+}
+
+@keyframes steel-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  30% {
+    transform: translateX(-3px);
+  }
+  70% {
+    transform: translateX(3px);
+  }
+}
+
+.is-shake {
+  animation: steel-shake 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-shake {
+    animation: none;
+  }
+}
