@@ -119,6 +119,8 @@ export function Hq() {
         <Btn kind="primary" testid="nav-map" onClick={() => setScreen("map")}>
           戰役
         </Btn>
+        <Btn onClick={() => setScreen("history")}>歷史</Btn>
+        <Btn onClick={() => setScreen("gallery")}>軍武鑑賞</Btn>
         <Btn onClick={() => setScreen("focus")}>國家專注</Btn>
         <Btn onClick={() => setScreen("lecture")}>講堂</Btn>
         <Btn onClick={() => setScreen("industry")}>軍工</Btn>
@@ -621,6 +623,158 @@ export function Debrief() {
   );
 }
 
+const ERAS: { id: string; name: string; from: number; to: number; lead: string }[] = [
+  { id: "wwi", name: "一九一四至一九一八", from: 0, to: 1918, lead: "動員表比將軍準時。機槍、鐵絲網、鐵路與彈藥庫，比白刃先決定。" },
+  { id: "inter", name: "戰間期", from: 1919, to: 1935, lead: "停火沒有停掉產能。條約把石油、橡膠、鋼與船臺寫成下一場戰爭的理由。" },
+  { id: "ww2", name: "一九三六至一九四五", from: 1936, to: 1945, lead: "油、護航距離與產量開始比單件名器重要。要害仍是彈藥、動力與乘員。" },
+  { id: "cold", name: "冷戰", from: 1946, to: 1990, lead: "核威懾讓大國不敢直接對撞。局部戰爭仍用步槍、戰車與噴射機。這裡不計算爆心。" },
+  { id: "now", name: "一九九一以後", from: 1991, to: 9999, lead: "夜視、精確導引與數據鏈沒有取消油料和維修。鏈路斷了，無人機就不是武器。" },
+];
+
+export function History() {
+  const nation = useGame((s) => s.nation);
+  const events = [
+    { y: 1914, m: 6, t: "薩拉熱窩以後", b: "各國按動員表前進。這一週比任何一次白刃衝鋒更早決定。" },
+    { y: 1919, m: 6, t: "凡爾賽", b: "帳單寫進條約。產能還在，下一場戰爭的理由也寫好了。" },
+    { y: 1945, m: 8, t: "威懾寫進名冊", b: "核武是天花板，不是這一關的傷害數字，也不寫製造。" },
+    ...NODES.map((n) => ({ y: n.y, m: n.m, t: n.name, b: n.brief })),
+  ].sort((a, b) => a.y - b.y || a.m - b.m);
+  return (
+    <div className="grid gap-5">
+      <div>
+        <h1 className="font-display text-3xl">歷史</h1>
+        <p className="mt-2 text-sm leading-relaxed text-muted">從馬恩河排到鏈路。只寫部隊與裝備，不寫平民。</p>
+      </div>
+      {ERAS.map((era) => {
+        const list = events.filter((e) => e.y >= era.from && e.y <= era.to);
+        if (!list.length) return null;
+        return (
+          <section key={era.id} className="grid gap-3">
+            <div>
+              <h2 className="font-display text-xl">{era.name}</h2>
+              <p className="mt-1 text-sm leading-relaxed text-muted">{era.lead}</p>
+            </div>
+            {list.map((e) => (
+              <Panel key={`${e.y}-${e.m}-${e.t}`}>
+                <div className="flex items-baseline justify-between gap-2">
+                  <h3 className="font-medium">{e.t}</h3>
+                  <span className="font-mono text-xs text-subtle">
+                    {e.y}.{String(e.m).padStart(2, "0")}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{e.b}</p>
+              </Panel>
+            ))}
+          </section>
+        );
+      })}
+      {!nation ? <Btn onClick={() => useGame.getState().setScreen("title")}>回到封面</Btn> : null}
+    </div>
+  );
+}
+
+const GALLERY_ERAS = [
+  { id: "all", name: "全部" },
+  { id: "wwi", name: "一戰" },
+  { id: "inter", name: "戰間" },
+  { id: "ww2", name: "二戰" },
+  { id: "cold", name: "冷戰" },
+  { id: "now", name: "現代" },
+] as const;
+
+function galleryEra(year: number, era: (typeof GALLERY_ERAS)[number]["id"]) {
+  if (era === "all") return true;
+  if (era === "wwi") return year <= 1918;
+  if (era === "inter") return year >= 1919 && year <= 1935;
+  if (era === "ww2") return year >= 1936 && year <= 1945;
+  if (era === "cold") return year >= 1946 && year <= 1990;
+  return year >= 1991;
+}
+
+export function Gallery() {
+  const extras = useGame((s) => s.extras);
+  const playing = useGame((s) => s.nation);
+  const [layer, setLayer] = useState<Layer | "all">("all");
+  const [era, setEra] = useState<(typeof GALLERY_ERAS)[number]["id"]>("all");
+  const [pick, setPick] = useState<string | null>(null);
+  const units = [...allCatalog(), ...extras]
+    .filter((u) => (layer === "all" || u.layer === layer) && galleryEra(u.year, era))
+    .sort((a, b) => a.year - b.year || a.name.localeCompare(b.name, "zh-Hant"));
+  const shown = units.find((u) => u.id === pick) ?? units[0];
+  return (
+    <div className="grid gap-4">
+      <div>
+        <h1 className="font-display text-3xl">軍武鑑賞</h1>
+        <p className="mt-2 text-sm leading-relaxed text-muted">翻看型號、年份和它在體系裡的位置。這裡不列裝，也不改編制。</p>
+      </div>
+      <div className="flex gap-2 overflow-x-auto">
+        {(["all", "land", "air", "sea"] as const).map((l) => (
+          <Btn key={l} kind={layer === l ? "primary" : "ghost"} onClick={() => setLayer(l)}>
+            {l === "all" ? "全層" : layerName(l)}
+          </Btn>
+        ))}
+      </div>
+      <div className="flex gap-2 overflow-x-auto">
+        {GALLERY_ERAS.map((e) => (
+          <Btn key={e.id} kind={era === e.id ? "primary" : "ghost"} onClick={() => setEra(e.id)}>
+            {e.name}
+          </Btn>
+        ))}
+      </div>
+      {shown ? (
+        <Panel>
+          {shown.portrait ? (
+            <img src={shown.portrait} alt="" className="mb-3 aspect-[3/4] w-full rounded-3xl object-cover" />
+          ) : (
+            <div className="mb-3 grid aspect-[3/2] place-items-center rounded-3xl bg-elevated font-display text-5xl text-accent">
+              {shown.name.slice(0, 1)}
+            </div>
+          )}
+          <p className="text-xs text-subtle">
+            {shown.year} · {NATIONS[shown.nation].name} · {layerName(shown.layer)} · {kindName(shown.kind)}
+          </p>
+          <h2 className="mt-1 font-display text-2xl">{shown.name}</h2>
+          <p className="text-sm text-muted">{shown.designation}</p>
+          <p className="mt-1 text-sm text-accent">{shown.epithet}</p>
+          <p className="mt-3 text-sm leading-relaxed text-muted">{shown.history}</p>
+          <p className="mt-3 text-sm leading-relaxed">{shown.voice}</p>
+          <p className="mt-3 text-xs text-subtle">
+            穿深 {shown.pen} · 防護 {shown.armor}
+          </p>
+        </Panel>
+      ) : (
+        <Panel>
+          <p className="text-sm text-muted">這個範圍沒有館藏。</p>
+        </Panel>
+      )}
+      <div className="grid grid-cols-2 gap-2">
+        {units.map((u) => {
+          const on = shown?.id === u.id;
+          return (
+            <button
+              key={u.id}
+              type="button"
+              onClick={() => setPick(u.id)}
+              className={`rounded-2xl border p-2 text-left ${on ? "border-accent bg-elevated" : "border-line bg-surface"}`}
+            >
+              {u.portrait ? (
+                <img src={u.portrait} alt="" className="mb-2 aspect-[3/4] w-full rounded-xl object-cover" />
+              ) : (
+                <div className="mb-2 grid h-16 place-items-center rounded-xl bg-elevated font-display text-2xl text-accent">{u.name.slice(0, 1)}</div>
+              )}
+              <p className="font-medium">{u.name}</p>
+              <p className="text-xs text-subtle">
+                {u.year} · {layerName(u.layer)}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+      {!playing ? <Btn onClick={() => useGame.getState().setScreen("title")}>回到封面</Btn> : null}
+    </div>
+  );
+}
+
 export function Title({ onStart }: { onStart: () => void }) {
   const difficulty = useGame((s) => s.difficulty);
   const nation = useGame((s) => s.nation);
@@ -658,6 +812,14 @@ export function Title({ onStart }: { onStart: () => void }) {
         <Btn testid="btn-start" kind="primary" onClick={onStart}>
           從一九一四年開始
         </Btn>
+        <div className="grid grid-cols-2 gap-2">
+          <Btn testid="nav-history" onClick={() => useGame.getState().setScreen("history")}>
+            歷史
+          </Btn>
+          <Btn testid="nav-gallery" onClick={() => useGame.getState().setScreen("gallery")}>
+            軍武鑑賞
+          </Btn>
+        </div>
         {nation ? (
           <Btn testid="btn-continue" onClick={() => useGame.getState().setScreen("hq")}>
             繼續 {NATIONS[nation].name}

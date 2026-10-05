@@ -131,6 +131,8 @@ export type Screen =
   | "template"
   | "focus"
   | "map"
+  | "history"
+  | "gallery"
   | "codex"
   | "lecture"
   | "battle"
