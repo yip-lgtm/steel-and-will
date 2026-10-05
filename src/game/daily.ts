@@ -88,32 +88,40 @@ export function deskPage(date: string): DailyPage {
   };
 }
 
-export async function loadDaily(): Promise<DailyPage> {
-  const date = todayKey();
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (raw) {
-      const saved = JSON.parse(raw) as DailyPage;
-      if (saved.date === date && saved.b) return saved;
-    }
-  } catch {
-    /* ignore broken cache */
-  }
-  try {
-    const res = await dailyScript({ data: { date } });
-    if (res.ok) {
-      const page: DailyPage = { date, k: res.k, t: res.t, b: res.b, source: "llm" };
-      localStorage.setItem(KEY, JSON.stringify(page));
-      return page;
-    }
-  } catch {
-    /* static build or offline archive */
-  }
-  const page = deskPage(date);
+function remember(page: DailyPage): DailyPage {
   try {
     localStorage.setItem(KEY, JSON.stringify(page));
   } catch {
     /* private mode */
   }
   return page;
+}
+
+export async function loadDaily(): Promise<DailyPage> {
+  const date = todayKey();
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const saved = JSON.parse(raw) as DailyPage;
+      if (saved.date === date && saved.source === "llm" && saved.b) return saved;
+    }
+  } catch {
+    /* ignore broken cache */
+  }
+  try {
+    const res = await fetch(`${import.meta.env.BASE_URL}daily.json`, { cache: "no-store" });
+    if (res.ok) {
+      const page = (await res.json()) as DailyPage;
+      if (page.date === date && page.b) return remember({ date, k: page.k, t: page.t, b: page.b, source: "llm" });
+    }
+  } catch {
+    /* no published page yet */
+  }
+  try {
+    const res = await dailyScript({ data: { date } });
+    if (res.ok) return remember({ date, k: res.k, t: res.t, b: res.b, source: "llm" });
+  } catch {
+    /* static build or offline archive */
+  }
+  return deskPage(date);
 }

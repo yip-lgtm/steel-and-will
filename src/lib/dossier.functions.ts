@@ -52,7 +52,14 @@ function banned(text: string) {
 }
 
 function answerText(raw: string) {
-  return raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+  const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+  if (cleaned.includes("{")) return cleaned;
+  const after = raw.split(/<\/think>/i).pop()?.trim() ?? "";
+  if (after.includes("{")) return after;
+  const start = raw.lastIndexOf("{");
+  const end = raw.lastIndexOf("}");
+  if (start >= 0 && end > start) return raw.slice(start, end + 1);
+  return cleaned;
 }
 
 async function chat(prompt: string, maxTokens: number): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
@@ -68,7 +75,7 @@ async function chat(prompt: string, maxTokens: number): Promise<{ ok: true; text
       body: JSON.stringify({
         model,
         temperature: 0.4,
-        max_completion_tokens: Math.max(maxTokens * 3, 900),
+        max_completion_tokens: Math.max(maxTokens * 4, 4000),
         messages: [
           { role: "system", content: "You write Traditional Chinese for a war-history game. Reply with only what the user asked for. No preface." },
           { role: "user", content: prompt },
