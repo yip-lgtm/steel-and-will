@@ -90,7 +90,7 @@ export const requestEquipment = createServerFn({ method: "POST" })
     nation: (NATIONS as readonly string[]).includes(input?.nation) ? (input.nation as Nation) : "us",
     layer: (LAYERS as readonly string[]).includes(input?.layer) ? (input.layer as Layer) : "land",
     avoid: Array.isArray(input?.avoid) ? input.avoid.map((s) => strip(s, 60)).slice(0, 80) : [],
-    year: clamp(Number(input?.year) || 1942, 1905, 1973),
+    year: clamp(Number(input?.year) || 1942, 1886, 2030),
   }))
   .handler(async ({ data }): Promise<{ ok: true; dossier: DossierDto } | { ok: false; error: string }> => {
     const nationName: Record<Nation, string> = {
@@ -108,7 +108,11 @@ export const requestEquipment = createServerFn({ method: "POST" })
     const prompt = `You are a military historian. Return ONE real historically documented weapon, vehicle, ship, or aircraft that served or was a real ordered design (paper projects that were officially drawn are allowed; fantasy is not).
 Country focus: ${nationName[data.nation]}.
 Domain: ${data.layer}.
-Prefer a real system that entered service within 8 years of ${data.year}. If that country had little in that domain then, pick the closest real system and keep its true introduction year.
+Prefer a real system that entered service within 8 years of ${data.year}. The span is firearms and machine guns through armor, aircraft, ships, missiles, nuclear delivery vehicles, and real UAVs or flight-tested autonomous-wingman prototypes.
+If the year is after 2026, only name a system that is already in service or has actually flown. Do not invent future physics.
+Nuclear systems may be named only as deterrents. Do not describe design, yield calculation, or how to build or use one. Say the game does not simulate the detonation.
+UAVs must be real designations. Software may assist sensing. Do not claim a weapon decides to fire by itself.
+If that country had little in that domain then, pick the closest real system and keep its true introduction year.
 Do NOT use any of these names: ${data.avoid.join(" | ") || "(none)"}.
 Do NOT invent anime characters. Adults only if you mention crews. No slurs.
 Respond with JSON only:
@@ -130,7 +134,7 @@ pen and armor are game scales, 10 to 160, heavier armor and bigger guns higher.`
     if (!name || !history || banned(blob)) return { ok: false, error: "這份考證不合格，已丟棄。" };
     if (data.avoid.some((n) => n === name || n === designation)) return { ok: false, error: "這件裝備已在庫中。" };
     const kind = KINDS.includes(parsed.kind as Kind) ? (parsed.kind as Kind) : data.layer === "air" ? "fighter" : data.layer === "sea" ? "destroyer" : "tank";
-    const year = clamp(Number(parsed.year) || 1942, 1900, 1975);
+    const year = clamp(Number(parsed.year) || 1942, 1860, 2030);
     const dossier: DossierDto = {
       name,
       designation: designation || name,
@@ -164,3 +168,36 @@ Mention logistics or a weapon system only if it fits. No hashtags. Plain prose o
     if (!text || banned(text)) return { ok: false, error: "戰報沒有通過審稿。" };
     return { ok: true, text };
   });
+
+const PROLIF = ["離心機", "濃縮鈾", "內爆", "裝藥設計", "當量計算", "製作方法"];
+
+export const dailyScript = createServerFn({ method: "POST" })
+  .validator((input: { date?: string }) => {
+    const date = strip(input?.date, 10);
+    return { date: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : "1970-01-01" };
+  })
+  .handler(async ({ data }): Promise<{ ok: true; k: string; t: string; b: string } | { ok: false; error: string }> => {
+    const day = Number(data.date.slice(8, 10));
+    const future = day % 10 === 7;
+    const prompt = future
+      ? `Today is ${data.date}. Write ONE near-future story page for a war-history game. Traditional Chinese. The scene may be set a few years ahead, but every weapon you name must already be in service or have actually flown (rifles, armor, jets, ships, missiles, nuclear deterrents, UAVs, flight-tested wingman drones). Do not invent new physics or a new weapon. Do not explain how to build or use a nuclear weapon or a drone. Do not describe civilian casualties. Software may help sensing; a human still decides to fire. 90-140 characters in field b.
+JSON only: {"k":"short era label","t":"title at most 12 Chinese characters","b":"..."}`
+      : `Today is ${data.date}. Write ONE new sober story page for a war-history game covering 1914 through the present. Traditional Chinese. Pick a real campaign or a real weapon somewhere on the span from firearms and machine guns through artillery, tanks, aircraft, ships, missiles, nuclear deterrence, and real UAVs. Name the real designation. No slogans, no anime, no how-to, no nuclear design, no civilian targeting. 90-140 characters in field b.
+JSON only: {"k":"year or campaign label","t":"title at most 12 Chinese characters","b":"..."}`;
+    const result = await chat(prompt, 400);
+    if (!result.ok) return result;
+    let parsed: Record<string, unknown>;
+    try {
+      parsed = readJson(result.text) as Record<string, unknown>;
+    } catch {
+      return { ok: false, error: "今日劇本無法讀取。" };
+    }
+    const k = strip(parsed.k, 24);
+    const t = strip(parsed.t, 16);
+    const b = strip(parsed.b, 180);
+    if (!k || !t || !b || banned(`${k} ${t} ${b}`) || PROLIF.some((w) => `${k} ${t} ${b}`.includes(w))) {
+      return { ok: false, error: "今日劇本沒有通過審稿。" };
+    }
+    return { ok: true, k, t, b };
+  });
+

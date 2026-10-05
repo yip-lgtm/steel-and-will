@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ARCHIVES,
   DIFFICULTY_COPY,
@@ -22,6 +22,7 @@ import {
   nextPrologue,
   serviceThisYear,
 } from "@/game/catalog";
+import { deskPage, loadDaily, todayKey, type DailyPage } from "@/game/daily";
 import { researchOnce } from "@/game/research";
 import { projectMonth, SAVE_KEY, useGame } from "@/game/store";
 import type { Layer, NationId } from "@/game/types";
@@ -44,6 +45,30 @@ function Resources() {
   );
 }
 
+function DailyCard() {
+  const [page, setPage] = useState<DailyPage | null>(null);
+  useEffect(() => {
+    let cancel = false;
+    setPage(deskPage(todayKey()));
+    void loadDaily().then((next) => {
+      if (!cancel) setPage(next);
+    });
+    return () => {
+      cancel = true;
+    };
+  }, []);
+  if (!page) return null;
+  return (
+    <Panel>
+      <p className="text-xs text-subtle">
+        {page.source === "llm" ? "今日劇本 · 檔案室新寫" : "今日劇本 · 真實索引"} · {page.k}
+      </p>
+      <h2 className="mt-1 font-display text-xl">{page.t}</h2>
+      <p className="mt-2 text-sm leading-relaxed text-muted">{page.b}</p>
+    </Panel>
+  );
+}
+
 export function Hq() {
   const s = useGame();
   const setScreen = useGame((st) => st.setScreen);
@@ -57,6 +82,7 @@ export function Hq() {
         <h1 className="font-display text-3xl">{nationTitle(s.nation, s.modifiers)}</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted">{NATIONS[s.nation].blurb}</p>
       </div>
+      <DailyCard />
       {s.chronicle.length ? (
         <Panel>
           <p className="text-xs text-subtle">入役紀事</p>
@@ -614,8 +640,11 @@ export function Title({ onStart }: { onStart: () => void }) {
         </h1>
         <p className="mt-2 text-sm text-muted">銅與碲</p>
         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
-          從馬恩河走到諾曼第。海、陸、空互相決定命中。工廠決定明年還有沒有油。年份往前走，真實裝備會跟著入役。
+          從一九一四年的步槍與機槍，走到噴射機、核威懾與無人機。海陸空仍互相決定命中。劇本每天換一頁，只引用真實軍武。
         </p>
+        <div className="mt-4">
+          <DailyCard />
+        </div>
       </div>
       <div className="grid gap-3">
         <div className="grid grid-cols-3 gap-2">
