@@ -2,17 +2,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #fff4f6;
-  --color-surface: #fffafb;
-  --color-elevated: #ffe4ea;
-  --color-fg: #4a2c38;
-  --color-muted: #7a5564;
-  --color-subtle: #9a7080;
-  --color-accent: #c45c48;
-  --color-accent-fg: #fffaf8;
-  --color-line: #f3d0d6;
+  --color-bg: #0c0a0b;
+  --color-surface: #161214;
+  --color-elevated: #241c20;
+  --color-fg: #f6ecee;
+  --color-muted: #c4a8b0;
+  --color-subtle: #8d7380;
+  --color-accent: #f0a090;
+  --color-accent-fg: #2a1214;
+  --color-line: #3a2c32;
   --color-danger: #e15b78;
-  --color-ok: #2f8f82;
+  --color-ok: #5ec4b4;
   --font-sans: "Zen Maru Gothic", "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
   --font-display: "Nunito", "Zen Maru Gothic", "Noto Sans TC", sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", menlo, consolas, monospace;
@@ -41,7 +41,7 @@
   display: grid;
   min-height: 100dvh;
   place-items: center;
-  background: var(--color-elevated);
+  background: var(--color-bg);
 }
 
 .phone-shell {

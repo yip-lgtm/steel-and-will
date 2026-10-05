@@ -13,7 +13,7 @@ export const Route = createRootRoute({
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { title: "Copper and Tellurium" },
       { name: "description", content: "銅與碲。從馬恩河走到諾曼第的可愛戰史。" },
-      { name: "theme-color", content: "#fff4f6" },
+      { name: "theme-color", content: "#0c0a0b" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
