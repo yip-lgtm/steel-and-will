@@ -115,7 +115,7 @@ export function Hq() {
             if (!raw) return;
             const a = document.createElement("a");
             a.href = URL.createObjectURL(new Blob([raw], { type: "application/json" }));
-            a.download = "steel-will.json";
+            a.download = "copper-tellurium.json";
             a.click();
           }}
         >
@@ -602,10 +602,19 @@ export function Title({ onStart }: { onStart: () => void }) {
   return (
     <div className="grid min-h-full content-between gap-8">
       <div>
-        <p className="text-xs tracking-widest text-subtle">1914 — 1945</p>
-        <h1 className="mt-3 font-display text-5xl leading-tight">鋼鐵與意志</h1>
+        <p className="text-xs tracking-widest text-accent">Cu · Te</p>
+        <img
+          src={`${import.meta.env.BASE_URL}banner.jpg`}
+          alt=""
+          className="mt-3 aspect-video w-full rounded-3xl object-cover"
+        />
+        <h1 className="mt-3 font-display text-4xl leading-none">
+          Copper
+          <span className="block">and Tellurium</span>
+        </h1>
+        <p className="mt-2 text-sm text-muted">銅與碲</p>
         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
-          從馬恩河走到諾曼第。海、陸、空互相決定命中。工廠決定明年還有沒有油。年份往前走，真實裝備會跟著入役，檔案室也可以一直考證下一件。
+          從馬恩河走到諾曼第。海、陸、空互相決定命中。工廠決定明年還有沒有油。年份往前走，真實裝備會跟著入役。
         </p>
       </div>
       <div className="grid gap-3">

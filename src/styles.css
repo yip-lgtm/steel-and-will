@@ -1,20 +1,20 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Noto+Sans+TC:wght@400;500;600&family=Zen+Maru+Gothic:wght@500;700&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0c0d0f;
-  --color-surface: #141618;
-  --color-elevated: #1c1f24;
-  --color-fg: #e8e6e1;
-  --color-muted: #a3a29b;
-  --color-subtle: #76756f;
-  --color-accent: #9aafbf;
-  --color-accent-fg: #121416;
-  --color-line: #2c3036;
-  --color-danger: #b5524a;
-  --color-ok: #7f9a76;
-  --font-sans: "Noto Sans TC", "PingFang TC", "Noto Sans CJK TC", system-ui, sans-serif;
-  --font-display: "Noto Serif TC", "Songti TC", "Noto Serif CJK TC", serif;
+  --color-bg: #fff4f6;
+  --color-surface: #fffafb;
+  --color-elevated: #ffe4ea;
+  --color-fg: #4a2c38;
+  --color-muted: #7a5564;
+  --color-subtle: #9a7080;
+  --color-accent: #c45c48;
+  --color-accent-fg: #fffaf8;
+  --color-line: #f3d0d6;
+  --color-danger: #e15b78;
+  --color-ok: #2f8f82;
+  --font-sans: "Zen Maru Gothic", "Noto Sans TC", "PingFang TC", system-ui, sans-serif;
+  --font-display: "Nunito", "Zen Maru Gothic", "Noto Sans TC", sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", menlo, consolas, monospace;
 }
 
@@ -41,7 +41,7 @@
   display: grid;
   min-height: 100dvh;
   place-items: center;
-  background: var(--color-bg);
+  background: var(--color-elevated);
 }
 
 .phone-shell {

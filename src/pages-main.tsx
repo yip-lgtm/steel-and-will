@@ -12,7 +12,7 @@ function Home() {
   if (!ready) {
     return (
       <main className="grid min-h-dvh place-items-center bg-bg text-fg">
-        <p className="font-display text-2xl">鋼鐵與意志</p>
+        <p className="font-display text-2xl">Copper and Tellurium</p>
       </main>
     );
   }

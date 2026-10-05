@@ -288,9 +288,9 @@ function Lane({
             >
               <div className="flex gap-3">
                 {def.portrait ? (
-                  <img src={def.portrait} alt="" className="h-16 w-12 rounded-md object-cover" />
+                  <img src={def.portrait} alt="" className="h-16 w-12 rounded-2xl object-cover" />
                 ) : (
-                  <span className="grid h-16 w-12 place-items-center rounded-md border border-line font-display text-lg text-accent">
+                  <span className="grid h-16 w-12 place-items-center rounded-2xl border border-line font-display text-lg text-accent">
                     {kindName(def.kind).slice(0, 1)}
                   </span>
                 )}

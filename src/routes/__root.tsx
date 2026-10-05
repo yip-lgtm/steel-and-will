@@ -11,9 +11,9 @@ export const Route = createRootRoute({
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-      { title: "鋼鐵與意志" },
-      { name: "description", content: "從馬恩河走到諾曼第的半即時諸兵種戰史。時間線會跟上真實軍武。" },
-      { name: "theme-color", content: "#0c0d0f" },
+      { title: "Copper and Tellurium" },
+      { name: "description", content: "銅與碲。從馬恩河走到諾曼第的可愛戰史。" },
+      { name: "theme-color", content: "#fff4f6" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
