@@ -11,5 +11,6 @@ artifacts/
 .env.*
 !.env.example
 dist/
+dist-pages/
 .output/
 .DS_Store

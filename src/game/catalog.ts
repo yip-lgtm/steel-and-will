@@ -1,5 +1,7 @@
 import type { Difficulty, Kind, Layer, ModuleKey, NationId, SkillDef, SkillId, UnitDef } from "./types";
 
+const pub = (file: string) => `${import.meta.env.BASE_URL}${file}`;
+
 export type FocusDef = {
   id: string;
   nation: NationId;
@@ -420,7 +422,7 @@ export const UNITS: UnitDef[] = [
     rof: 4.1,
     skill: sk("blitz", "陣地震懾", "短時間暈眩敵方陸地單位。", 3),
     passive: "last_stand",
-    portrait: "/portraits/tiger.jpg",
+    portrait: pub("portraits/tiger.jpg"),
     voice: "砲還能響。履帶不一定。",
     history:
       "88 公厘 KwK 36 穿深極高，重量帶來機械故障與油耗。市面故事常把它編成黨衛軍車長神話；這裡不收那套崇拜，只保留車輛本身的厚、慢與難以後送。",
@@ -578,7 +580,7 @@ export const UNITS: UnitDef[] = [
     armor: 12,
     rof: 5.2,
     skill: sk("barrage", "齊射覆蓋", "對所有敵方陸地單位的隨機部件造成傷害。", 3),
-    portrait: "/portraits/katyusha.jpg",
+    portrait: pub("portraits/katyusha.jpg"),
     voice: "一片，不是一點。",
     history: "卡車載多管火箭，射速猛、精度差、簽名暴露陣地。它打擊的是區域與士氣，不是單輛虎式的正面。",
   }),
@@ -730,7 +732,7 @@ export const UNITS: UnitDef[] = [
     pen: 36,
     armor: 22,
     skill: sk("escort", "全程護航", "短時間加快我方空中單位再裝填。", 4),
-    portrait: "/portraits/mustang.jpg",
+    portrait: pub("portraits/mustang.jpg"),
     voice: "我跟著轟炸機走到頭。",
     history: "梅林發動機與層流翼讓它把護航做到柏林。1944 年戰略轟炸的轉折是護航距離，不只是投彈噸位。",
   }),
@@ -885,7 +887,7 @@ export const UNITS: UnitDef[] = [
     pen: 132,
     armor: 108,
     skill: sk("hoodshot", "彈藥庫射擊", "下一發對英系主力艦更容易打進彈藥庫。", 3),
-    portrait: "/portraits/bismarck.jpg",
+    portrait: pub("portraits/bismarck.jpg"),
     voice: "一發就夠，如果打中的是藥庫。",
     history: "萊茵演習擊沉胡德，舵機隨後被魚雷打壞，1941 年 5 月 27 日被圍殲。單艦質量補不回燃油、偵察與空中掩護。",
   }),
@@ -905,7 +907,7 @@ export const UNITS: UnitDef[] = [
     rounds: 12,
     skill: sk("shore", "主砲跨界", "以 460 公厘砲轟炸岸上裝甲。", 4),
     passive: "tenichi",
-    portrait: "/portraits/yamato.jpg",
+    portrait: pub("portraits/yamato.jpg"),
     voice: "砲比油多的日子不多。",
     history: "九門 460 公厘，排水與油耗都是艦隊的黑洞。1945 年天一號作戰赴沖繩，在沒有制空權時被艦載機擊沉。大艦巨砲輸給飛機與燃油。",
   }),
@@ -922,7 +924,7 @@ export const UNITS: UnitDef[] = [
     armor: 30,
     rof: 3.5,
     skill: sk("lucky", "倖存出擊", "空襲目標彈藥庫，並有機會短時間不被選中。", 4),
-    portrait: "/portraits/enterprise.jpg",
+    portrait: pub("portraits/enterprise.jpg"),
     voice: "甲板還在，就還能放飛。",
     history: "約克鎮級。中途島、東所羅門、聖克魯斯與之後几乎所有太平洋艦隊行動都有她。倖存是損傷管制與美國補艦能力，不是幸運咒語。",
   }),
