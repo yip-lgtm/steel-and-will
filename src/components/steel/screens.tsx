@@ -61,7 +61,7 @@ function DailyCard() {
   return (
     <Panel>
       <p className="text-xs text-subtle">
-        {page.source === "llm" ? "今日劇本 · 檔案室新寫" : "今日劇本 · 真實索引"} · {page.k}
+        {page.source === "llm" ? "今日劇本 · MiniMax" : "今日劇本 · 真實索引"} · {page.k}
       </p>
       <h2 className="mt-1 font-display text-xl">{page.t}</h2>
       <p className="mt-2 text-sm leading-relaxed text-muted">{page.b}</p>

@@ -51,28 +51,40 @@ function banned(text: string) {
   return BANNED.some((w) => text.includes(w));
 }
 
+function answerText(raw: string) {
+  return raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+}
+
 async function chat(prompt: string, maxTokens: number): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
-  const apiKey = process.env.XAI_API_KEY;
-  if (!apiKey) return { ok: false, error: "此環境沒有接通檔案室，館藏仍可逐件揭開。" };
+  const apiKey = process.env.MINIMAX_API_KEY;
+  if (!apiKey) return { ok: false, error: "沒有 MiniMax 金鑰。今日改用真實索引。" };
+  const base = (process.env.MINIMAX_BASE_URL || "https://api.minimax.io/v1").replace(/\/$/, "");
+  const model = process.env.MINIMAX_MODEL || "MiniMax-M2.7-highspeed";
   let res: Response;
   try {
-    res = await fetch("https://api.x.ai/v1/chat/completions", {
+    res = await fetch(`${base}/chat/completions`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: "grok-4.5",
-        temperature: 0.3,
-        max_tokens: maxTokens,
-        messages: [{ role: "user", content: prompt }],
+        model,
+        temperature: 0.4,
+        max_completion_tokens: Math.max(maxTokens * 3, 900),
+        messages: [
+          { role: "system", content: "You write Traditional Chinese for a war-history game. Reply with only what the user asked for. No preface." },
+          { role: "user", content: prompt },
+        ],
       }),
     });
   } catch {
-    return { ok: false, error: "檔案室暫時無法連線。" };
+    return { ok: false, error: "MiniMax 暫時無法連線。" };
   }
-  if (!res.ok) return { ok: false, error: `檔案室拒絕了請求（${res.status}）。` };
-  const body = (await res.json()) as { choices?: { message?: { content?: string } }[] };
-  const text = body.choices?.[0]?.message?.content ?? "";
-  if (!text) return { ok: false, error: "檔案室沒有寫下任何東西。" };
+  if (!res.ok) return { ok: false, error: `MiniMax 拒絕了請求（${res.status}）。` };
+  const body = (await res.json()) as {
+    choices?: { message?: { content?: string; reasoning_content?: string } }[];
+  };
+  const message = body.choices?.[0]?.message;
+  const text = answerText(message?.content ?? "") || answerText(message?.reasoning_content ?? "");
+  if (!text) return { ok: false, error: "MiniMax 沒有寫下任何東西。" };
   return { ok: true, text };
 }
 
