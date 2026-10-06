@@ -28,6 +28,7 @@ import { projectMonth, SAVE_KEY, useGame } from "@/game/store";
 import type { Layer, NationId } from "@/game/types";
 import { writeBulletin } from "@/lib/dossier.functions";
 import { openFeed30, openHero30, type FeedPlay } from "./hero30";
+import { cardSpec } from "@/game/cards";
 import { TheaterMap } from "./maps";
 import { Btn, Field, Panel } from "./bits";
 
@@ -837,22 +838,31 @@ export function Gallery() {
       </div>
       {shown ? (
         <Panel>
-          {shown.portrait ? (
-            <img src={shown.portrait} alt="" className="mb-3 aspect-[3/4] w-full rounded-3xl object-cover" />
-          ) : (
-            <div className="mb-3 grid aspect-[3/2] place-items-center rounded-3xl bg-elevated font-display text-5xl text-accent">
-              {shown.name.slice(0, 1)}
+          <div className="overflow-hidden rounded-3xl border border-accent bg-elevated">
+            <div className="flex items-center justify-between bg-accent px-3 py-2 text-accent-fg">
+              <span className="text-xs">兵器娘卡</span>
+              <span className="font-mono text-xs">{shown.year}</span>
             </div>
-          )}
-          <p className="text-xs text-subtle">
-            {shown.year} · {NATIONS[shown.nation].name} · {layerName(shown.layer)} · {kindName(shown.kind)}
-          </p>
-          <h2 className="mt-1 font-display text-2xl">{shown.name}</h2>
-          <p className="text-sm text-muted">{shown.designation}</p>
-          <p className="mt-1 text-sm text-accent">{shown.epithet}</p>
-          <p className="mt-3 text-sm leading-relaxed text-muted">{shown.history}</p>
-          <p className="mt-3 text-sm leading-relaxed">{shown.voice}</p>
-          <p className="mt-3 text-xs text-subtle">{shown.pen || shown.armor ? `穿深 ${shown.pen} · 防護 ${shown.armor}` : "每小時考證，不進戰鬥數值"}</p>
+            {shown.portrait ? (
+              <img src={shown.portrait} alt="" className="aspect-[3/4] w-full object-cover" />
+            ) : (
+              <div className="grid aspect-[3/2] place-items-center font-display text-5xl text-accent">{shown.name.slice(0, 1)}</div>
+            )}
+            <div className="p-3">
+              <h2 className="font-display text-2xl">{shown.name}</h2>
+              <p className="text-sm text-muted">{shown.designation}</p>
+              <p className="mt-1 text-xs text-subtle">{NATIONS[shown.nation].name} · {layerName(shown.layer)} · {kindName(shown.kind)}</p>
+            </div>
+          </div>
+          <p className="mt-3 text-xs text-subtle">乘員</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{cardSpec(shown.id, shown.year, shown.history).crew}</p>
+          <p className="mt-3 text-xs text-subtle">機械</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{cardSpec(shown.id, shown.year, shown.history).engine}</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{cardSpec(shown.id, shown.year, shown.history).gun}</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{cardSpec(shown.id, shown.year, shown.history).armor} {cardSpec(shown.id, shown.year, shown.history).speed}</p>
+          <p className="mt-3 text-xs text-subtle">戰績</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{cardSpec(shown.id, shown.year, shown.history).record}</p>
+          <p className="mt-2 text-sm leading-relaxed text-muted">{shown.history}</p>
         </Panel>
       ) : (
         <Panel>
