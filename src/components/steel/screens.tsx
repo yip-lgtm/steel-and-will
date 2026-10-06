@@ -100,7 +100,7 @@ export function Hq() {
           {s.y}年{s.m}月 · {difficultyLabel(s.difficulty)}
         </p>
         <h1 className="font-display text-3xl">{nationTitle(s.nation, s.modifiers)}</h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted">{NATIONS[s.nation].blurb}</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">勇者30。這一版先打三十秒，再管工廠。</p>
       </div>
       <DailyCard />
       {s.chronicle.length ? (
@@ -135,6 +135,9 @@ export function Hq() {
           {s.modifiers.includes("radar") ? " · 雷達" : ""}
         </p>
       </Panel>
+      <Btn kind="primary" testid="btn-hero30" onClick={() => openHero30("marne")}>
+        三十秒 · 馬恩河
+      </Btn>
       <div className="grid grid-cols-2 gap-2">
         <Btn kind="primary" testid="nav-map" onClick={() => setScreen("map")}>
           戰役
