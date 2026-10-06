@@ -69,10 +69,29 @@ function DailyCard() {
   );
 }
 
+function NeedLine() {
+  return (
+    <div className="grid gap-4">
+      <div>
+        <p className="text-xs tracking-widest text-accent">Cu · Te</p>
+        <h1 className="mt-2 font-display text-3xl">還沒有時間線</h1>
+        <p className="mt-2 text-sm leading-relaxed text-muted">總部、軍工和戰役要先從一九一四年選一個國家。歷史和鑑賞可以先看。</p>
+      </div>
+      <Btn kind="primary" onClick={() => useGame.getState().setScreen("title")}>
+        回到封面
+      </Btn>
+      <div className="grid grid-cols-2 gap-2">
+        <Btn onClick={() => useGame.getState().setScreen("history")}>歷史</Btn>
+        <Btn onClick={() => useGame.getState().setScreen("gallery")}>軍武鑑賞</Btn>
+      </div>
+    </div>
+  );
+}
+
 export function Hq() {
   const s = useGame();
   const setScreen = useGame((st) => st.setScreen);
-  if (!s.nation) return null;
+  if (!s.nation) return <NeedLine />;
   return (
     <div className="grid gap-4">
       <div>
@@ -181,6 +200,7 @@ export function Industry() {
   const s = useGame();
   const lines = projectMonth(s);
   const [filing, setFiling] = useState(false);
+  if (!s.nation) return <NeedLine />;
   return (
     <div className="grid gap-4">
       <h1 className="font-display text-3xl">軍工</h1>
@@ -247,6 +267,7 @@ export function Template() {
   const s = useGame();
   const [open, setOpen] = useState<string | null>(null);
   const [span, setSpan] = useState<"now" | "all">("now");
+  if (!s.nation) return <NeedLine />;
   const owned = s.owned
     .map((id) => getDef(id))
     .filter((u) => u != null);
@@ -324,6 +345,7 @@ export function Template() {
 
 export function FocusScreen() {
   const s = useGame();
+  if (!s.nation) return <NeedLine />;
   const list = FOCUSES.filter((f) => f.nation === s.nation);
   return (
     <div className="grid gap-3">
@@ -356,6 +378,7 @@ export function FocusScreen() {
 
 export function MapScreen() {
   const s = useGame();
+  if (!s.nation) return <NeedLine />;
   const gateState = { nation: s.nation, y: s.y, m: s.m, modifiers: s.modifiers, focuses: s.focuses, won: s.won };
   return (
     <div className="grid gap-3">
