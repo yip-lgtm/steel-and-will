@@ -862,9 +862,9 @@ export function Title({ onStart }: { onStart: () => void }) {
           Copper
           <span className="block">and Tellurium</span>
         </h1>
-        <p className="mt-2 text-sm text-muted">銅與碲</p>
+        <p className="mt-2 text-sm text-muted">銅與碲 · 勇者30</p>
         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
-          從一九一四年的步槍與機槍，走到噴射機、核威懾與無人機。海陸空仍互相決定命中。劇本每天換一頁，只引用真實軍武。
+          每一場真實戰役只有三十秒。選一位陸娘、空娘或艦娘當勇者，在真實地名上打怪、換裝備，時間不夠就回補給站把鐘撥回去。
         </p>
         <div className="mt-4">
           <DailyCard />
@@ -879,9 +879,10 @@ export function Title({ onStart }: { onStart: () => void }) {
           ))}
         </div>
         <p className="text-xs leading-relaxed text-subtle">{DIFFICULTY_COPY[difficulty]}</p>
-        <Btn testid="btn-start" kind="primary" onClick={onStart}>
-          從一九一四年開始
+        <Btn testid="btn-start" kind="primary" onClick={() => openHero30("marne")}>
+          三十秒 · 馬恩河
         </Btn>
+        <Btn onClick={onStart}>從一九一四年展開</Btn>
         <div className="grid grid-cols-2 gap-2">
           <Btn testid="nav-history" onClick={() => useGame.getState().setScreen("history")}>
             歷史
