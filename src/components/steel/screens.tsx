@@ -657,7 +657,11 @@ export function History() {
     <div className="grid gap-5">
       <div>
         <h1 className="font-display text-3xl">歷史</h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted">從馬恩河排到鏈路。只寫部隊與裝備，不寫平民。MiniMax 每小時補一場，從一戰輪到現代。</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          從馬恩河排到鏈路。只寫部隊與裝備，不寫平民。每小時從
+          <a className="text-accent" href="https://zh.wikipedia.org/wiki/%E6%88%98%E4%BA%89%E5%88%97%E8%A1%A8">中文維基戰爭列表</a>
+          補一場尚未寫過的衝突，由 MiniMax 寫裝備。
+        </p>
       </div>
       {ERAS.map((era) => {
         const list = events.filter((e) => e.y >= era.from && e.y <= era.to);
