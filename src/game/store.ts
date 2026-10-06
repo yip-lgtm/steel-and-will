@@ -490,31 +490,8 @@ export const useGame = create<GameData & Actions>()(
         sync(s.extras);
         const node = getNode(id);
         if (!node) return;
-        if (!isPrologue(id)) {
-          const gate = canFight(
-            { nation: s.nation, y: s.y, m: s.m, modifiers: s.modifiers, focuses: s.focuses, won: s.won },
-            node,
-          );
-          if (!gate.ok) {
-            set({ toast: gate.reason });
-            return;
-          }
-        }
-        const playerIds = node.fixedPlayer
-          ? node.fixedPlayer
-          : s.template.filter((uid) => {
-              const d = getDef(uid);
-              return d && node.layers.includes(d.layer);
-            });
-        if (!playerIds.length) {
-          set({ toast: "編制裡沒有此戰區的兵種。" });
-          return;
-        }
-        const enemyIds = node.fixedEnemy
-          ? node.fixedEnemy
-          : s.nation && node.axisNations.includes(s.nation)
-            ? node.allies
-            : node.axis;
+        const playerIds = node.fixedPlayer?.length ? node.fixedPlayer : node.allies;
+        const enemyIds = node.fixedEnemy?.length ? node.fixedEnemy : node.axis;
         let oil = s.oil;
         if (playerIds.includes("yamato")) oil = Math.max(0, oil - 3);
         const battle = createBattle(node.id, playerIds, enemyIds, node.layers, {
@@ -562,7 +539,7 @@ export const useGame = create<GameData & Actions>()(
           const first = win && !s.won.includes(node.id);
           const reward = first ? node.reward : null;
           const who = s.nation ? NATIONS[s.nation].name : "觀察員";
-          const bulletin = `${monthName(node.y, node.m)}，${who}在「${node.name}」${win ? "達成當日作戰目標" : "中止作戰"}。報告強調的仍是彈藥庫、動力與乘員，不是輪廓。`;
+          const bulletin = `${monthName(node.y, node.m)}，${who}在「${node.name}」${win ? "達成當日作戰目標" : "中止作戰"}。擊毀看的是乘員、彈藥庫與動力。研發點數 ${reward?.pp ?? 0}，銀獅 ${reward?.steel ?? 0}。`;
           return {
             screen: "debrief",
             won: first ? [...s.won, node.id] : s.won,

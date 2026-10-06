@@ -1857,11 +1857,11 @@ export const QUIZ: Quiz[] = [
 ];
 
 export function difficultyLabel(d: Difficulty): string {
-  return d === "arcade" ? "電玩" : d === "realistic" ? "歷史" : "座艙";
+  return d === "arcade" ? "街機" : d === "realistic" ? "歷史性能" : "全真模擬";
 }
 
 export const DIFFICULTY_COPY: Record<Difficulty, string> = {
-  arcade: "有瞄準提示，能量回得快，容錯高。",
-  realistic: "拿掉提示。油、橡膠與補給會直接寫進引擎和彈艙。",
-  simulator: "時間暫停時規劃。沒有自動砲火，每一發都要你指定部件與提前量。",
+  arcade: "有落點與穿透提示。載具比較好開，節奏快。",
+  realistic: "沒有落點圈。性能按史實，彈藥打完要回去補給。",
+  simulator: "座艙視角。沒有敵我標記，每一發都要你指定提前量。",
 };
