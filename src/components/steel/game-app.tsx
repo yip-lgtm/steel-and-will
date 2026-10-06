@@ -4,6 +4,7 @@ import { unlockAudio } from "@/game/sfx";
 import { useGame } from "@/game/store";
 import type { Screen } from "@/game/types";
 import { BattleView } from "./battle-view";
+import { Hero30 } from "./hero30";
 import { Codex, Debrief, FocusScreen, Gallery, History, Hq, Industry, Lecture, MapScreen, NationPick, Story, Template, Title } from "./screens";
 
 const NAV: { id: Screen; label: string; icon: typeof Shield }[] = [
@@ -39,6 +40,8 @@ export function GameApp() {
       <div className="phone-shell">
         {screen === "battle" ? (
           <BattleView />
+        ) : screen === "hero30" ? (
+          <Hero30 />
         ) : (
           <>
             <div className="phone-scroll">

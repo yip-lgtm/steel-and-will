@@ -136,4 +136,5 @@ export type Screen =
   | "codex"
   | "lecture"
   | "battle"
+  | "hero30"
   | "debrief";

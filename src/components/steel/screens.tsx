@@ -27,6 +27,7 @@ import { researchOnce } from "@/game/research";
 import { projectMonth, SAVE_KEY, useGame } from "@/game/store";
 import type { Layer, NationId } from "@/game/types";
 import { writeBulletin } from "@/lib/dossier.functions";
+import { openHero30 } from "./hero30";
 import { Btn, Field, Panel } from "./bits";
 
 function Resources() {
@@ -400,8 +401,8 @@ export function MapScreen() {
             <p className="mt-2 text-sm leading-relaxed text-muted">{n.brief}</p>
             <p className="mt-2 text-xs text-subtle">{gate.reason}</p>
             <div className="mt-3">
-              <Btn testid={`node-${n.id}`} kind="primary" disabled={!gate.ok} onClick={() => useGame.getState().startBattle(n.id)}>
-                {s.won.includes(n.id) ? "再戰" : "交戰"}
+              <Btn testid={`node-${n.id}`} kind="primary" disabled={!gate.ok} onClick={() => openHero30(n.id)}>
+                {s.won.includes(n.id) ? "再走三十秒" : "三十秒"}
               </Btn>
             </div>
           </Panel>
