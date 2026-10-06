@@ -27,7 +27,7 @@ import { researchOnce } from "@/game/research";
 import { projectMonth, SAVE_KEY, useGame } from "@/game/store";
 import type { Layer, NationId } from "@/game/types";
 import { writeBulletin } from "@/lib/dossier.functions";
-import { openHero30 } from "./hero30";
+import { TheaterMap } from "./maps";
 import { Btn, Field, Panel } from "./bits";
 
 function Resources() {
@@ -397,6 +397,9 @@ export function MapScreen() {
           <p className="mt-1 text-xs text-subtle">
             {n.theater} · {n.layers.map(layerName).join(" / ")}
           </p>
+          <div className="mt-2 h-28 overflow-hidden rounded-2xl bg-[#16324a]">
+            <TheaterMap theater={n.theater} />
+          </div>
           <p className="mt-2 text-sm leading-relaxed text-muted">{n.brief}</p>
           <div className="mt-3">
             <Btn testid={`node-${n.id}`} kind="primary" onClick={() => openHero30(n.id)}>
@@ -692,6 +695,9 @@ export function History() {
             <div>
               <h2 className="font-display text-xl">{era.name}</h2>
               <p className="mt-1 text-sm leading-relaxed text-muted">{era.lead}</p>
+              <div className="mt-2 h-28 overflow-hidden rounded-2xl bg-[#16324a]">
+                <TheaterMap theater={era.id === "wwi" ? "西線" : era.id === "inter" ? "東歐" : era.id === "ww2" ? "東線" : era.id === "cold" ? "冷戰" : "現代"} />
+              </div>
             </div>
             {list.map((e) => (
               <Panel key={`${e.y}-${e.m}-${e.t}`}>
@@ -850,11 +856,9 @@ export function Title({ onStart }: { onStart: () => void }) {
     <div className="grid min-h-full content-between gap-8">
       <div>
         <p className="text-xs tracking-widest text-accent">Cu · Te</p>
-        <img
-          src={`${import.meta.env.BASE_URL}banner.jpg`}
-          alt=""
-          className="mt-3 aspect-video w-full rounded-3xl object-cover"
-        />
+        <div className="mt-3 h-32 overflow-hidden rounded-3xl bg-[#16324a]">
+          <TheaterMap theater="西線" />
+        </div>
         <h1 className="mt-3 font-display text-4xl leading-none">
           Copper
           <span className="block">and Tellurium</span>
