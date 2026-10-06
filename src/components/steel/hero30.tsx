@@ -3,6 +3,7 @@ import { getDef, getNode, layerName } from "@/game/catalog";
 import { useGame } from "@/game/store";
 import type { UnitDef } from "@/game/types";
 import { TheaterMap } from "./maps";
+import { Btn } from "./bits";
 
 let picked = "marne";
 

@@ -27,6 +27,7 @@ import { researchOnce } from "@/game/research";
 import { projectMonth, SAVE_KEY, useGame } from "@/game/store";
 import type { Layer, NationId } from "@/game/types";
 import { writeBulletin } from "@/lib/dossier.functions";
+import { openHero30 } from "./hero30";
 import { TheaterMap } from "./maps";
 import { Btn, Field, Panel } from "./bits";
 
