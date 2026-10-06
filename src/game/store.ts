@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { advance, castSkill, createBattle, manualFire } from "./battle";
+import { advance, castSkill, correctLead, createBattle, manualFire } from "./battle";
 import {
   ARCHIVES,
   buyCost,
@@ -97,6 +97,7 @@ type Actions = {
   tickBattle: (seconds: number) => void;
   useSkill: (uid: string) => void;
   fireManual: () => void;
+  shoot: (uid: string) => void;
   settle: () => void;
   pickQuiz: (i: number) => void;
   setBulletin: (text: string) => void;
@@ -529,6 +530,16 @@ export const useGame = create<GameData & Actions>()(
           const shot = manualFire(s.battle, s.battle.lead);
           if (!shot.ok) return { battle: shot.battle };
           return { battle: advance(shot.battle, 1.2) };
+        }),
+      shoot: (uid: string) =>
+        set((s) => {
+          if (!s.battle || s.battle.over) return s;
+          sync(s.extras);
+          const target = s.battle.units.find((u) => u.uid === uid);
+          const defId = target?.defId ?? "";
+          const lead = s.battle.difficulty === "simulator" ? s.battle.lead : correctLead(defId);
+          const shot = manualFire({ ...s.battle, focusUid: uid }, lead);
+          return { battle: advance(shot.battle, 0.6), toast: null };
         }),
       settle: () =>
         set((s) => {

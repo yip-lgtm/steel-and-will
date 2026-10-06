@@ -20,8 +20,8 @@ export function BattleView() {
   const setLead = useGame((s) => s.setLead);
   const useSkill = useGame((s) => s.useSkill);
   const fireManual = useGame((s) => s.fireManual);
-  const [paused, setPaused] = useState(true);
-  const [speed, setSpeed] = useState<1 | 2>(1);
+  const [paused, setPaused] = useState(false);
+  const [speed, setSpeed] = useState<1 | 2>(2);
   const [brief, setBrief] = useState(true);
   const [lastLog, setLastLog] = useState(0);
 
@@ -96,7 +96,10 @@ export function BattleView() {
           units={battle.units.filter((u) => getDef(u.defId)?.layer === layer)}
           focusUid={battle.focusUid}
           shooterUid={battle.shooterUid}
-          onPick={(u) => (u.side === "enemy" ? setFocusTarget(u.uid) : setShooter(u.uid))}
+          onPick={(u) => {
+            if (u.side === "enemy") useGame.getState().shoot(u.uid);
+            else setShooter(u.uid);
+          }}
         />
       ))}
       </div>
@@ -198,12 +201,10 @@ export function BattleView() {
             <p className="text-xs text-subtle">戰前</p>
             <h2 className="mt-1 font-display text-2xl">{node?.name}</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted">{node?.brief}</p>
-            <p className="mt-3 text-sm leading-relaxed text-fg">
-              沒有血條。打掉彈藥、動力或乘員才算癱瘓。主砲壞了只是不能還手。
-            </p>
+            <p className="mt-3 text-sm leading-relaxed text-fg">點敵人就開火。先打彈藥，殉爆比磨裝甲快。</p>
             <div className="mt-4">
-              <Btn testid="btn-engage" kind="primary" onClick={() => { setBrief(false); setPaused(false); }}>
-                開始交戰
+              <Btn testid="btn-engage" kind="primary" onClick={() => { setBrief(false); setPaused(false); setSpeed(2); }}>
+                開打
               </Btn>
             </div>
           </div>
@@ -299,6 +300,7 @@ function Lane({
                     <span className="truncate font-medium">
                       {u.side === "enemy" ? "敵 · " : ""}
                       {def.name}
+                      {u.side === "enemy" && !dead ? " · 點擊開火" : ""}
                     </span>
                     <span className="shrink-0 font-mono text-xs tabular-nums text-muted">{u.rounds} 發</span>
                   </div>
