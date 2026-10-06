@@ -633,17 +633,31 @@ const ERAS: { id: string; name: string; from: number; to: number; lead: string }
 
 export function History() {
   const nation = useGame((s) => s.nation);
+  const [extra, setExtra] = useState<{ y: number; m: number; t: string; b: string }[]>([]);
+  useEffect(() => {
+    void fetch(`${import.meta.env.BASE_URL}feed.json`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { items?: { battle?: { y: number; m: number; name: string; brief: string } }[] } | null) => {
+        const rows = (data?.items ?? [])
+          .map((it) => it.battle)
+          .filter((b): b is { y: number; m: number; name: string; brief: string } => !!b?.name && !!b.brief)
+          .map((b) => ({ y: b.y, m: b.m, t: b.name, b: b.brief }));
+        setExtra(rows);
+      })
+      .catch(() => undefined);
+  }, []);
   const events = [
     { y: 1914, m: 6, t: "薩拉熱窩以後", b: "各國按動員表前進。這一週比任何一次白刃衝鋒更早決定。" },
     { y: 1919, m: 6, t: "凡爾賽", b: "帳單寫進條約。產能還在，下一場戰爭的理由也寫好了。" },
     { y: 1945, m: 8, t: "威懾寫進名冊", b: "核武是天花板，不是這一關的傷害數字，也不寫製造。" },
     ...NODES.map((n) => ({ y: n.y, m: n.m, t: n.name, b: n.brief })),
+    ...extra,
   ].sort((a, b) => a.y - b.y || a.m - b.m);
   return (
     <div className="grid gap-5">
       <div>
         <h1 className="font-display text-3xl">歷史</h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted">從馬恩河排到鏈路。只寫部隊與裝備，不寫平民。</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">從馬恩河排到鏈路。只寫部隊與裝備，不寫平民。MiniMax 每小時補一場，從一戰輪到現代。</p>
       </div>
       {ERAS.map((era) => {
         const list = events.filter((e) => e.y >= era.from && e.y <= era.to);
@@ -697,7 +711,37 @@ export function Gallery() {
   const [layer, setLayer] = useState<Layer | "all">("all");
   const [era, setEra] = useState<(typeof GALLERY_ERAS)[number]["id"]>("all");
   const [pick, setPick] = useState<string | null>(null);
-  const units = [...allCatalog(), ...extras]
+  const [feedKits, setFeedKits] = useState<ReturnType<typeof allCatalog>>([]);
+  useEffect(() => {
+    void fetch(`${import.meta.env.BASE_URL}feed.json`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { items?: { id: string; kit?: { name: string; designation: string; year: number; nation: NationId; layer: Layer; history: string } }[] } | null) => {
+        const rows = (data?.items ?? [])
+          .filter((it) => it.kit?.name)
+          .map((it) => ({
+            id: `feed-${it.id}`,
+            name: it.kit!.name,
+            designation: it.kit!.designation,
+            epithet: "每小時考證",
+            nation: it.kit!.nation,
+            layer: it.kit!.layer,
+            kind: "infantry" as const,
+            year: it.kit!.year,
+            speed: "fast" as const,
+            pen: 0,
+            armor: 0,
+            rof: 0,
+            rounds: 0,
+            targets: [it.kit!.layer],
+            skill: { id: "salvo" as const, name: "考證", blurb: "每小時新增。", energy: 0 },
+            voice: "這一件是 MiniMax 按年份補上的。",
+            history: it.kit!.history,
+          }));
+        setFeedKits(rows);
+      })
+      .catch(() => undefined);
+  }, []);
+  const units = [...allCatalog(), ...extras, ...feedKits]
     .filter((u) => (layer === "all" || u.layer === layer) && galleryEra(u.year, era))
     .sort((a, b) => a.year - b.year || a.name.localeCompare(b.name, "zh-Hant"));
   const shown = units.find((u) => u.id === pick) ?? units[0];
@@ -705,7 +749,7 @@ export function Gallery() {
     <div className="grid gap-4">
       <div>
         <h1 className="font-display text-3xl">軍武鑑賞</h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted">翻看型號、年份和它在體系裡的位置。這裡不列裝，也不改編制。</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">翻看型號、年份和它在體系裡的位置。這裡不列裝。MiniMax 每小時補一件，從一戰輪到現代。</p>
       </div>
       <div className="flex gap-2 overflow-x-auto">
         {(["all", "land", "air", "sea"] as const).map((l) => (
@@ -738,9 +782,7 @@ export function Gallery() {
           <p className="mt-1 text-sm text-accent">{shown.epithet}</p>
           <p className="mt-3 text-sm leading-relaxed text-muted">{shown.history}</p>
           <p className="mt-3 text-sm leading-relaxed">{shown.voice}</p>
-          <p className="mt-3 text-xs text-subtle">
-            穿深 {shown.pen} · 防護 {shown.armor}
-          </p>
+          <p className="mt-3 text-xs text-subtle">{shown.pen || shown.armor ? `穿深 ${shown.pen} · 防護 ${shown.armor}` : "每小時考證，不進戰鬥數值"}</p>
         </Panel>
       ) : (
         <Panel>
