@@ -3,7 +3,7 @@ import { BookOpen, Map, ScrollText } from "lucide-react";
 import { unlockAudio } from "@/game/sfx";
 import { useGame } from "@/game/store";
 import type { Screen } from "@/game/types";
-import { BattleView } from "./battle-view";
+import { FieldBattle } from "./field-battle";
 import { Hero30 } from "./hero30";
 import { Codex, Debrief, FocusScreen, Gallery, History, Hq, Industry, Lecture, MapScreen, NationPick, Story, Template, Title } from "./screens";
 
@@ -26,7 +26,7 @@ export function GameApp() {
     <div className="phone-stage text-fg">
       <div className="phone-shell">
         {screen === "battle" ? (
-          <BattleView />
+          <FieldBattle />
         ) : screen === "hero30" ? (
           <Hero30 />
         ) : (
