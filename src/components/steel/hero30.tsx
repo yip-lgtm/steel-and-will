@@ -122,16 +122,6 @@ function kitFoe(stage: FeedPlay): UnitDef {
   };
 }
 
-  return (
-    MAPS[theater] ?? [
-      { id: "town", name: "港口", x: 24, y: 62, kind: "town" },
-      { id: "shrine", name: "時之補給站", x: 42, y: 44, kind: "shrine" },
-      { id: "field", name: "前哨", x: 58, y: 58, kind: "field" },
-      { id: "boss", name: "目標", x: 74, y: 30, kind: "boss" },
-    ]
-  );
-}
-
 export function Hero30() {
   const catalogNode = getNode(picked);
   const stage = catalogNode

@@ -757,6 +757,7 @@ function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: str
     }));
 }
 
+const GALLERY_ERAS = [
   { id: "all", name: "全部" },
   { id: "wwi", name: "一戰" },
   { id: "inter", name: "戰間" },
