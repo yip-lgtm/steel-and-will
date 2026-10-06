@@ -27,7 +27,7 @@ import { researchOnce } from "@/game/research";
 import { projectMonth, SAVE_KEY, useGame } from "@/game/store";
 import type { Layer, NationId } from "@/game/types";
 import { writeBulletin } from "@/lib/dossier.functions";
-import { openHero30 } from "./hero30";
+import { openFeed30, openHero30, type FeedPlay } from "./hero30";
 import { TheaterMap } from "./maps";
 import { Btn, Field, Panel } from "./bits";
 
@@ -383,10 +383,32 @@ export function FocusScreen() {
 
 export function MapScreen() {
   const s = useGame();
+  const [feed, setFeed] = useState<FeedPlay[]>([]);
+  useEffect(() => {
+    void fetch(`${import.meta.env.BASE_URL}feed.json`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setFeed(toFeed(data)))
+      .catch(() => undefined);
+  }, []);
   return (
     <div className="grid gap-3">
       <h1 className="font-display text-3xl">三十秒</h1>
-      <p className="text-sm text-muted">選一位兵器娘。三十秒內走完真實地名，打怪、買裝備、打倒對方的制式裝備。時間不夠就回補給站。</p>
+      <p className="text-sm text-muted">歷史頁自動補上的衝突也可以打。選兵器娘，三十秒內走完。</p>
+      {feed.map((n) => (
+        <Panel key={n.id}>
+          <div className="flex items-baseline justify-between gap-2">
+            <h2 className="font-medium">{n.name}</h2>
+            <span className="font-mono text-xs text-subtle">{n.y}</span>
+          </div>
+          <p className="mt-1 text-xs text-subtle">自動戰役 · {n.kitName}</p>
+          <p className="mt-2 text-sm leading-relaxed text-muted">{n.brief}</p>
+          <div className="mt-3">
+            <Btn kind="primary" onClick={() => openFeed30(n)}>
+              三十秒
+            </Btn>
+          </div>
+        </Panel>
+      ))}
       {NODES.map((n) => (
         <Panel key={n.id}>
           <div className="flex items-baseline justify-between gap-2">
@@ -658,25 +680,19 @@ const ERAS: { id: string; name: string; from: number; to: number; lead: string }
 
 export function History() {
   const nation = useGame((s) => s.nation);
-  const [extra, setExtra] = useState<{ y: number; m: number; t: string; b: string }[]>([]);
+  const [extra, setExtra] = useState<FeedPlay[]>([]);
   useEffect(() => {
     void fetch(`${import.meta.env.BASE_URL}feed.json`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
-      .then((data: { items?: { battle?: { y: number; m: number; name: string; brief: string } }[] } | null) => {
-        const rows = (data?.items ?? [])
-          .map((it) => it.battle)
-          .filter((b): b is { y: number; m: number; name: string; brief: string } => !!b?.name && !!b.brief)
-          .map((b) => ({ y: b.y, m: b.m, t: b.name, b: b.brief }));
-        setExtra(rows);
-      })
+      .then((data) => setExtra(toFeed(data)))
       .catch(() => undefined);
   }, []);
   const events = [
-    { y: 1914, m: 6, t: "薩拉熱窩以後", b: "各國按動員表前進。這一週比任何一次白刃衝鋒更早決定。" },
-    { y: 1919, m: 6, t: "凡爾賽", b: "帳單寫進條約。產能還在，下一場戰爭的理由也寫好了。" },
-    { y: 1945, m: 8, t: "威懾寫進名冊", b: "核武是天花板，不是這一關的傷害數字，也不寫製造。" },
-    ...NODES.map((n) => ({ y: n.y, m: n.m, t: n.name, b: n.brief })),
-    ...extra,
+    { y: 1914, m: 6, t: "薩拉熱窩以後", b: "各國按動員表前進。這一週比任何一次白刃衝鋒更早決定。", play: null as FeedPlay | null },
+    { y: 1919, m: 6, t: "凡爾賽", b: "帳單寫進條約。產能還在，下一場戰爭的理由也寫好了。", play: null },
+    { y: 1945, m: 8, t: "威懾寫進名冊", b: "核武是天花板，不是這一關的傷害數字，也不寫製造。", play: null },
+    ...NODES.map((n) => ({ y: n.y, m: n.m, t: n.name, b: n.brief, play: null as FeedPlay | null })),
+    ...extra.map((n) => ({ y: n.y, m: 1, t: n.name, b: n.brief, play: n })),
   ].sort((a, b) => a.y - b.y || a.m - b.m);
   return (
     <div className="grid gap-5">
@@ -709,6 +725,11 @@ export function History() {
                   </span>
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{e.b}</p>
+                {e.play ? (
+                  <div className="mt-3">
+                    <Btn kind="primary" onClick={() => openFeed30(e.play!)}>三十秒</Btn>
+                  </div>
+                ) : null}
               </Panel>
             ))}
           </section>
@@ -719,7 +740,23 @@ export function History() {
   );
 }
 
-const GALLERY_ERAS = [
+function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: string; theater?: string; brief?: string }; kit?: { name?: string; designation?: string; year?: number; layer?: Layer; history?: string } }[] } | null): FeedPlay[] {
+  return (data?.items ?? [])
+    .filter((it) => it.battle?.name && it.kit?.name)
+    .map((it) => ({
+      id: it.id || it.battle!.name!,
+      y: it.battle!.y || it.kit!.year || 1914,
+      name: it.battle!.name!,
+      theater: it.battle!.theater || "戰場",
+      brief: it.battle!.brief || it.kit!.history || "",
+      kitName: it.kit!.name!,
+      designation: it.kit!.designation || it.kit!.name!,
+      year: it.kit!.year || it.battle!.y || 1914,
+      layer: it.kit!.layer || "land",
+      history: it.kit!.history || "",
+    }));
+}
+
   { id: "all", name: "全部" },
   { id: "wwi", name: "一戰" },
   { id: "inter", name: "戰間" },

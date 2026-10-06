@@ -1,14 +1,35 @@
 import { useEffect, useMemo, useState } from "react";
 import { getDef, getNode, layerName } from "@/game/catalog";
 import { useGame } from "@/game/store";
-import type { UnitDef } from "@/game/types";
+import type { Layer, UnitDef } from "@/game/types";
 import { TheaterMap } from "./maps";
 import { Btn } from "./bits";
 
 let picked = "marne";
+let feedPlay: FeedPlay | null = null;
+
+export type FeedPlay = {
+  id: string;
+  y: number;
+  name: string;
+  theater: string;
+  brief: string;
+  kitName: string;
+  designation: string;
+  year: number;
+  layer: Layer;
+  history: string;
+};
 
 export function openHero30(id: string) {
+  feedPlay = null;
   picked = id;
+  useGame.getState().setScreen("hero30");
+}
+
+export function openFeed30(stage: FeedPlay) {
+  feedPlay = stage;
+  picked = `feed:${stage.id}`;
   useGame.getState().setScreen("hero30");
 }
 
@@ -71,11 +92,60 @@ function spotsFor(theater: string): Spot[] {
   );
 }
 
+function yearTheater(y: number) {
+  if (y <= 1918) return "西線";
+  if (y <= 1935) return "東歐";
+  if (y <= 1945) return "東線";
+  if (y <= 1990) return "冷戰";
+  return "現代";
+}
+
+function kitFoe(stage: FeedPlay): UnitDef {
+  return {
+    id: `feed-${stage.id}`,
+    name: stage.kitName,
+    designation: stage.designation,
+    epithet: stage.name,
+    nation: "de",
+    layer: stage.layer,
+    kind: stage.layer === "air" ? "fighter" : stage.layer === "sea" ? "cruiser" : "tank",
+    year: stage.year,
+    speed: "slow",
+    pen: 40,
+    armor: 28,
+    rof: 4,
+    rounds: 8,
+    targets: [stage.layer],
+    skill: { id: "salvo", name: "齊射", blurb: "制式火力。", energy: 3 },
+    voice: stage.history,
+    history: stage.history,
+  };
+}
+
+  return (
+    MAPS[theater] ?? [
+      { id: "town", name: "港口", x: 24, y: 62, kind: "town" },
+      { id: "shrine", name: "時之補給站", x: 42, y: 44, kind: "shrine" },
+      { id: "field", name: "前哨", x: 58, y: 58, kind: "field" },
+      { id: "boss", name: "目標", x: 74, y: 30, kind: "boss" },
+    ]
+  );
+}
+
 export function Hero30() {
-  const node = getNode(picked);
-  const ids = [...(node?.fixedPlayer ?? []), ...(node?.allies ?? [])].filter((id, i, all) => all.indexOf(id) === i);
+  const catalogNode = getNode(picked);
+  const stage = catalogNode
+    ? { id: catalogNode.id, y: catalogNode.y, theater: catalogNode.theater, name: catalogNode.name, brief: catalogNode.brief }
+    : feedPlay && picked === `feed:${feedPlay.id}`
+      ? { id: feedPlay.id, y: feedPlay.y, theater: yearTheater(feedPlay.y), name: feedPlay.name, brief: feedPlay.brief }
+      : null;
+  const ids = [...(catalogNode?.fixedPlayer ?? []), ...(catalogNode?.allies ?? [])].filter((id, i, all) => all.indexOf(id) === i);
   const heroes = (ids.length ? ids : ["ft", "spitfire", "enterprise"]).map((id) => getDef(id)).filter((u): u is UnitDef => !!u);
-  const foes = [...(node?.fixedEnemy ?? []), ...(node?.axis ?? [])].map((id) => getDef(id)).filter((u): u is UnitDef => !!u);
+  const foes = catalogNode
+    ? [...(catalogNode.fixedEnemy ?? []), ...(catalogNode.axis ?? [])].map((id) => getDef(id)).filter((u): u is UnitDef => !!u)
+    : feedPlay
+      ? [kitFoe(feedPlay)]
+      : [];
   const boss = foes[0];
   const grunt = foes[1] ?? foes[0];
   const [hero, setHero] = useState<UnitDef | null>(null);
@@ -88,7 +158,7 @@ export function Hero30() {
   const [spot, setSpot] = useState<string | null>(null);
   const [log, setLog] = useState("三十秒。打怪、買裝備、打倒魔王。時間不夠就回補給站。");
   const [over, setOver] = useState<"win" | "lose" | null>(null);
-  const spots = useMemo(() => spotsFor(node?.theater ?? ""), [node?.theater]);
+  const spots = useMemo(() => spotsFor(stage?.theater ?? ""), [stage?.theater]);
   const here = spots.find((s) => s.id === spot) ?? null;
 
   useEffect(() => {
@@ -106,7 +176,7 @@ export function Hero30() {
     return () => window.clearInterval(id);
   }, [hero, paused, over]);
 
-  if (!node) return null;
+  if (!stage) return null;
 
   const power = (hero?.pen ?? 20) + lv * 6 + gear * 8;
   const spend = (n: number) => {
@@ -133,7 +203,7 @@ export function Hero30() {
       if (bossFight) {
         setOver("win");
         setPaused(true);
-        useGame.setState((s) => ({ won: s.won.includes(node.id) ? s.won : [...s.won, node.id] }));
+        useGame.setState((s) => ({ won: s.won.includes(stage.id) ? s.won : [...s.won, stage.id] }));
       }
     } else {
       setHp((h) => {
@@ -151,10 +221,10 @@ export function Hero30() {
   if (!hero) {
     return (
       <div className="phone-scroll">
-        <p className="text-xs text-subtle">{node.y} · {node.theater}</p>
-        <h1 className="font-display text-3xl">{node.name}</h1>
+        <p className="text-xs text-subtle">{stage.y} · {stage.theater}</p>
+        <h1 className="font-display text-3xl">{stage.name}</h1>
         <div className="mt-3 h-36 overflow-hidden rounded-2xl bg-[#16324a]">
-          <TheaterMap theater={node.theater} />
+          <TheaterMap theater={stage.theater} />
         </div>
         <p className="mt-2 text-sm leading-relaxed text-muted">選一位兵器娘當勇者。三十秒內走完這張真實戰場，打倒對方的制式裝備。</p>
         <div className="mt-4 grid gap-2">
@@ -177,13 +247,13 @@ export function Hero30() {
     <div className="flex h-full min-h-0 flex-1 flex-col">
       <div className="flex items-end justify-between gap-2 px-1 pb-2">
         <div>
-          <p className="text-xs text-subtle">{node.theater} · Lv {lv} · {gold} 金</p>
-          <h1 className="font-display text-2xl">{node.name}</h1>
+          <p className="text-xs text-subtle">{stage.theater} · Lv {lv} · {gold} 金</p>
+          <h1 className="font-display text-2xl">{stage.name}</h1>
         </div>
         <p className={`font-mono text-4xl ${sec < 8 ? "text-accent" : "text-fg"}`}>{sec.toFixed(1)}</p>
       </div>
       <div className="relative min-h-56 flex-1 overflow-hidden rounded-3xl border border-line bg-[#16324a]">
-        <TheaterMap theater={node.theater} />
+        <TheaterMap theater={stage.theater} />
         {spots.map((s) => (
           <button
             key={s.id}
@@ -211,7 +281,7 @@ export function Hero30() {
           <Btn onClick={() => setPaused((p) => !p)}>{paused ? "繼續" : "暫停"}</Btn>
           <Btn onClick={() => useGame.getState().setScreen("map")}>離開</Btn>
         </div>
-        {over === "win" ? <p className="text-sm text-fg">三十秒內打穿了。{node.brief}</p> : null}
+        {over === "win" ? <p className="text-sm text-fg">三十秒內打穿了。{stage.brief}</p> : null}
         {over === "lose" ? <p className="text-sm text-accent">時間到，或勇者倒下。這一關可以重走。</p> : null}
         {over ? <Btn kind="primary" onClick={() => { setHero(null); setOver(null); setSec(30); setLv(1); setGold(0); setGear(0); setHp(3); setSpot(null); }}>再選勇者</Btn> : null}
       </div>
