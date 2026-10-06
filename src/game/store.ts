@@ -601,7 +601,7 @@ export const useGame = create<GameData & Actions>()(
         set((s) => (s.lectureClaimed ? s : { lectureClaimed: true, pp: s.pp + 4, toast: "講堂筆記 +4 政治力。" })),
       importData: (data) => {
         const base = empty();
-        const screen: Screen = data.nation ? "hq" : "title";
+        const screen: Screen = "map";
         const next: GameData = { ...base, ...data, battle: null, toast: null, screen };
         sync(next.extras ?? []);
         set(next);
@@ -613,7 +613,7 @@ export const useGame = create<GameData & Actions>()(
       skipHydration: true,
       storage: createJSONStorage(() => localStorage),
       partialize: (s) => {
-        const screen = s.screen === "battle" ? (s.nation ? "map" : "story") : s.screen;
+        const screen: Screen = "map";
         return {
           version: s.version,
           screen,
@@ -652,7 +652,9 @@ export const useGame = create<GameData & Actions>()(
       },
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        if (!state.chronicle) state.chronicle = [];
+        if (state.screen === "battle" || state.screen === "hq" || state.screen === "story" || state.screen === "nation") {
+          state.screen = "map";
+        }
         if (state.autoResearch == null) state.autoResearch = false;
         sync(state.extras ?? []);
       },

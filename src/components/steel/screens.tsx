@@ -382,35 +382,29 @@ export function FocusScreen() {
 
 export function MapScreen() {
   const s = useGame();
-  if (!s.nation) return <NeedLine />;
-  const gateState = { nation: s.nation, y: s.y, m: s.m, modifiers: s.modifiers, focuses: s.focuses, won: s.won };
   return (
     <div className="grid gap-3">
-      <h1 className="font-display text-3xl">戰役</h1>
-      <p className="text-sm text-muted">日期沒到就打不了。美國在孤立主義結束前不能遠征。</p>
-      {NODES.filter((n) => !isPrologue(n.id)).map((n) => {
-        const gate = canFight(gateState, n);
-        return (
-          <Panel key={n.id}>
-            <div className="flex items-baseline justify-between gap-2">
-              <h2 className="font-medium">{n.name}</h2>
-              <span className="font-mono text-xs text-subtle">
-                {n.y}.{String(n.m).padStart(2, "0")}
-              </span>
-            </div>
-            <p className="mt-1 text-xs text-subtle">
-              {n.theater} · {n.layers.map(layerName).join(" / ")}
-            </p>
-            <p className="mt-2 text-sm leading-relaxed text-muted">{n.brief}</p>
-            <p className="mt-2 text-xs text-subtle">{gate.reason}</p>
-            <div className="mt-3">
-              <Btn testid={`node-${n.id}`} kind="primary" disabled={!gate.ok} onClick={() => openHero30(n.id)}>
-                {s.won.includes(n.id) ? "再走三十秒" : "三十秒"}
-              </Btn>
-            </div>
-          </Panel>
-        );
-      })}
+      <h1 className="font-display text-3xl">三十秒</h1>
+      <p className="text-sm text-muted">舊的工廠、編制和半即時交戰已停。每場只剩三十秒。</p>
+      {NODES.map((n) => (
+        <Panel key={n.id}>
+          <div className="flex items-baseline justify-between gap-2">
+            <h2 className="font-medium">{n.name}</h2>
+            <span className="font-mono text-xs text-subtle">
+              {n.y}.{String(n.m).padStart(2, "0")}
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-subtle">
+            {n.theater} · {n.layers.map(layerName).join(" / ")}
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-muted">{n.brief}</p>
+          <div className="mt-3">
+            <Btn testid={`node-${n.id}`} kind="primary" onClick={() => openHero30(n.id)}>
+              {s.won.includes(n.id) ? "再走三十秒" : "三十秒"}
+            </Btn>
+          </div>
+        </Panel>
+      ))}
     </div>
   );
 }
@@ -627,7 +621,7 @@ export function Debrief() {
             <Btn
               testid="btn-back-map"
               kind="primary"
-              onClick={() => useGame.getState().startBattle(nextPrologue(result.nodeId)!)}
+              onClick={() => openHero30(nextPrologue(result.nodeId)!)}
             >
               下一章 · {getNode(nextPrologue(result.nodeId)!)?.name}
             </Btn>
@@ -637,7 +631,7 @@ export function Debrief() {
             </Btn>
           )
         ) : (
-          <Btn testid="btn-back-map" kind="primary" onClick={() => useGame.getState().startBattle(result.nodeId)}>
+          <Btn testid="btn-back-map" kind="primary" onClick={() => openHero30(result.nodeId)}>
             再攻一次
           </Btn>
         )
@@ -882,10 +876,9 @@ export function Title({ onStart }: { onStart: () => void }) {
           ))}
         </div>
         <p className="text-xs leading-relaxed text-subtle">{DIFFICULTY_COPY[difficulty]}</p>
-        <Btn testid="btn-start" kind="primary" onClick={() => openHero30("marne")}>
-          三十秒 · 馬恩河
+        <Btn testid="btn-start" kind="primary" onClick={() => useGame.getState().setScreen("map")}>
+          三十秒戰役
         </Btn>
-        <Btn onClick={onStart}>從一九一四年展開</Btn>
         <div className="grid grid-cols-2 gap-2">
           <Btn testid="nav-history" onClick={() => useGame.getState().setScreen("history")}>
             歷史
@@ -894,11 +887,6 @@ export function Title({ onStart }: { onStart: () => void }) {
             軍武鑑賞
           </Btn>
         </div>
-        {nation ? (
-          <Btn testid="btn-continue" onClick={() => useGame.getState().setScreen("hq")}>
-            繼續 {NATIONS[nation].name}
-          </Btn>
-        ) : null}
         <Btn kind="quiet" onClick={() => useGame.getState().toggleMute()}>
           {muted ? "聲音關" : "聲音開"}
         </Btn>

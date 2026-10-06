@@ -1,20 +1,15 @@
 import { useEffect } from "react";
-import { BookOpen, Factory, Map, ScrollText, Shield, Telescope, Users } from "lucide-react";
+import { BookOpen, Map, ScrollText } from "lucide-react";
 import { unlockAudio } from "@/game/sfx";
 import { useGame } from "@/game/store";
 import type { Screen } from "@/game/types";
-import { BattleView } from "./battle-view";
 import { Hero30 } from "./hero30";
 import { Codex, Debrief, FocusScreen, Gallery, History, Hq, Industry, Lecture, MapScreen, NationPick, Story, Template, Title } from "./screens";
 
-const NAV: { id: Screen; label: string; icon: typeof Shield }[] = [
-  { id: "hq", label: "總部", icon: Shield },
-  { id: "industry", label: "軍工", icon: Factory },
-  { id: "template", label: "編制", icon: Users },
-  { id: "map", label: "戰役", icon: Map },
+const NAV: { id: Screen; label: string; icon: typeof Map }[] = [
+  { id: "map", label: "三十秒", icon: Map },
   { id: "history", label: "歷史", icon: ScrollText },
-  { id: "gallery", label: "鑑賞", icon: Telescope },
-  { id: "codex", label: "檔案", icon: BookOpen },
+  { id: "gallery", label: "鑑賞", icon: BookOpen },
 ];
 
 export function GameApp() {
@@ -25,22 +20,11 @@ export function GameApp() {
     window.addEventListener("pointerdown", unlock, { once: true });
     return () => window.removeEventListener("pointerdown", unlock);
   }, []);
-  const showNav =
-    screen === "hq" ||
-    screen === "industry" ||
-    screen === "template" ||
-    screen === "focus" ||
-    screen === "map" ||
-    screen === "history" ||
-    screen === "gallery" ||
-    screen === "codex" ||
-    screen === "lecture";
+  const showNav = screen === "map" || screen === "history" || screen === "gallery";
   return (
     <div className="phone-stage text-fg">
       <div className="phone-shell">
-        {screen === "battle" ? (
-          <BattleView />
-        ) : screen === "hero30" ? (
+        {screen === "hero30" ? (
           <Hero30 />
         ) : (
           <>
