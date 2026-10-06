@@ -22,10 +22,10 @@ const MAPS: Record<string, Spot[]> = {
     { id: "boss", name: "防線", x: 72, y: 34, kind: "boss" },
   ],
   北海: [
-    { id: "scapa", name: "斯卡帕灣", x: 28, y: 22, kind: "town" },
-    { id: "shrine", name: "時之補給站", x: 46, y: 40, kind: "shrine" },
-    { id: "dogger", name: "多格灘", x: 58, y: 55, kind: "field" },
-    { id: "boss", name: "日德蘭", x: 70, y: 32, kind: "boss" },
+    { id: "scapa", name: "斯卡帕灣", x: 22, y: 16, kind: "town" },
+    { id: "shrine", name: "時之補給站", x: 42, y: 48, kind: "shrine" },
+    { id: "dogger", name: "多格灘", x: 50, y: 64, kind: "field" },
+    { id: "boss", name: "日德蘭", x: 66, y: 40, kind: "boss" },
   ],
   中國: [
     { id: "beiping", name: "北平", x: 62, y: 28, kind: "town" },
@@ -60,6 +60,73 @@ const MAPS: Record<string, Spot[]> = {
 };
 
 function spotsFor(theater: string): Spot[] {
+  return (
+    MAPS[theater] ?? [
+      { id: "town", name: "港口", x: 24, y: 62, kind: "town" },
+      { id: "shrine", name: "時之補給站", x: 42, y: 44, kind: "shrine" },
+      { id: "field", name: "前哨", x: 58, y: 58, kind: "field" },
+      { id: "boss", name: "目標", x: 74, y: 30, kind: "boss" },
+    ]
+  );
+}
+
+function TheaterMap({ theater }: { theater: string }) {
+  const land = "#c4b48a";
+  const line = "#efe6cf";
+  if (theater === "北海") {
+    return (
+      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-label="北海">
+        <path d="M6 8 L16 4 L20 12 L14 18 L18 28 L12 40 L16 54 L10 70 L6 62 L8 36 Z" fill={land} stroke={line} strokeWidth="0.4" />
+        <path d="M18 6 L22 4 L21 9 Z" fill={land} />
+        <path d="M74 2 L90 4 L86 24 L78 16 L74 6 Z" fill={land} stroke={line} strokeWidth="0.4" />
+        <path d="M68 34 L78 30 L84 46 L76 72 L66 60 L70 44 Z" fill={land} stroke={line} strokeWidth="0.4" />
+        <path d="M58 78 L98 72 L98 100 L36 100 L46 84 Z" fill={land} stroke={line} strokeWidth="0.4" />
+        <text x="8" y="42" fill="#1b2430" fontSize="3.2">英國</text>
+        <text x="76" y="14" fill="#1b2430" fontSize="3.2">挪威</text>
+        <text x="70" y="52" fill="#1b2430" fontSize="3.2">日德蘭半島</text>
+      </svg>
+    );
+  }
+  if (theater === "西線" || theater === "本土") {
+    return (
+      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-label={theater}>
+        <path d="M4 8 L18 6 L16 28 L10 46 L14 70 L6 78 L4 40 Z" fill={land} stroke={line} strokeWidth="0.4" />
+        <path d="M28 30 L98 18 L98 100 L22 100 L26 70 L34 48 Z" fill={land} stroke={line} strokeWidth="0.4" />
+        <text x="6" y="40" fill="#1b2430" fontSize="3.2">英國</text>
+        <text x="48" y="78" fill="#1b2430" fontSize="3.2">法國</text>
+        <text x="62" y="34" fill="#1b2430" fontSize="3.2">比利時</text>
+      </svg>
+    );
+  }
+  if (theater === "太平洋") {
+    return (
+      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-label="太平洋">
+        <path d="M2 40 L16 36 L18 58 L8 70 L2 56 Z" fill={land} stroke={line} strokeWidth="0.4" />
+        <path d="M70 8 L98 6 L98 34 L82 28 L74 16 Z" fill={land} stroke={line} strokeWidth="0.4" />
+        <circle cx="74" cy="32" r="2.2" fill={land} />
+        <circle cx="58" cy="40" r="1.4" fill={land} />
+        <text x="4" y="52" fill="#1b2430" fontSize="3">夏威夷</text>
+        <text x="78" y="18" fill="#1b2430" fontSize="3.2">日本</text>
+      </svg>
+    );
+  }
+  if (theater === "中國") {
+    return (
+      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-label="中國">
+        <path d="M8 20 L70 8 L78 30 L62 48 L70 78 L20 90 L8 60 Z" fill={land} stroke={line} strokeWidth="0.4" />
+        <path d="M78 30 L98 24 L98 70 L74 62 Z" fill="#1d4e73" />
+        <text x="28" y="40" fill="#1b2430" fontSize="4">華北</text>
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-label={theater}>
+      <path d="M6 18 L40 8 L78 16 L92 40 L80 78 L30 92 L8 60 Z" fill={land} stroke={line} strokeWidth="0.4" />
+      <text x="36" y="52" fill="#1b2430" fontSize="4">{theater}</text>
+    </svg>
+  );
+}
+
   return (
     MAPS[theater] ?? [
       { id: "town", name: "港口", x: 24, y: 62, kind: "town" },
@@ -178,10 +245,8 @@ export function Hero30() {
         </div>
         <p className={`font-mono text-4xl ${sec < 8 ? "text-accent" : "text-fg"}`}>{sec.toFixed(1)}</p>
       </div>
-      <div className="relative min-h-56 flex-1 overflow-hidden rounded-3xl border border-line bg-[#101418]">
-        <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden>
-          <path d="M8 20 C30 10 50 30 70 16 C84 28 90 50 78 70 C60 88 30 80 16 64 C8 48 4 30 8 20" fill="#1c2830" stroke="#8c6239" strokeWidth="0.6" />
-        </svg>
+      <div className="relative min-h-56 flex-1 overflow-hidden rounded-3xl border border-line bg-[#16324a]">
+        <TheaterMap theater={node.theater} />
         {spots.map((s) => (
           <button
             key={s.id}
