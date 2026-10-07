@@ -711,7 +711,7 @@ export function History() {
         </div>
         <Panel>
           <p className="text-xs text-subtle">English</p>
-          <p className="mt-1 text-sm leading-relaxed text-muted">{"en" in d ? d.en : d.resultEn}</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{String("en" in d ? d.en : d.resultEn)}</p>
         </Panel>
         {([
           ["國家與地理", d.countries, d.countriesEn],
