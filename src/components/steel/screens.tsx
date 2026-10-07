@@ -816,6 +816,7 @@ export function Gallery() {
     .filter((u) => (layer === "all" || u.layer === layer) && galleryEra(u.year, era))
     .sort((a, b) => a.year - b.year || a.name.localeCompare(b.name, "zh-Hant"));
   const shown = units.find((u) => u.id === pick) ?? units[0];
+  const spec = shown ? cardSpec(shown.id, shown.year, shown.history) : null;
   return (
     <div className="grid gap-4">
       <div>
@@ -836,34 +837,48 @@ export function Gallery() {
           </Btn>
         ))}
       </div>
-      {shown ? (
-        <Panel>
-          <div className="overflow-hidden rounded-3xl border border-accent bg-elevated">
-            <div className="flex items-center justify-between bg-accent px-3 py-2 text-accent-fg">
-              <span className="text-xs">兵器娘卡</span>
-              <span className="font-mono text-xs">{shown.year}</span>
+      {shown && spec ? (
+        <div className="overflow-hidden rounded-3xl border border-accent bg-surface">
+          <div className="flex items-center justify-between bg-accent px-3 py-2 text-accent-fg">
+            <span className="text-xs">兵器娘卡</span>
+            <span className="font-mono text-xs">{shown.year}</span>
+          </div>
+          {shown.portrait ? (
+            <img src={shown.portrait} alt="" className="aspect-[3/4] w-full object-cover" />
+          ) : (
+            <div className="grid aspect-[3/4] place-items-center bg-elevated font-display text-6xl text-accent">{shown.name.slice(0, 1)}</div>
+          )}
+          <div className="border-t border-accent px-3 py-3">
+            <h2 className="font-display text-3xl">{shown.name}</h2>
+            <p className="text-sm text-muted">{shown.designation}</p>
+            <p className="mt-1 text-xs text-subtle">{NATIONS[shown.nation].name} · {layerName(shown.layer)} · {kindName(shown.kind)}</p>
+          </div>
+          <div className="grid gap-3 px-3 pb-4">
+            <div>
+              <p className="text-xs text-subtle">型號</p>
+              <p className="mt-1 text-sm">{shown.designation}</p>
+              <p className="text-sm text-muted">{kindName(shown.kind)} · {shown.year}</p>
             </div>
-            {shown.portrait ? (
-              <img src={shown.portrait} alt="" className="aspect-[3/4] w-full object-cover" />
-            ) : (
-              <div className="grid aspect-[3/2] place-items-center font-display text-5xl text-accent">{shown.name.slice(0, 1)}</div>
-            )}
-            <div className="p-3">
-              <h2 className="font-display text-2xl">{shown.name}</h2>
-              <p className="text-sm text-muted">{shown.designation}</p>
-              <p className="mt-1 text-xs text-subtle">{NATIONS[shown.nation].name} · {layerName(shown.layer)} · {kindName(shown.kind)}</p>
+            <div>
+              <p className="text-xs text-subtle">數據</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted">{spec.gun}</p>
+              <p className="text-sm leading-relaxed text-muted">{spec.armor}</p>
+              <p className="mt-1 text-sm">火力 {shown.pen}</p>
+              <p className="text-sm">防護 {shown.armor}</p>
+            </div>
+            <div>
+              <p className="text-xs text-subtle">機械</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted">{spec.crew}</p>
+              <p className="text-sm leading-relaxed text-muted">{spec.engine}</p>
+              <p className="text-sm leading-relaxed text-muted">{spec.speed}</p>
+            </div>
+            <div>
+              <p className="text-xs text-subtle">戰績</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted">{spec.record}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{shown.history}</p>
             </div>
           </div>
-          <p className="mt-3 text-xs text-subtle">乘員</p>
-          <p className="mt-1 text-sm leading-relaxed text-muted">{cardSpec(shown.id, shown.year, shown.history).crew}</p>
-          <p className="mt-3 text-xs text-subtle">機械</p>
-          <p className="mt-1 text-sm leading-relaxed text-muted">{cardSpec(shown.id, shown.year, shown.history).engine}</p>
-          <p className="mt-1 text-sm leading-relaxed text-muted">{cardSpec(shown.id, shown.year, shown.history).gun}</p>
-          <p className="mt-1 text-sm leading-relaxed text-muted">{cardSpec(shown.id, shown.year, shown.history).armor} {cardSpec(shown.id, shown.year, shown.history).speed}</p>
-          <p className="mt-3 text-xs text-subtle">戰績</p>
-          <p className="mt-1 text-sm leading-relaxed text-muted">{cardSpec(shown.id, shown.year, shown.history).record}</p>
-          <p className="mt-2 text-sm leading-relaxed text-muted">{shown.history}</p>
-        </Panel>
+        </div>
       ) : (
         <Panel>
           <p className="text-sm text-muted">這個範圍沒有館藏。</p>
