@@ -39,6 +39,26 @@
         "nation": "su",
         "layer": "land",
         "history": "作為紅軍標準步槍，於一次大戰與內戰中廣泛配發，具備可靠與精準的特點，並在後續衝突中持續使用。"
+      },
+      "dossier": {
+        "theater": "東歐",
+        "countries": "俄國內戰從1917年打到1922年，不是打到2022年。戰場不是一座城，而是歐洲俄羅斯、伏爾加河、西伯利亞大鐵路和遠東。紅軍以莫斯科、彼得格勒為內線。白軍從頓河、西伯利亞、西北和克里米亞分頭打進來。英、法、美、日都派過干涉部隊，但沒有一支干涉軍把白軍收成同一個政府。莫斯科約北緯55.75度、東經37.62度。誰占住車站，誰才能把下一列車的糧和彈送出去。",
+        "countriesEn": "The Russian Civil War ran from 1917 to 1922, not to 2022. It was fought across European Russia, the Volga, the Trans-Siberian Railway and the Far East. The Reds held the interior around Moscow and Petrograd. The Whites came in from the Don, Siberia, the northwest and Crimea. Britain, France, the United States and Japan intervened, and none of them welded the Whites into one government.",
+        "people": "列寧抓政權，托洛茨基把紅軍編成能調動的常備軍。白軍這邊高爾察克在西伯利亞、鄧尼金在南方、弗蘭格爾守到最後的克里米亞，三個人沒有統一的參謀部。外國將領可以送槍，不能替他們決定誰聽誰的。單個軍官的回憶很生動，不能代替一個師還有沒有子彈。",
+        "peopleEn": "Lenin held the state. Trotsky turned the Red Army into a force that could be moved. Kolchak, Denikin and Wrangel never shared one staff. Foreign officers could deliver rifles. They could not make the Whites obey one commander.",
+        "kits": "雙方的底子都是莫辛-納甘M1891，1891年已經列裝，不是後來的改型故事。機槍、徵來的野砲和裝甲列車比任何新式戰車都更決定鐵路樞紐。干涉軍帶來少量戰車和砲，數量蓋不過鐵路。沒有油和零件的列車，比沒有口號的師先停下來。",
+        "kitsEn": "Both sides lived on the Mosin-Nagant M1891, in service since 1891. Machine guns, impressed field guns and armoured trains decided the junctions. The few tanks brought by intervention forces did not outweigh the railway.",
+        "tactics": "這不是壕溝對壕溝。白軍從外線多路進攻，紅軍用內線把師從一個戰場塞到另一個戰場。打法是先占車站和橋，再談進城。徵糧和兵源比一次城市衝鋒更決定還能打幾個月。彈藥斷了，人數還在也退出。",
+        "tacticsEn": "This was not trench against trench. The Whites attacked from the rim. The Reds shifted divisions inside that rim. The method was to take the station and the bridge before the town. Grain and recruits outlasted a single city assault.",
+        "data": "主要戰事在1918到1920年，遠東殘部到1922年日本離開海參崴。死亡和饑荒以百萬計，精確數字至今有爭議，這裡不編成一個假總數。feed裡若寫1918到2022，是把年份接錯，不是這場戰爭的長度。",
+        "dataEn": "The main fighting was 1918 to 1920. The Far East remnant lasted until Japan left Vladivostok in 1922. Deaths and famine ran into the millions. The exact total is disputed, so it is not invented here. A feed line that says 1918–2022 has joined the wrong years.",
+        "cause": "1917年舊政權垮了，布爾什維克奪權，舊軍官、地方政府和外國政府不肯承認。動員不是一張表，是鐵路還能把誰送上前線。沒有這一次奪權，就沒有這場內戰。沒有鐵路，這場內戰打不成現在這個形狀。",
+        "causeEn": "The old regime collapsed in 1917. The Bolsheviks took power. Former officers, local governments and foreign governments refused to accept it. Railways, not a slogan, decided who could still be sent forward.",
+        "impact": "紅軍從這場戰爭裡做成常備軍。蘇聯的邊界和一黨國家不是在宣言裡長出來的，是在白軍失敗以後留下的。干涉沒有打出一個能執政的白軍政府，只留下港口和軍火的帳單。",
+        "impactEn": "The Red Army became a standing force in this war. The Soviet border and the one-party state were what remained after the Whites failed. Intervention did not produce a White government that could rule.",
+        "result": "紅軍勝。白軍主力到1920年失敗，弗蘭格爾從克里米亞撤出，日本1922年離開海參崴。勝負是誰留在車站，不是誰的故事更好聽。",
+        "resultEn": "The Reds won. The main White armies were beaten by 1920, Wrangel left Crimea, and Japan left Vladivostok in 1922. The result is who still held the stations.",
+        "updated": "2026-10-07T18:17:58Z"
       }
     },
     {
@@ -249,6 +269,258 @@
         "nation": "us",
         "layer": "air",
         "history": "1978年已列裝的美軍戰鬥機，科索沃戰爭期間配屬北約空中部隊，用於制空與對地打擊。"
+      }
+    },
+    {
+      "id": "1915-護國戰爭",
+      "added": "2026-10-06T20:13:00.000Z",
+      "span": "wwi",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 1915,
+        "m": 12,
+        "name": "護國戰爭",
+        "theater": "中國",
+        "brief": "雲南山區的游擊戰中，護國軍使用M1888步槍進行防禦與埋伏，成功抵禦袁世凱的軍隊。"
+      },
+      "kit": {
+        "name": "M1888步槍",
+        "designation": "M1888",
+        "year": 1888,
+        "nation": "de",
+        "layer": "land",
+        "history": "德國1888年研製的栓式步槍，清末引進，廣泛配用於中國內戰。"
+      }
+    },
+    {
+      "id": "1919-愛爾蘭獨立戰爭",
+      "added": "2026-10-06T21:20:00.000Z",
+      "span": "inter",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 1919,
+        "m": 1,
+        "name": "愛爾蘭獨立戰爭",
+        "theater": "愛爾蘭",
+        "brief": "1919年1月在愛爾蘭爆發反英游擊戰，愛爾蘭共和軍在城鄉展開武裝對抗，旨在爭取脫離英國統治。"
+      },
+      "kit": {
+        "name": "李-恩菲爾德 Mk III 步槍",
+        "designation": "No. 1 Mk III",
+        "year": 1907,
+        "nation": "gb",
+        "layer": "land",
+        "history": "該步槍是英國在第一次世界大戰中的主力栓式步槍，於愛爾蘭獨立戰爭期間被英軍與愛爾蘭武裝廣泛使用。"
+      }
+    },
+    {
+      "id": "1939-冬季戰爭",
+      "added": "2026-10-06T22:17:00.000Z",
+      "span": "ww2a",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 1939,
+        "m": 11,
+        "name": "冬季戰爭",
+        "theater": "北歐與東歐交界",
+        "brief": "1939年11月底，蘇聯紅軍自東線向芬蘭發動全面進攻，芬蘭軍隊在高寒氣候與森林地形中的卡累利阿地峽、極北及拉多加湖周邊展開防禦，並以索米衝鋒槍配屬步兵班，提供近距離火力支援。"
+      },
+      "kit": {
+        "name": "索米衝鋒槍",
+        "designation": "KP/-31",
+        "year": 1931,
+        "nation": "fi",
+        "layer": "land",
+        "history": "1931年列裝後，索米衝鋒槍成為芬蘭步兵的主要近戰武器，冬季戰爭期間廣泛配屬於步兵班與滑雪兵，用於近距離火力。"
+      }
+    },
+    {
+      "id": "1962-中印邊境戰爭",
+      "added": "2026-10-06T23:18:00.000Z",
+      "span": "cold",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 1962,
+        "m": 10,
+        "name": "中印邊境戰爭",
+        "theater": "喜馬拉雅邊境",
+        "brief": "1962年10月，中印兩軍在喜馬拉雅山脈東段與西段的高海拔山口交火。中國人民解放軍步兵以已列裝的56式突擊步槍配屬班排，在山地推進中提供近距火力。"
+      },
+      "kit": {
+        "name": "56式突擊步槍",
+        "designation": "Type 56",
+        "year": 1956,
+        "nation": "cn",
+        "layer": "land",
+        "history": "1956年列裝的中國制式突擊步槍，1962年中印邊境戰爭期間配屬入藏與新疆方向的步兵部隊，用於山地近戰。"
+      }
+    },
+    {
+      "id": "1973-第四次中東戰爭",
+      "added": "2026-10-07T00:16:00.000Z",
+      "span": "cold",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 1973,
+        "m": 10,
+        "name": "第四次中東戰爭",
+        "theater": "西奈半島與戈蘭高地",
+        "brief": "1973年10月6日，埃及與敘利亞同時向西奈半島及戈蘭高地進攻，第四次中東戰爭展開。以色列裝甲部隊以已列裝的M60A1巴頓戰車配屬前線，在兩線以105毫米主砲支援步兵穩住陣地並實施反衝擊。"
+      },
+      "kit": {
+        "name": "M60A1巴頓戰車",
+        "designation": "M60A1",
+        "year": 1971,
+        "nation": "il",
+        "layer": "land",
+        "history": "1971年以色列自美國接收並列裝的M60A1，1973年配屬西奈與戈蘭方向的裝甲部隊，用於前線火力支援。"
+      }
+    },
+    {
+      "id": "2001-阿富汗戰爭",
+      "added": "2026-10-07T01:19:00.000Z",
+      "span": "now",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 2001,
+        "m": 10,
+        "name": "阿富汗戰爭",
+        "theater": "阿富汗山區",
+        "brief": "2001年10月美軍在阿富汗山區展開「持久自由」行動，使用M4卡賓槍、M249機槍等輕武器掃蕩塔利班據點。"
+      },
+      "kit": {
+        "name": "M4卡賓槍",
+        "designation": "M4",
+        "year": 1994,
+        "nation": "us",
+        "layer": "land",
+        "history": "1994年定型，2001年部署至阿富汗山區，取代M16。"
+      }
+    },
+    {
+      "id": "1916-復活節起義",
+      "added": "2026-10-07T02:14:00.000Z",
+      "span": "wwi",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 1916,
+        "m": 4,
+        "name": "復活節起義",
+        "theater": "愛爾蘭都柏林",
+        "brief": "在都柏林市中心與英軍激烈交火，英軍使用李-恩菲爾德步槍於街道、佔領建築內掃射。"
+      },
+      "kit": {
+        "name": "李-恩菲爾德步槍",
+        "designation": "SMLE Mk III",
+        "year": 1907,
+        "nation": "gb",
+        "layer": "land",
+        "history": "英軍於1907年採用此步槍，裝備步兵與支援單位，廣泛用於一次大戰。"
+      }
+    },
+    {
+      "id": "1919-土耳其獨立戰爭",
+      "added": "2026-10-07T03:13:19.501Z",
+      "span": "inter",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 1919,
+        "m": 5,
+        "name": "土耳其獨立戰爭",
+        "theater": "安納托利亞",
+        "brief": "1919年5月，協約國准許希臘軍於伊茲密爾登陸並向西內陸推進，引發安納托利亞各地的土耳其民族主義抵抗。穆斯塔法·凱末爾於薩姆松登陸後號召成立大國民議會軍，先後於第一次與第二次伊諾努戰役、薩卡里亞河戰役中以步槍與機槍火力遏制希軍推進，最終於1922年大攻勢將希軍逐出安納托利亞，並於1923年建立土耳其共和國。"
+      },
+      "kit": {
+        "name": "Gew 88步槍",
+        "designation": "Gew 88",
+        "year": 1888,
+        "nation": "tr",
+        "layer": "land",
+        "history": "德國於1888年定型的委員會步槍，後續由德軍以Gew 98替換後大量軍援鄂圖曼帝國。鄂圖曼軍於一戰結束後將其移交土耳其國民軍，土耳其共和國成立後繼續改良使用，服役期延伸至1940年代前後，於土耳其獨立戰爭期間為民族主義部隊可見的制式栓動步槍之一。"
+      }
+    },
+    {
+      "id": "1939-第二次世界大戰",
+      "added": "2026-10-07T04:15:57.297Z",
+      "span": "ww2a",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 1939,
+        "m": 9,
+        "name": "第二次世界大戰",
+        "theater": "歐洲與太平洋戰場",
+        "brief": "第二次世界大戰於1939年9月1日德國入侵波蘭後全面爆發，橫跨歐洲、非洲與亞洲，牽動全球主要強權。此戰期間，德國空軍的梅塞施密特Bf 109戰鬥機自1937年起服役，成為歐洲戰場上的關鍵空中力量。"
+      },
+      "kit": {
+        "name": "梅塞施密特Bf 109戰鬥機",
+        "designation": "Bf 109",
+        "year": 1937,
+        "nation": "de",
+        "layer": "air",
+        "history": "做為納粹德國空軍的主力單座戰鬥機，Bf 109在歐洲戰場上肩負制空任務，與盟軍戰機交戰。"
+      }
+    },
+    {
+      "id": "1918-芬蘭內戰",
+      "added": "2026-10-07T05:08:44.049Z",
+      "span": "wwi",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 1918,
+        "m": 1,
+        "name": "芬蘭內戰",
+        "theater": "芬蘭本土",
+        "brief": "1918 年 1 月至 5 月，芬蘭內戰在芬蘭本土激烈展開，白軍與紅軍在主要城市與鄉村展開激烈武裝對抗，交戰雙方皆大量裝備德國製造的毛瑟 G98 步槍作為主要步兵武器，衝突導致國家政治版圖與社會結構出現劇烈變動。"
+      },
+      "kit": {
+        "name": "毛瑟G98步槍",
+        "designation": "Gewehr 98",
+        "year": 1898,
+        "nation": "de",
+        "layer": "land",
+        "history": "作為德國國防軍的制式步槍，Gewehr 98 在一次大戰期間被廣泛配發至步兵排，並被多國軍隊引進或仿製。"
+      }
+    },
+    {
+      "id": "1980-兩伊戰爭",
+      "added": "2026-10-07T10:15:39.122Z",
+      "span": "cold",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 1980,
+        "m": 9,
+        "name": "兩伊戰爭",
+        "theater": "伊拉克-伊朗邊境與波斯灣",
+        "brief": "兩伊戰爭是伊朗與伊拉克於1980年9月在邊境與波斯灣展開的大規模武裝衝突，交戰雙方在沙漠、城鎮與海域展開激烈戰鬥，並動用了包括蘇製T-72主力戰車在內的多種裝備，造成雙方重大傷亡並持續至1988年。"
+      },
+      "kit": {
+        "name": "T-72主力戰車",
+        "designation": "T-72",
+        "year": 1971,
+        "nation": "su",
+        "layer": "land",
+        "history": "T-72是蘇聯於1970年代研製的主力戰車，採用125mm滑膛炮與自動裝填機，屬於第三代主力戰車，供蘇聯及多國陸軍使用。"
+      }
+    },
+    {
+      "id": "2003-伊拉克戰爭",
+      "added": "2026-10-07T14:37:40.413Z",
+      "span": "now",
+      "source": "https://zh.wikipedia.org/wiki/战争列表",
+      "battle": {
+        "y": 2003,
+        "m": 3,
+        "name": "伊拉克戰爭",
+        "theater": "伊拉克",
+        "brief": "伊拉克戰爭是2003年以美國為首的多國聯軍對伊拉克發動的軍事行動，旨在消除薩達姆·侯賽因政權的大規模殺傷性武器威脅並推翻其政權。3月20日地面部隊突破伊拉克防線，佔領巴格達。期間，美軍主力戰車M1艾布拉姆斯（正式型號M1）在實戰中展現強大防護與火力，成為地面作戰核心。"
+      },
+      "kit": {
+        "name": "M1艾布拉姆斯",
+        "designation": "M1",
+        "year": 1980,
+        "nation": "us",
+        "layer": "land",
+        "history": "作為美國陸軍的主戰坦克，M1自1980年起服役，具備先進的複合裝甲與120公厘滑膛炮，為師級單位的突擊與防禦主力。"
       }
     }
   ]
