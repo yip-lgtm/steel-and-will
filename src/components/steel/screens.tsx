@@ -29,6 +29,7 @@ import type { Layer, NationId } from "@/game/types";
 import { writeBulletin } from "@/lib/dossier.functions";
 import { openFeed30, openHero30, type FeedPlay } from "./hero30";
 import { cardSpec } from "@/game/cards";
+import { dossierFor } from "@/game/history-dossier";
 import { LiveMap } from "./live-map";
 import { Btn, Field, Panel } from "./bits";
 
@@ -682,6 +683,7 @@ const ERAS: { id: string; name: string; from: number; to: number; lead: string }
 export function History() {
   const nation = useGame((s) => s.nation);
   const [extra, setExtra] = useState<FeedPlay[]>([]);
+  const [open, setOpen] = useState<string | null>(null);
   useEffect(() => {
     void fetch(`${import.meta.env.BASE_URL}feed.json`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
@@ -695,6 +697,41 @@ export function History() {
     ...NODES.map((n) => ({ y: n.y, m: n.m, t: n.name, b: n.brief, play: null as FeedPlay | null })),
     ...extra.map((n) => ({ y: n.y, m: 1, t: n.name, b: n.brief, play: n })),
   ].sort((a, b) => a.y - b.y || a.m - b.m);
+  const picked = events.find((e) => `${e.y}-${e.t}` === open);
+  if (picked) {
+    const d = dossierFor(picked.t, picked.b, picked.y);
+    const zh = [d.countries, d.people, d.kits, d.tactics, d.data, d.cause, d.impact, d.result].join("");
+    return (
+      <div className="grid gap-3">
+        <Btn onClick={() => setOpen(null)}>返回列表</Btn>
+        <h1 className="font-display text-3xl">{picked.t}</h1>
+        <p className="font-mono text-xs text-subtle">{picked.y}.{String(picked.m).padStart(2, "0")} · {zh.length} 字</p>
+        <div className="h-56 overflow-hidden rounded-2xl">
+          <LiveMap theater={d.theater} label={picked.t} />
+        </div>
+        <Panel>
+          <p className="text-xs text-subtle">English</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{d.en}</p>
+        </Panel>
+        {([
+          ["國家與地理", d.countries],
+          ["人物", d.people],
+          ["軍武與機械", d.kits],
+          ["戰術", d.tactics],
+          ["數據", d.data],
+          ["成因", d.cause],
+          ["影響", d.impact],
+          ["結果", d.result],
+        ] as const).map(([title, body]) => (
+          <Panel key={title}>
+            <h2 className="font-medium">{title}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted">{body}</p>
+          </Panel>
+        ))}
+        {picked.play ? <Btn kind="primary" onClick={() => openFeed30(picked.play!)}>三十秒</Btn> : null}
+      </div>
+    );
+  }
   return (
     <div className="grid gap-5">
       <div>
@@ -726,6 +763,9 @@ export function History() {
                   </span>
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{e.b}</p>
+                <div className="mt-3">
+                  <Btn kind="primary" onClick={() => setOpen(`${e.y}-${e.t}`)}>戰役全文</Btn>
+                </div>
                 {e.play ? (
                   <div className="mt-3">
                     <Btn kind="primary" onClick={() => openFeed30(e.play!)}>三十秒</Btn>
