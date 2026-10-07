@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export type MapSpot = { id: string; name: string; lng: number; lat: number };
 
 const PLACES: Record<string, [number, number, number]> = {
@@ -75,47 +73,28 @@ export function LiveMap({
   active?: string | null;
   onPick?: (id: string) => void;
 }) {
-  const [lng, lat, zoom] = placeOf(label || "", theater);
-  const z = Math.min(zoom, 8);
-  const center = tileXY(lng, lat, z);
-  const [broken, setBroken] = useState(0);
-  const tiles = [-1, 0, 1].flatMap((dy) => [-1, 0, 1].map((dx) => ({ dx, dy, x: Math.floor(center.x) + dx, y: Math.floor(center.y) + dy })));
-  const ox = (center.x - Math.floor(center.x)) * 256;
-  const oy = (center.y - Math.floor(center.y)) * 256;
+  const [lng, lat] = placeOf(label || "", theater);
+  const span = label?.includes("伊孫佐") ? 0.12 : 0.8;
+  const bbox = [lng - span, lat - span * 0.7, lng + span, lat + span * 0.7].join(",");
+  const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}`;
   return (
-    <div className="relative h-72 w-full overflow-hidden bg-[#16324a]">
-      <div className="absolute left-1/2 top-1/2" style={{ transform: `translate(${-ox - 256}px, ${-oy - 256}px)` }}>
-        {tiles.map((t) => (
-          <img
-            key={`${t.x}-${t.y}`}
-            alt=""
-            width={256}
-            height={256}
-            className="absolute"
-            style={{ left: (t.dx + 1) * 256, top: (t.dy + 1) * 256 }}
-            src={`https://tile.openstreetmap.org/${z}/${t.x}/${t.y}.png`}
-            onError={() => setBroken((n) => n + 1)}
-          />
-        ))}
-      </div>
-      {spots.map((s) => {
-        const p = tileXY(s.lng, s.lat, z);
-        const left = 128 + (p.x - center.x) * 256;
-        const top = 144 + (p.y - center.y) * 256;
-        return (
-          <button
-            key={s.id}
-            type="button"
-            onClick={() => onPick?.(s.id)}
-            className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-xl border px-2 py-1 text-xs ${s.id === active ? "border-accent bg-accent text-accent-fg" : "border-line bg-surface text-fg"}`}
-            style={{ left, top }}
-          >
-            {s.name}
-          </button>
-        );
-      })}
-      <span className="absolute bottom-1 right-2 text-[10px] text-[#f6d9cb]">© OpenStreetMap</span>
-      {broken > 6 ? <p className="absolute left-2 top-2 text-xs text-[#f6d9cb]">圖磚載入失敗</p> : null}
+    <div className="grid gap-2">
+      <iframe title={label || theater} src={src} className="h-72 w-full rounded-2xl border border-line bg-[#d5e4ef]" />
+      <p className="text-[10px] text-subtle">© OpenStreetMap contributors</p>
+      {spots.length ? (
+        <div className="flex flex-wrap gap-2">
+          {spots.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => onPick?.(s.id)}
+              className={`rounded-xl border px-2 py-1 text-xs ${s.id === active ? "border-accent bg-accent text-accent-fg" : "border-line bg-surface text-fg"}`}
+            >
+              {s.name}
+            </button>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
