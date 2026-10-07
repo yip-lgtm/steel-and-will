@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getDef, getNode, layerName } from "@/game/catalog";
 import { useGame } from "@/game/store";
 import type { Layer, UnitDef } from "@/game/types";
-import { LiveMap } from "./live-map";
+import { LiveMap, spotsNear } from "./live-map";
 import { Btn } from "./bits";
 
 let picked = "marne";
@@ -242,20 +242,18 @@ export function Hero30() {
         </div>
         <p className={`font-mono text-4xl ${sec < 8 ? "text-accent" : "text-fg"}`}>{sec.toFixed(1)}</p>
       </div>
-      <div className="relative min-h-56 flex-1 overflow-hidden rounded-3xl border border-line bg-[#16324a]">
-        <LiveMap theater={stage.theater} label={stage.name} />
-        {spots.map((s) => (
-          <button
-            key={s.id}
-            type="button"
-            onClick={() => go(s)}
-            className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-xl border px-2 py-1 text-xs ${s.id === spot ? "border-accent bg-accent text-accent-fg" : "border-line bg-surface text-fg"}`}
-            style={{ left: `${s.x}%`, top: `${s.y}%` }}
-          >
-            {s.name}
-          </button>
-        ))}
-        <p className="absolute bottom-2 left-2 text-xs text-subtle">{hero.name} · 命 {hp} · {here?.name ?? "選一個地點"}</p>
+      <div className="relative min-h-64 flex-1 overflow-hidden rounded-3xl border border-line">
+        <LiveMap
+          theater={stage.theater}
+          label={stage.name}
+          active={spot}
+          spots={spotsNear(stage.name, stage.theater, spots)}
+          onPick={(id) => {
+            const next = spots.find((s) => s.id === id);
+            if (next) go(next);
+          }}
+        />
+        <p className="pointer-events-none absolute bottom-2 left-2 text-xs text-[#f6d9cb]">{hero.name} · 命 {hp} · {here?.name ?? "點地圖上的地名"}</p>
       </div>
       <div className="grid max-h-[46%] gap-2 overflow-y-auto py-3">
         <p className="text-sm leading-relaxed text-muted">{log}</p>
