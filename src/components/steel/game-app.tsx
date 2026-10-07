@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Component, useEffect, type ReactNode } from "react";
 import { BookOpen, Map, ScrollText } from "lucide-react";
 import { unlockAudio } from "@/game/sfx";
 import { useGame } from "@/game/store";
@@ -11,6 +11,25 @@ const NAV: { id: Screen; label: string; icon: typeof Map }[] = [
   { id: "history", label: "歷史", icon: ScrollText },
   { id: "gallery", label: "鑑賞", icon: BookOpen },
 ];
+
+class ScreenGuard extends Component<{ children: ReactNode }, { error: string | null }> {
+  state = { error: null as string | null };
+  static getDerivedStateFromError(error: Error) {
+    return { error: error.message || "畫面中斷" };
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="grid gap-3 p-4">
+          <h1 className="font-display text-2xl">這一頁中斷了</h1>
+          <p className="text-sm text-muted">{this.state.error}</p>
+          <button type="button" className="rounded-2xl border border-line px-3 py-3" onClick={() => this.setState({ error: null })}>再試</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export function GameApp() {
   const screen = useGame((s) => s.screen);
@@ -30,6 +49,7 @@ export function GameApp() {
           <Hero30 />
         ) : (
           <>
+            <ScreenGuard key={screen}>
             <div className="phone-scroll">
               {toast ? (
                 <button
@@ -54,6 +74,7 @@ export function GameApp() {
               {screen === "lecture" && <Lecture />}
               {screen === "debrief" && <Debrief />}
             </div>
+            </ScreenGuard>
             {showNav ? (
               <nav className="phone-nav">
                 {NAV.map((item) => {
