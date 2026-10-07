@@ -127,7 +127,7 @@ export function Hero30() {
   const stage = catalogNode
     ? { id: catalogNode.id, y: catalogNode.y, theater: catalogNode.theater, name: catalogNode.name, brief: catalogNode.brief }
     : feedPlay && picked === `feed:${feedPlay.id}`
-      ? { id: feedPlay.id, y: feedPlay.y, theater: yearTheater(feedPlay.y), name: feedPlay.name, brief: feedPlay.brief }
+      ? { id: feedPlay.id, y: feedPlay.y, theater: feedPlay.name.includes("俄國內戰") ? "東歐" : yearTheater(feedPlay.y), name: feedPlay.name, brief: feedPlay.brief }
       : null;
   const ids = [...(catalogNode?.fixedPlayer ?? []), ...(catalogNode?.allies ?? [])].filter((id, i, all) => all.indexOf(id) === i);
   const heroes = (ids.length ? ids : ["ft", "spitfire", "enterprise"]).map((id) => getDef(id)).filter((u): u is UnitDef => !!u);
