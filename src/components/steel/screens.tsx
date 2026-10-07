@@ -707,11 +707,11 @@ export function History() {
         <h1 className="font-display text-3xl">{picked.t}</h1>
         <p className="font-mono text-xs text-subtle">{picked.y}.{String(picked.m).padStart(2, "0")} · {zh.length} 字</p>
         <div className="h-56 overflow-hidden rounded-2xl">
-          <LiveMap theater={d.theater} label={picked.t} />
+          <LiveMap theater={d.theater || "西線"} label={picked.t} />
         </div>
         <Panel>
           <p className="text-xs text-subtle">English</p>
-          <p className="mt-1 text-sm leading-relaxed text-muted">{d.en}</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{"en" in d ? d.en : d.resultEn}</p>
         </Panel>
         {([
           ["國家與地理", d.countries, d.countriesEn],
