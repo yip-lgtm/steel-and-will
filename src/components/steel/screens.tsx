@@ -829,7 +829,7 @@ export function Gallery() {
   useEffect(() => {
     void fetch(`${import.meta.env.BASE_URL}feed.json`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
-      .then((data: { items?: { id: string; kit?: { name: string; designation: string; year: number; nation: NationId; layer: Layer; history: string } }[] } | null) => {
+      .then((data: { items?: { id: string; kit?: { name: string; designation: string; year: number; nation: NationId; layer: Layer; history: string; portrait?: string } }[] } | null) => {
         const rows = (data?.items ?? [])
           .filter((it) => it.kit?.name)
           .map((it) => ({
@@ -850,6 +850,7 @@ export function Gallery() {
             skill: { id: "salvo" as const, name: "考證", blurb: "每小時新增。", energy: 0 },
             voice: "這一件是 MiniMax 按年份補上的。",
             history: it.kit!.history,
+            portrait: it.kit!.portrait,
           }));
         setFeedKits(rows);
       })

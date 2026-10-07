@@ -233,6 +233,7 @@ export const UNITS: UnitDef[] = [
     pen: 32,
     armor: 30,
     history: "一戰英軍產量最高的菱形戰車。康布雷證明集中使用能撕開防線，也證明沒有步兵與補給時缺口會重新合上。",
+    portrait: pub("portraits/mark4.jpg"),
   }),
   unit({
     id: "nieuport",
@@ -263,6 +264,21 @@ export const UNITS: UnitDef[] = [
     rof: 2,
     targets: ["air", "land"],
     history: "旋轉發動機讓它向右急轉很狠，也讓新手容易進入螺旋。戰果與訓練事故是同一架飛機的兩面。",
+  }),
+  unit({
+    id: "harrier",
+    name: "海獵鷹",
+    designation: "Sea Harrier FRS.1",
+    epithet: "跳出來的制空",
+    nation: "uk",
+    layer: "air",
+    kind: "fighter",
+    year: 1980,
+    pen: 70,
+    armor: 18,
+    targets: ["air", "sea"],
+    portrait: pub("portraits/harrier.jpg"),
+    history: "1980 年列裝。福克蘭戰爭裡從無敵級航母短距起飛，爭的是艦隊上空那一小塊，不是阿根廷本土。",
   }),
   unit({
     id: "lion",
@@ -347,6 +363,7 @@ export const UNITS: UnitDef[] = [
     pen: 21,
     armor: 8,
     history: "蘇聯及多國使用的舊式步槍，便宜、耐用、數量驚人。人力是資源，也是消耗。",
+    portrait: pub("portraits/mosin.jpg"),
   }),
   unit({
     id: "garand",
