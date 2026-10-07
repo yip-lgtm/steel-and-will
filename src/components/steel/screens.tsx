@@ -714,18 +714,19 @@ export function History() {
           <p className="mt-1 text-sm leading-relaxed text-muted">{d.en}</p>
         </Panel>
         {([
-          ["國家與地理", d.countries],
-          ["人物", d.people],
-          ["軍武與機械", d.kits],
-          ["戰術", d.tactics],
-          ["數據", d.data],
-          ["成因", d.cause],
-          ["影響", d.impact],
-          ["結果", d.result],
-        ] as const).map(([title, body]) => (
+          ["國家與地理", d.countries, d.countriesEn],
+          ["人物", d.people, d.peopleEn],
+          ["軍武與機械", d.kits, d.kitsEn],
+          ["戰術", d.tactics, d.tacticsEn],
+          ["數據", d.data, d.dataEn],
+          ["成因", d.cause, d.causeEn],
+          ["影響", d.impact, d.impactEn],
+          ["結果", d.result, d.resultEn],
+        ] as const).map(([title, zh, en]) => (
           <Panel key={title}>
             <h2 className="font-medium">{title}</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted">{body}</p>
+            <p className="mt-2 text-sm leading-relaxed text-muted">{zh}</p>
+            <p className="mt-2 text-sm leading-relaxed text-subtle">{en}</p>
           </Panel>
         ))}
         {picked.play ? <Btn kind="primary" onClick={() => openFeed30(picked.play!)}>三十秒</Btn> : null}
