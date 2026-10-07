@@ -19,6 +19,25 @@ export type FeedPlay = {
   year: number;
   layer: Layer;
   history: string;
+  dossier?: {
+    countries: string;
+    countriesEn: string;
+    people: string;
+    peopleEn: string;
+    kits: string;
+    kitsEn: string;
+    tactics: string;
+    tacticsEn: string;
+    data: string;
+    dataEn: string;
+    cause: string;
+    causeEn: string;
+    impact: string;
+    impactEn: string;
+    result: string;
+    resultEn: string;
+    theater?: string;
+  };
 };
 
 export function openHero30(id: string) {

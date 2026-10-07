@@ -29,7 +29,7 @@ import type { Layer, NationId } from "@/game/types";
 import { writeBulletin } from "@/lib/dossier.functions";
 import { openFeed30, openHero30, type FeedPlay } from "./hero30";
 import { cardSpec } from "@/game/cards";
-import { dossierFor } from "@/game/history-dossier";
+import { dossierFor, type Dossier } from "@/game/history-dossier";
 import { LiveMap } from "./live-map";
 import { Btn, Field, Panel } from "./bits";
 
@@ -699,7 +699,7 @@ export function History() {
   ].sort((a, b) => a.y - b.y || a.m - b.m);
   const picked = events.find((e) => `${e.y}-${e.t}` === open);
   if (picked) {
-    const d = dossierFor(picked.t, picked.b, picked.y);
+    const d = picked.play?.dossier ?? dossierFor(picked.t, picked.b, picked.y);
     const zh = [d.countries, d.people, d.kits, d.tactics, d.data, d.cause, d.impact, d.result].join("");
     return (
       <div className="grid gap-3">
@@ -782,7 +782,7 @@ export function History() {
   );
 }
 
-function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: string; theater?: string; brief?: string }; kit?: { name?: string; designation?: string; year?: number; layer?: Layer; history?: string } }[] } | null): FeedPlay[] {
+function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: string; theater?: string; brief?: string }; kit?: { name?: string; designation?: string; year?: number; layer?: Layer; history?: string }; dossier?: Dossier }[] } | null): FeedPlay[] {
   return (data?.items ?? [])
     .filter((it) => it.battle?.name && it.kit?.name)
     .map((it) => ({
@@ -796,6 +796,7 @@ function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: str
       year: it.kit!.year || it.battle!.y || 1914,
       layer: it.kit!.layer || "land",
       history: it.kit!.history || "",
+      dossier: it.dossier,
     }));
 }
 
