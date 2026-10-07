@@ -1,0 +1,32 @@
+name: portrait
+on:
+  schedule:
+    # every 30 minutes, deliberately off :00 and :30 where GitHub delays runs
+    - cron: "13,43 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: portrait
+  cancel-in-progress: false
+jobs:
+  write:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # Writes public/portraits/<id>.jpg and adds
+      #   portrait: pub("portraits/<id>.jpg")
+      # to the matching seed in src/game/catalog.ts. Editing the catalog rather
+      # than the built bundle is what makes the art survive the next build.
+      #
+      # If an image exists with no catalog reference it is wired for free, with
+      # no API call. Exits 0 once every kit has art.
+      - name: Add one 立繪
+        env:
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          COMMIT: "1"
+          PUSH: "1"
+        run: node scripts/portrait-tick.mjs
