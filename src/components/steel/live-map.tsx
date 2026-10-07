@@ -5,8 +5,8 @@ import "maplibre-gl/dist/maplibre-gl.css";
 export type MapSpot = { id: string; name: string; lng: number; lat: number };
 
 const PLACES: Record<string, [number, number, number]> = {
-  伊孫佐: [13.63, 45.98, 8],
-  第七次伊孫佐戰役: [13.63, 45.98, 8],
+  伊孫佐: [13.61, 45.93, 11],
+  第七次伊孫佐戰役: [13.61, 45.93, 11],
   馬恩河: [3.4, 49.0, 7],
   索姆河: [2.7, 50.02, 8],
   康布雷: [3.23, 50.17, 9],
@@ -36,7 +36,17 @@ export function placeOf(name: string, theater: string): [number, number, number]
   return PLACES[name] ?? PLACES[theater] ?? [10, 48, 4];
 }
 
+const NAMED: Record<string, MapSpot[]> = {
+  伊孫佐: [
+    { id: "town", name: "戈里齊亞", lng: 13.622, lat: 45.954 },
+    { id: "shrine", name: "時之補給站", lng: 13.59, lat: 45.93 },
+    { id: "field", name: "米倫", lng: 13.607, lat: 45.895 },
+    { id: "boss", name: "聖米凱萊山", lng: 13.547, lat: 45.886 },
+  ],
+};
+
 export function spotsNear(name: string, theater: string, names: { id: string; name: string }[]): MapSpot[] {
+  if (name.includes("伊孫佐")) return NAMED.伊孫佐;
   const [lng, lat] = placeOf(name, theater);
   return names.map((s, i) => ({
     id: s.id,
