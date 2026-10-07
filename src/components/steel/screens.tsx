@@ -23,6 +23,7 @@ import {
   serviceThisYear,
 } from "@/game/catalog";
 import { deskPage, loadDaily, todayKey, type DailyPage } from "@/game/daily";
+import { CardFace, PORTRAIT_RATIO } from "@/components/steel/card-face";
 import { researchOnce } from "@/game/research";
 import { projectMonth, SAVE_KEY, useGame } from "@/game/store";
 import type { Layer, NationId } from "@/game/types";
@@ -885,11 +886,9 @@ export function Gallery() {
             <span className="text-xs">兵器娘卡</span>
             <span className="font-mono text-xs">{shown.year}</span>
           </div>
-          {shown.portrait ? (
-            <img src={shown.portrait} alt="" className="aspect-[3/4] w-full object-cover" />
-          ) : (
-            <div className="grid aspect-[3/4] place-items-center bg-elevated font-display text-6xl text-accent">{shown.name.slice(0, 1)}</div>
-          )}
+          <div className="w-full" style={{ aspectRatio: PORTRAIT_RATIO }}>
+            <CardFace unit={shown} size="lg" />
+          </div>
           <div className="border-t border-accent px-3 py-3">
             <h2 className="font-display text-3xl">{shown.name}</h2>
             <p className="text-sm text-muted">{shown.designation}</p>
@@ -937,11 +936,7 @@ export function Gallery() {
               className={`overflow-hidden rounded-2xl border text-left ${on ? "border-accent" : "border-line"}`}
             >
               <div className="relative grid h-28 place-items-center bg-elevated">
-                {u.portrait ? (
-                  <img src={u.portrait} alt="" className="h-full w-full object-cover" />
-                ) : (
-                  <span className="font-display text-3xl text-accent">{u.name.slice(0, 1)}</span>
-                )}
+                <CardFace unit={u} />
                 <span className="absolute left-2 top-1 text-[10px] text-[#f6d9cb]">{u.year}</span>
               </div>
               <div className="bg-surface px-2 py-2">
