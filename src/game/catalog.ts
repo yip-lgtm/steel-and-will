@@ -164,6 +164,7 @@ export const UNITS: UnitDef[] = [
     pen: 20,
     armor: 8,
     history: "德軍一戰制式步槍。精準，但班的火力來自機槍，不是排隊齊射。",
+    portrait: pub("portraits/g98.jpg"),
   }),
   unit({
     id: "mg08",
