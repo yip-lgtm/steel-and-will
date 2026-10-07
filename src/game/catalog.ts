@@ -1,4 +1,5 @@
 import type { Difficulty, Kind, Layer, ModuleKey, NationId, SkillDef, SkillId, UnitDef } from "./types";
+import { ARMS } from "./arms";
 
 const pub = (file: string) => `${import.meta.env.BASE_URL}${file}`;
 
@@ -1183,7 +1184,7 @@ export const UNITS: UnitDef[] = [
   }),
 ];
 
-const BY_ID = new Map(UNITS.map((u) => [u.id, u]));
+const BY_ID = new Map([...UNITS, ...ARMS].map((u) => [u.id, u]));
 const extras = new Map<string, UnitDef>();
 
 export function setExtraUnits(list: UnitDef[]) {
@@ -1196,7 +1197,7 @@ export function getDef(id: string): UnitDef | undefined {
 }
 
 export function allCatalog(): UnitDef[] {
-  return UNITS;
+  return [...UNITS, ...ARMS];
 }
 
 export const NATIONS: Record<

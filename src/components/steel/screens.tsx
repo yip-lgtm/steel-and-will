@@ -820,7 +820,7 @@ export function Gallery() {
     <div className="grid gap-4">
       <div>
         <h1 className="font-display text-3xl">軍武鑑賞</h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted">翻看型號、年份和它在體系裡的位置。這裡不列裝。MiniMax 每小時補一件，從一戰輪到現代。</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">翻看型號、年份和它在體系裡的位置。海陸空與槍械都在名冊裡，從一戰列到現役。這裡不列裝。</p>
       </div>
       <div className="flex gap-2 overflow-x-auto">
         {(["all", "land", "air", "sea"] as const).map((l) => (

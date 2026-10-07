@@ -1,0 +1,62 @@
+import type { UnitDef } from "./types";
+
+const salvo = { id: "salvo" as const, name: "校準齊射", blurb: "下一發打要害。", energy: 2 };
+
+function arm(p: Omit<UnitDef, "skill" | "voice" | "speed" | "rof" | "rounds" | "targets" | "epithet"> & { epithet?: string }): UnitDef {
+  return {
+    ...p,
+    epithet: p.epithet ?? "制式",
+    speed: p.kind === "battleship" || p.armor >= 80 ? "slow" : "fast",
+    rof: p.layer === "air" ? 2 : 3,
+    rounds: 12,
+    targets: [p.layer],
+    skill: salvo,
+    voice: "打要害。輪廓不算數。",
+  };
+}
+
+export const ARMS: UnitDef[] = [
+  arm({ id: "m1903", name: "春田 M1903", designation: "M1903 Springfield", nation: "us", layer: "land", kind: "infantry", year: 1903, pen: 22, armor: 6, history: "美國一戰栓動步槍。遠征軍大量使用，班火力仍靠機槍。" }),
+  arm({ id: "m1911", name: "M1911", designation: "Colt M1911", nation: "us", layer: "land", kind: "infantry", year: 1911, pen: 12, armor: 4, history: "0.45 口徑半自動手槍。一戰到越戰都在美軍副武器名冊上。" }),
+  arm({ id: "mp18", name: "MP18", designation: "MP 18", nation: "de", layer: "land", kind: "infantry", year: 1918, pen: 14, armor: 6, history: "一戰末期衝鋒槍。為壕內近戰，不是替代步槍的主武器。" }),
+  arm({ id: "bar", name: "BAR", designation: "M1918 BAR", nation: "us", layer: "land", kind: "infantry", year: 1918, pen: 24, armor: 8, history: "白朗寧自動步槍。一戰來不及大規模使用，二戰成為班用自動武器。" }),
+  arm({ id: "thompson", name: "湯普森", designation: "M1928 Thompson", nation: "us", layer: "land", kind: "infantry", year: 1921, pen: 16, armor: 6, history: "0.45 衝鋒槍。二戰由陸戰隊與傘兵大量使用，重而且貴。" }),
+  arm({ id: "ppsh", name: "波波沙", designation: "PPSh-41", nation: "ussr", layer: "land", kind: "infantry", year: 1941, pen: 16, armor: 6, history: "7.62 毫米衝鋒槍。彈鼓供彈，東線近戰的標誌，不是戰車殺手。" }),
+  arm({ id: "mp40", name: "MP40", designation: "MP 40", nation: "de", layer: "land", kind: "infantry", year: 1940, pen: 15, armor: 6, history: "9 毫米衝鋒槍。配給班長與裝甲兵，德軍主武器仍是毛瑟步槍。" }),
+  arm({ id: "stg44", name: "StG 44", designation: "Sturmgewehr 44", nation: "de", layer: "land", kind: "infantry", year: 1944, pen: 22, armor: 8, history: "中間威力彈的突擊步槍。1944 年才列裝，改變不了當年的油料。" }),
+  arm({ id: "sks", name: "SKS", designation: "SKS", nation: "ussr", layer: "land", kind: "infantry", year: 1945, pen: 22, armor: 6, history: "半自動步槍。大量生產在戰後，隨後被 AK 系取代為主武器。" }),
+  arm({ id: "fal", name: "FAL", designation: "FN FAL", nation: "uk", layer: "land", kind: "infantry", year: 1953, pen: 26, armor: 8, history: "7.62 毫米戰鬥步槍。英國的 L1A1 是它的特許型，冷戰多國制式。" }),
+  arm({ id: "g3", name: "G3", designation: "HK G3", nation: "de", layer: "land", kind: "infantry", year: 1959, pen: 26, armor: 8, history: "滾輪延遲的 7.62 步槍。西德戰後制式，出口多於任何虎式。" }),
+  arm({ id: "m14", name: "M14", designation: "M14", nation: "us", layer: "land", kind: "infantry", year: 1959, pen: 26, armor: 8, history: "想取代加蘭德與 BAR。全自動在步槍手裡難控，很快讓位給 M16。" }),
+  arm({ id: "uzi", name: "烏茲", designation: "Uzi", nation: "il", layer: "land", kind: "infantry", year: 1954, pen: 14, armor: 6, history: "開放槍機衝鋒槍。以色列制式近戰武器，不是主戰步槍。" }),
+  arm({ id: "pkm", name: "PKM", designation: "PKM", nation: "ussr", layer: "land", kind: "infantry", year: 1969, pen: 28, armor: 10, history: "7.62 毫米通用機槍。班組支援火力，靠彈鏈而不是彈匣。" }),
+  arm({ id: "rpg7", name: "RPG-7", designation: "RPG-7", nation: "ussr", layer: "land", kind: "infantry", year: 1961, pen: 48, armor: 4, history: "肩射火箭筒。破甲靠彈頭，不是槍管。後噴要淨空。" }),
+  arm({ id: "ak74", name: "AK-74", designation: "AK-74", nation: "ussr", layer: "land", kind: "infantry", year: 1974, pen: 22, armor: 8, history: "5.45 毫米。用更小口徑換可控性，結構仍是 AK 系。" }),
+  arm({ id: "m4carbine", name: "M4", designation: "M4 carbine", nation: "us", layer: "land", kind: "infantry", year: 1994, pen: 22, armor: 8, history: "M16 的卡賓型。短管方便車內與城鎮，射程換機動。" }),
+  arm({ id: "qbz95", name: "95 式", designation: "QBZ-95", nation: "cn", layer: "land", kind: "infantry", year: 1995, pen: 22, armor: 8, history: "5.8 毫米無托步槍。1997 年以後成為解放軍主要步枪之一。" }),
+  arm({ id: "hk416", name: "HK416", designation: "HK416", nation: "de", layer: "land", kind: "infantry", year: 2004, pen: 22, armor: 8, history: "短行程活塞的 5.56 卡賓槍。多國特種部隊列裝，不是全民兵主力。" }),
+  arm({ id: "whippet", name: "惠比特", designation: "Medium Mark A Whippet", nation: "uk", layer: "land", kind: "tank", year: 1918, pen: 24, armor: 14, history: "一戰中型坦克，為追擊而不是越壕。1918 年亞眠以後才有用武之地。" }),
+  arm({ id: "t26", name: "T-26", designation: "T-26", nation: "ussr", layer: "land", kind: "tank", year: 1931, pen: 32, armor: 15, history: "維克斯 6 噸的蘇聯發展型。西班牙內戰與諾門罕的主力輕坦。" }),
+  arm({ id: "pz3", name: "三號戰車", designation: "Panzer III", nation: "de", layer: "land", kind: "tank", year: 1937, pen: 42, armor: 30, history: "原本的反坦克主力。50 毫米砲在 T-34 面前不夠，後來讓位給四號長砲。" }),
+  arm({ id: "m3lee", name: "李戰車", designation: "M3 Lee", nation: "us", layer: "land", kind: "tank", year: 1941, pen: 40, armor: 51, history: "車體 75 毫米砲加砲塔 37 毫米。過渡車，北非與租借給蘇聯。" }),
+  arm({ id: "cromwell", name: "克倫威爾", designation: "Cromwell", nation: "uk", layer: "land", kind: "tank", year: 1944, pen: 44, armor: 64, history: "流星引擎讓它快。75 毫米砲對虎式仍吃力，諾曼第用來擴張突破口。" }),
+  arm({ id: "is2", name: "IS-2", designation: "IS-2", nation: "ussr", layer: "land", kind: "tank", year: 1944, pen: 78, armor: 100, history: "122 毫米砲。射速慢，專門打重坦與工事，不是數量主力。" }),
+  arm({ id: "centurion", name: "百夫長", designation: "Centurion", nation: "uk", layer: "land", kind: "tank", year: 1945, pen: 70, armor: 76, history: "趕不上二戰歐洲戰場。冷戰成為多國主力，以色列也大量使用。" }),
+  arm({ id: "t54", name: "T-54", designation: "T-54", nation: "ussr", layer: "land", kind: "tank", year: 1947, pen: 72, armor: 100, history: "100 毫米砲。戰後產量極大，出口比任何二戰坦克都廣。" }),
+  arm({ id: "leopard1", name: "豹 1", designation: "Leopard 1", nation: "de", layer: "land", kind: "tank", year: 1965, pen: 80, armor: 70, history: "105 毫米 L7。西德選擇火力與機動，不跟重甲競賽。" }),
+  arm({ id: "merkava", name: "梅卡瓦", designation: "Merkava", nation: "il", layer: "land", kind: "tank", year: 1979, pen: 82, armor: 110, history: "引擎前置，為乘員生存。按以色列地形與徵兵制設計。" }),
+  arm({ id: "type99", name: "99 式", designation: "ZTZ-99", nation: "cn", layer: "land", kind: "tank", year: 1999, pen: 88, armor: 120, history: "125 毫米滑膛。解放軍第三代主力，不是抗戰的九五式。" }),
+  arm({ id: "fokker", name: "福克 E", designation: "Fokker E.III", nation: "de", layer: "air", kind: "fighter", year: 1915, pen: 18, armor: 4, history: "射過螺旋槳的機槍同步。1915 年的優勢很短，協約國很快有對策。" }),
+  arm({ id: "p47", name: "雷電", designation: "P-47 Thunderbolt", nation: "us", layer: "air", kind: "fighter", year: 1942, pen: 36, armor: 16, history: "星型引擎與 8 挺 12.7 毫米。高空護航，也做戰鬥轟炸。" }),
+  arm({ id: "me262", name: "梅塞施密特 262", designation: "Me 262", nation: "de", layer: "air", kind: "fighter", year: 1944, pen: 42, armor: 12, history: "噴射戰鬥機。1944 年才形成部隊，油料與發動機壽命限制出擊。" }),
+  arm({ id: "mig21", name: "米格-21", designation: "MiG-21", nation: "ussr", layer: "air", kind: "fighter", year: 1959, pen: 40, armor: 10, history: "三角翼點防禦機。出口極廣，越戰與中東都出現。" }),
+  arm({ id: "f4", name: "鬼怪", designation: "F-4 Phantom II", nation: "us", layer: "air", kind: "fighter", year: 1960, pen: 48, armor: 14, history: "雙座雙發。早期沒有機砲，越戰後才把機砲加回來。" }),
+  arm({ id: "su27", name: "蘇-27", designation: "Su-27", nation: "ussr", layer: "air", kind: "fighter", year: 1985, pen: 52, armor: 14, history: "遠程制空。為對付 F-15 的航程與雷達，不是對地主力。" }),
+  arm({ id: "f22", name: "猛禽", designation: "F-22 Raptor", nation: "us", layer: "air", kind: "fighter", year: 2005, pen: 60, armor: 16, history: "2005 年形成初始作戰能力。低可探測與超音速巡航，產量少。" }),
+  arm({ id: "dreadnought", name: "無畏", designation: "HMS Dreadnought", nation: "uk", layer: "sea", kind: "battleship", year: 1906, pen: 70, armor: 279, history: "1906 年全重砲戰列艦。把舊戰列艦一次性變成次級，一戰時自己已過時。" }),
+  arm({ id: "fletcher", name: "佛萊契爾", designation: "Fletcher class", nation: "us", layer: "sea", kind: "destroyer", year: 1942, pen: 36, armor: 19, history: "太平洋驅逐艦主力。防空、反潛、魚雷都做，損失也大。" }),
+  arm({ id: "iowa", name: "艾奧瓦", designation: "Iowa class", nation: "us", layer: "sea", kind: "battleship", year: 1943, pen: 90, armor: 307, history: "9 門 406 毫米，能跟上航母。二戰護航，冷戰與 1991 年再服役。" }),
+  arm({ id: "gato", name: "貓鯊級", designation: "Gato class", nation: "us", layer: "sea", kind: "submarine", year: 1941, pen: 54, armor: 8, history: "太平洋潛艦。切斷日本油輪與運輸船，比單艦對決更決定戰爭。" }),
+  arm({ id: "burke", name: "伯克級", designation: "Arleigh Burke", nation: "us", layer: "sea", kind: "destroyer", year: 1991, pen: 64, armor: 20, history: "神盾驅逐艦。防空與巡弋飛彈是主武力，不是艦砲對決。" }),
+  arm({ id: "type052d", name: "052D", designation: "Type 052D", nation: "cn", layer: "sea", kind: "destroyer", year: 2014, pen: 62, armor: 18, history: "有源相控陣驅逐艦。區域防空，垂發是主要彈艙。" }),
+];
