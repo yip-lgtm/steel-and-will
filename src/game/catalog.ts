@@ -120,6 +120,7 @@ export const UNITS: UnitDef[] = [
     pen: 34,
     armor: 22,
     history: "一戰量產輕戰車。可旋轉砲塔成為後來戰車的基本語法，而不是移動碉堡。",
+    portrait: pub("portraits/ft.jpg"),
   }),
   unit({
     id: "a7v",
@@ -134,6 +135,7 @@ export const UNITS: UnitDef[] = [
     pen: 36,
     armor: 36,
     history: "德國一戰少量超重突擊車，乘員擁擠，越壕能力差。數量從來沒有贏過結構。",
+    portrait: pub("portraits/a7v.jpg"),
   }),
   unit({
     id: "lebel",
@@ -148,6 +150,7 @@ export const UNITS: UnitDef[] = [
     armor: 8,
     skill: sk("repair", "掩體整補", "恢復自身機動與兵員。", 2),
     history: "法國一戰步兵的底色。單兵射速打不開鐵絲網，缺口要靠砲兵與鐵路送來的預備隊。",
+    portrait: pub("portraits/lebel.jpg"),
   }),
   unit({
     id: "g98",

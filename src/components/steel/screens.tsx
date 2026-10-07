@@ -934,9 +934,13 @@ export function Gallery() {
               onClick={() => setPick(u.id)}
               className={`overflow-hidden rounded-2xl border text-left ${on ? "border-accent" : "border-line"}`}
             >
-              <div className="relative grid h-24 place-items-center bg-elevated">
-                <span className="font-display text-3xl text-accent">{u.name.slice(0, 1)}</span>
-                <span className="absolute left-2 top-1 text-[10px] text-subtle">{u.year}</span>
+              <div className="relative grid h-28 place-items-center bg-elevated">
+                {u.portrait ? (
+                  <img src={u.portrait} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="font-display text-3xl text-accent">{u.name.slice(0, 1)}</span>
+                )}
+                <span className="absolute left-2 top-1 text-[10px] text-[#f6d9cb]">{u.year}</span>
               </div>
               <div className="bg-surface px-2 py-2">
                 <p className="font-medium leading-tight">{u.name}</p>
