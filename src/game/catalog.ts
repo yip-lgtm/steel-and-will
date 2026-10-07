@@ -193,6 +193,7 @@ export const UNITS: UnitDef[] = [
     armor: 10,
     skill: sk("barrage", "攔阻射", "濺射敵方陸地單位的兵員與彈藥。", 3),
     history: "液壓駐退讓射速遠超舊砲。馬恩河的勝算裡有它，也有把砲運到對的車站的鐵路。",
+    portrait: pub("portraits/soixante.jpg"),
   }),
   unit({
     id: "fk96",
@@ -207,6 +208,7 @@ export const UNITS: UnitDef[] = [
     armor: 8,
     skill: sk("barrage", "直瞄", "打擊近距離戰車的乘員與履帶。", 3),
     history: "德軍一戰野砲。康布雷時專門反戰車砲還沒成體系，戰車多半死在野砲、機槍與故障。",
+    portrait: pub("portraits/fk96.jpg"),
   }),
   unit({
     id: "mark1",
