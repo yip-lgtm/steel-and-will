@@ -884,25 +884,39 @@ export function Gallery() {
           <p className="text-sm text-muted">這個範圍沒有館藏。</p>
         </Panel>
       )}
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid gap-3">
         {units.map((u) => {
           const on = shown?.id === u.id;
+          const specRow = cardSpec(u.id, u.year, u.history);
           return (
             <button
               key={u.id}
               type="button"
               onClick={() => setPick(u.id)}
-              className={`rounded-2xl border p-2 text-left ${on ? "border-accent bg-elevated" : "border-line bg-surface"}`}
+              className={`overflow-hidden rounded-2xl border bg-[#171315] text-left ${on ? "border-accent" : "border-line"}`}
             >
-              {u.portrait ? (
-                <img src={u.portrait} alt="" className="mb-2 aspect-[3/4] w-full rounded-xl object-cover" />
-              ) : (
-                <div className="mb-2 grid h-16 place-items-center rounded-xl bg-elevated font-display text-2xl text-accent">{u.name.slice(0, 1)}</div>
-              )}
-              <p className="font-medium">{u.name}</p>
-              <p className="text-xs text-subtle">
-                {u.year} · {layerName(u.layer)}
-              </p>
+              <div className="relative aspect-[3/4] bg-[#131011]">
+                {u.portrait ? (
+                  <img src={u.portrait} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <div className="grid h-full place-items-center bg-gradient-to-b from-[#3a2a28] to-[#100d0f]">
+                    <span className="font-display text-5xl text-accent">{u.name.slice(0, 1)}</span>
+                    <span className="absolute bottom-2 right-2 rounded bg-accent px-1.5 py-0.5 text-[10px] text-accent-fg">立繪待生成</span>
+                  </div>
+                )}
+                <span className="absolute left-0 right-0 top-0 bg-gradient-to-b from-black/80 to-transparent px-2 py-1 text-xs text-[#f6d9cb]">{u.year} · {layerName(u.layer)}</span>
+              </div>
+              <div className="px-3 py-2">
+                <p className="font-display text-xl">{u.name}</p>
+                <p className="text-sm text-muted">{u.designation}</p>
+                <p className="text-xs text-subtle">{NATIONS[u.nation].name} · {layerName(u.layer)} · {kindName(u.kind)}</p>
+              </div>
+              <div className="grid gap-1 px-3 pb-3 text-sm">
+                <p className="text-xs text-subtle">型號 · {specRow.gun}</p>
+                <p className="text-xs text-subtle">數據 · 火力 {u.pen} · 防護 {u.armor}</p>
+                <p className="text-xs text-subtle">機械 · {specRow.crew}</p>
+                <p className="text-xs text-subtle">戰績 · {specRow.record}</p>
+              </div>
             </button>
           );
         })}
@@ -944,8 +958,8 @@ export function Title({ onStart }: { onStart: () => void }) {
           ))}
         </div>
         <p className="text-xs leading-relaxed text-subtle">{DIFFICULTY_COPY[difficulty]}</p>
-        <Btn testid="btn-start" kind="primary" onClick={() => useGame.getState().setScreen("map")}>
-          三十秒戰役
+        <Btn testid="btn-start" kind="primary" onClick={() => useGame.getState().setScreen("gallery")}>
+          兵器娘卡牌
         </Btn>
         <div className="grid grid-cols-2 gap-2">
           <Btn testid="nav-history" onClick={() => useGame.getState().setScreen("history")}>
