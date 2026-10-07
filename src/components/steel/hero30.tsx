@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getDef, getNode, layerName } from "@/game/catalog";
 import { useGame } from "@/game/store";
 import type { Layer, UnitDef } from "@/game/types";
-import { TheaterMap } from "./maps";
+import { LiveMap } from "./live-map";
 import { Btn } from "./bits";
 
 let picked = "marne";
@@ -214,7 +214,7 @@ export function Hero30() {
         <p className="text-xs text-subtle">{stage.y} · {stage.theater}</p>
         <h1 className="font-display text-3xl">{stage.name}</h1>
         <div className="mt-3 h-36 overflow-hidden rounded-2xl bg-[#16324a]">
-          <TheaterMap theater={stage.theater} />
+          <LiveMap theater={stage.theater} label={stage.name} />
         </div>
         <p className="mt-2 text-sm leading-relaxed text-muted">選一位兵器娘當勇者。三十秒內走完這張真實戰場，打倒對方的制式裝備。</p>
         <div className="mt-4 grid gap-2">
@@ -243,7 +243,7 @@ export function Hero30() {
         <p className={`font-mono text-4xl ${sec < 8 ? "text-accent" : "text-fg"}`}>{sec.toFixed(1)}</p>
       </div>
       <div className="relative min-h-56 flex-1 overflow-hidden rounded-3xl border border-line bg-[#16324a]">
-        <TheaterMap theater={stage.theater} />
+        <LiveMap theater={stage.theater} label={stage.name} />
         {spots.map((s) => (
           <button
             key={s.id}

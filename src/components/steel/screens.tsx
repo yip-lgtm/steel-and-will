@@ -29,7 +29,7 @@ import type { Layer, NationId } from "@/game/types";
 import { writeBulletin } from "@/lib/dossier.functions";
 import { openFeed30, openHero30, type FeedPlay } from "./hero30";
 import { cardSpec } from "@/game/cards";
-import { TheaterMap } from "./maps";
+import { LiveMap } from "./live-map";
 import { Btn, Field, Panel } from "./bits";
 
 function Resources() {
@@ -394,7 +394,10 @@ export function MapScreen() {
   return (
     <div className="grid gap-3">
       <h1 className="font-display text-3xl">三十秒</h1>
-      <p className="text-sm text-muted">歷史頁自動補上的衝突也可以打。選兵器娘，三十秒內走完。</p>
+      <p className="text-sm text-muted">一張圖看戰場。點關卡再走三十秒。</p>
+      <div className="h-64 overflow-hidden rounded-3xl">
+        <LiveMap theater="西線" label="戰役地圖" />
+      </div>
       {feed.map((n) => (
         <Panel key={n.id}>
           <div className="flex items-baseline justify-between gap-2">
@@ -421,9 +424,6 @@ export function MapScreen() {
           <p className="mt-1 text-xs text-subtle">
             {n.theater} · {n.layers.map(layerName).join(" / ")}
           </p>
-          <div className="mt-2 h-28 overflow-hidden rounded-2xl bg-[#16324a]">
-            <TheaterMap theater={n.theater} />
-          </div>
           <p className="mt-2 text-sm leading-relaxed text-muted">{n.brief}</p>
           <div className="mt-3">
             <Btn testid={`node-${n.id}`} kind="primary" onClick={() => openHero30(n.id)}>
@@ -713,8 +713,8 @@ export function History() {
             <div>
               <h2 className="font-display text-xl">{era.name}</h2>
               <p className="mt-1 text-sm leading-relaxed text-muted">{era.lead}</p>
-              <div className="mt-2 h-28 overflow-hidden rounded-2xl bg-[#16324a]">
-                <TheaterMap theater={era.id === "wwi" ? "西線" : era.id === "inter" ? "東歐" : era.id === "ww2" ? "東線" : era.id === "cold" ? "冷戰" : "現代"} />
+              <div className="mt-2 h-40 overflow-hidden rounded-2xl">
+                <LiveMap theater={era.id === "wwi" ? "西線" : era.id === "inter" ? "東歐" : era.id === "ww2" ? "東線" : era.id === "cold" ? "冷戰" : "現代"} label={era.name} />
               </div>
             </div>
             {list.map((e) => (
@@ -934,8 +934,8 @@ export function Title({ onStart }: { onStart: () => void }) {
     <div className="grid min-h-full content-between gap-8">
       <div>
         <p className="text-xs tracking-widest text-accent">Cu · Te</p>
-        <div className="mt-3 h-32 overflow-hidden rounded-3xl bg-[#16324a]">
-          <TheaterMap theater="西線" />
+        <div className="mt-3 h-40 overflow-hidden rounded-3xl">
+          <LiveMap theater="西線" label="西線" />
         </div>
         <h1 className="mt-3 font-display text-4xl leading-none">
           Copper
