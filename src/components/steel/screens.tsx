@@ -892,10 +892,16 @@ export function Gallery() {
               key={u.id}
               type="button"
               onClick={() => setPick(u.id)}
-              className={`rounded-2xl border p-2 text-left ${on ? "border-accent bg-elevated" : "border-line bg-surface"}`}
+              className={`overflow-hidden rounded-2xl border text-left ${on ? "border-accent" : "border-line"}`}
             >
-              <p className="font-medium">{u.name}</p>
-              <p className="text-xs text-subtle">{u.year} · {NATIONS[u.nation]?.name ?? u.nation}</p>
+              <div className="relative grid h-24 place-items-center bg-elevated">
+                <span className="font-display text-3xl text-accent">{u.name.slice(0, 1)}</span>
+                <span className="absolute left-2 top-1 text-[10px] text-subtle">{u.year}</span>
+              </div>
+              <div className="bg-surface px-2 py-2">
+                <p className="font-medium leading-tight">{u.name}</p>
+                <p className="text-xs text-subtle">{NATIONS[u.nation]?.name ?? u.nation} · {layerName(u.layer)}</p>
+              </div>
             </button>
           );
         })}
