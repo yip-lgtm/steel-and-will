@@ -1,19 +1,29 @@
 name: publish
 on:
+  # Fire as soon as the portrait job finishes, so a new 立繪 is live straight
+  # away instead of waiting for a cron slot the scheduler is running hours late.
+  workflow_run:
+    workflows: ["portrait"]
+    types: [completed]
+  # Safety net: if the portrait job's own schedule ever stops, the site still
+  # picks up catalog and asset changes on its own once an hour.
   schedule:
-    # Every 10 minutes. GitHub's scheduler has been running this repo's jobs
-    # three to six hours behind their cron times, so a wider sweep is what
-    # actually decides how stale the live site gets. Most runs no-op: the copy
-    # compares the build against what is already published and exits early.
-    - cron: "*/10 * * * *"
+    - cron: "17 * * * *"
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   publish:
+    # workflow_run also fires when portrait fails, and there is nothing to
+    # publish in that case.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
+      # Check out the exact commit the portrait job produced, not whatever the
+      # default branch happens to point at when this run starts.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || '' }}
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
