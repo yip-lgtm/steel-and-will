@@ -302,6 +302,7 @@ export const UNITS: UnitDef[] = [
     skill: sk("salvo", "藥庫門", "下一發集中打敵艦彈藥。", 3),
     voice: "中彈的是砲塔，沉不沉看艙壁。",
     history: "比蒂的戰巡旗艦。日德蘭 Q 砲塔起火，因為艙門與裝藥紀律沒有演成胡德那種殉爆。戰巡的賭注是速度換裝甲。",
+    portrait: pub("portraits/lion.jpg"),
   }),
   unit({
     id: "derff",
