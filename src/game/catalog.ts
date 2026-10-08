@@ -317,6 +317,7 @@ export const UNITS: UnitDef[] = [
     pen: 98,
     armor: 72,
     history: "德國戰列巡洋艦。日德蘭被重擊仍駛回威廉港。同一天，幾艘英國戰巡死於彈藥庫，不是死於慢慢掉光的船體輪廓。",
+    portrait: pub("portraits/derff.jpg"),
   }),
   unit({
     id: "spad",
