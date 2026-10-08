@@ -362,6 +362,7 @@ export const UNITS: UnitDef[] = [
     pen: 22,
     armor: 8,
     history: "德軍最普遍的手動步槍。精準，射速受限，勝利靠的是與機槍、砲、戰車的編組。",
+    portrait: pub("portraits/kar98.jpg"),
   }),
   unit({
     id: "mosin",
