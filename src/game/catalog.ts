@@ -223,6 +223,7 @@ export const UNITS: UnitDef[] = [
     pen: 28,
     armor: 24,
     history: "1916 年 9 月索姆河首次投入。菱形車體為了越壕。到達敵陣前，機械故障淘汰的數量不比砲火少。",
+    portrait: pub("portraits/mark1.jpg"),
   }),
   unit({
     id: "mark4",
