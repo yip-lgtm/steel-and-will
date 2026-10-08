@@ -333,6 +333,7 @@ export const UNITS: UnitDef[] = [
     rof: 2.1,
     targets: ["air", "land"],
     history: "協約國後期主力戰鬥機之一。空戰開始決定地面砲兵能不能活著觀察。",
+    portrait: pub("portraits/spad.jpg"),
   }),
   unit({
     id: "smle",
