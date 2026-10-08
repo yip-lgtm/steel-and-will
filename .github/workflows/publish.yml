@@ -1,0 +1,69 @@
+name: publish
+on:
+  schedule:
+    # after the :13/:43 portrait runs, so a generated portrait goes out promptly
+    - cron: "23,53 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Build the static site
+        run: npx vite build -c vite.pages.config.ts
+      # The Pages repository is the live site and deploys itself on push, so this
+      # only has to put the build output there. Needs a token scoped to that one
+      # repository -- a full-scope classic token would be far too much to store.
+      - name: Check for the Pages token
+        env:
+          PAGES_TOKEN: ${{ secrets.PAGES_TOKEN }}
+        run: |
+          if [ -z "$PAGES_TOKEN" ]; then
+            echo "::error::PAGES_TOKEN is not set. Create a fine-grained token with"
+            echo "::error::Contents: Read and write on yip-lgtm/yip-lgtm.github.io only,"
+            echo "::error::then add it as a repository secret named PAGES_TOKEN."
+            exit 1
+          fi
+      # Selective on purpose. This repository owns the catalog and the portraits,
+      # and those are the only things copied over.
+      #
+      # feed.json, daily.json and war-index.json stay where they are: the Pages
+      # workflows append a campaign and a dossier to feed.json every hour and the
+      # daily-script rewrites daily.json, so this repository's copies are hours
+      # behind. Copying them would revert that work -- measured at 44KB against
+      # 86KB, with two campaigns and a two-day rollback already on record.
+      - name: Publish the build and the portraits
+        env:
+          PAGES_TOKEN: ${{ secrets.PAGES_TOKEN }}
+          PAGES_REPO: yip-lgtm/yip-lgtm.github.io
+        run: |
+          set -euo pipefail
+          git clone --depth 1 "https://x-access-token:${PAGES_TOKEN}@github.com/${PAGES_REPO}.git" pages
+          cd pages
+
+          # The bundle is re-hashed every build, so clear the old one rather than
+          # leaving an orphan being served from the live site.
+          rm -rf cute/assets
+          cp -r ../dist-pages/assets cute/assets
+
+          # vite names the entry pages.html; GitHub Pages serves index.html.
+          cp ../dist-pages/pages.html cute/index.html
+
+          rm -rf cute/portraits
+          cp -r ../dist-pages/portraits cute/portraits
+
+          git config user.name "yip-lmt"
+          git config user.email "258986088+yip-lmt@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "nothing to publish"
+            exit 0
+          fi
+          git commit -q -m "cute: publish build and portraits from steel-and-will"
+          git push
+          echo "published; GitHub Pages will build it in a minute or two"
