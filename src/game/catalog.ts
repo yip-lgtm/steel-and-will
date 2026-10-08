@@ -238,6 +238,7 @@ export const UNITS: UnitDef[] = [
     pen: 32,
     armor: 30,
     history: "一戰英軍產量最高的菱形戰車。康布雷證明集中使用能撕開防線，也證明沒有步兵與補給時缺口會重新合上。",
+    portrait: pub("portraits/mark4.jpg"),
   }),
   unit({
     id: "nieuport",
