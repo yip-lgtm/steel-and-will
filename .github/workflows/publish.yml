@@ -19,11 +19,15 @@ jobs:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
-      # Check out the exact commit the portrait job produced, not whatever the
-      # default branch happens to point at when this run starts.
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || '' }}
+      # Plain checkout, i.e. the tip of the default branch.
+      #
+      # Pinning ref to github.event.workflow_run.head_sha looks more precise and
+      # is wrong: that is the commit the triggering run STARTED from, not the one
+      # it produced. A portrait run commits and pushes after that SHA, so
+      # checking it out built the tree from before the portrait existed, the copy
+      # matched what was already live, and the job reported success having
+      # published nothing. main is already at the portrait's commit by the time
+      # this workflow starts, so the default is both simpler and correct.
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
