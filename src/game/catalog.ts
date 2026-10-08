@@ -284,6 +284,7 @@ export const UNITS: UnitDef[] = [
     armor: 18,
     targets: ["air", "sea"],
     history: "1980 年列裝。福克蘭戰爭裡從無敵級航母短距起飛，爭的是艦隊上空那一小塊，不是阿根廷本土。",
+    portrait: pub("portraits/harrier.jpg"),
   }),
   unit({
     id: "lion",
