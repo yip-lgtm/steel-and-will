@@ -28,6 +28,7 @@ jobs:
       # matched what was already live, and the job reported success having
       # published nothing. main is already at the portrait's commit by the time
       # this workflow starts, so the default is both simpler and correct.
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
