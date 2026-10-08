@@ -349,6 +349,7 @@ export const UNITS: UnitDef[] = [
     rof: 2.4,
     skill: sk("repair", "戰場搶修", "恢復自身引擎與乘員模組。", 2),
     history: "英聯邦制式步槍，十發彈倉讓班排射速很高。步兵仍要靠砲與戰車打開鐵絲網。",
+    portrait: pub("portraits/smle.jpg"),
   }),
   unit({
     id: "kar98",
