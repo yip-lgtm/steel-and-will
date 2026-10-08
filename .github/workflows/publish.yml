@@ -14,6 +14,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      # actions/checkout only brings the source; the build needs the project's
+      # own dependencies, or vite.config cannot resolve @tailwindcss/vite and
+      # friends. npx would otherwise fetch a stray vite and fail on the plugins.
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
       - name: Build the static site
         run: npx vite build -c vite.pages.config.ts
       # The Pages repository is the live site and deploys itself on push, so this
