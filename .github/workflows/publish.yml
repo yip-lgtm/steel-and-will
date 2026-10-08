@@ -1,8 +1,11 @@
 name: publish
 on:
   schedule:
-    # after the :13/:43 portrait runs, so a generated portrait goes out promptly
-    - cron: "23,53 * * * *"
+    # Every 10 minutes. GitHub's scheduler has been running this repo's jobs
+    # three to six hours behind their cron times, so a wider sweep is what
+    # actually decides how stale the live site gets. Most runs no-op: the copy
+    # compares the build against what is already published and exits early.
+    - cron: "*/10 * * * *"
   workflow_dispatch:
 permissions:
   contents: read
