@@ -254,6 +254,7 @@ export const UNITS: UnitDef[] = [
     rof: 2,
     targets: ["air", "land"],
     history: "1916 年西線常見的協約國戰鬥機。空戰此時開始決定砲兵觀察員能不能活著回報彈著。",
+    portrait: pub("portraits/nieuport.jpg"),
   }),
   unit({
     id: "camel",
