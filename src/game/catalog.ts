@@ -270,6 +270,7 @@ export const UNITS: UnitDef[] = [
     rof: 2,
     targets: ["air", "land"],
     history: "旋轉發動機讓它向右急轉很狠，也讓新手容易進入螺旋。戰果與訓練事故是同一架飛機的兩面。",
+    portrait: pub("portraits/camel.jpg"),
   }),
   unit({
     id: "harrier",
