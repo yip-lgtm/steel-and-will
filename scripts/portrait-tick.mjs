@@ -123,13 +123,57 @@ console.log(`catalog seeds: ${seeds.length}`);
 for (const sd of seeds) sd.hasPortrait = sd.referenced && sd.onDisk;
 const orphans = seeds.filter((sd) => !sd.referenced && sd.onDisk);
 const todo = seeds.filter((s) => !s.hasPortrait && !s.onDisk);
-console.log(`referenced: ${seeds.filter((s) => s.referenced).length} | orphan images: ${orphans.length} | need generation: ${todo.length}`);
-if (!todo.length && !orphans.length) { console.log("every kit already has a 立繪 — nothing to do"); process.exit(0); }
+
+// The feed carries its own kit records and a few of them point at a portrait
+// file. Those ids are not catalog seeds, so the scan above never reaches them:
+// the Sea Harrier entry from the Falklands campaign referenced
+// portraits/harrier.jpg and nothing could ever produce that file, so the card
+// rendered a broken image. Collect them and generate the file directly -- the
+// feed already holds the reference, so there is nothing to write back.
+const feedPath = resolve(ROOT, "public/feed.json");
+const feedWanted = [];
+if (existsSync(feedPath)) {
+  try {
+    const feed = JSON.parse(readFileSync(feedPath, "utf8"));
+    for (const item of feed.items ?? []) {
+      const ref = item?.kit?.portrait;
+      if (!ref) continue;
+      const id = String(ref).replace(/^.*\//, "").replace(/\.jpg$/, "");
+      if (!id || feedWanted.some((x) => x.id === id)) continue;
+      const kit = item.kit ?? {};
+      feedWanted.push({
+        id,
+        name: kit.name || id,
+        designation: kit.designation || kit.name || id,
+        nation: kit.nation || "us",
+        layer: kit.layer || "land",
+        kind: kit.kind || "infantry",
+        year: Number(kit.year) || 0,
+        onDisk: existsSync(resolve(PORTRAITS, `${id}.jpg`)),
+        feedOnly: true,
+      });
+    }
+  } catch (err) {
+    console.warn(`feed.json not readable (${err.message}); feed portraits skipped this run`);
+  }
+}
+const feedTodo = feedWanted.filter((f) => !f.onDisk);
+console.log(
+  `referenced: ${seeds.filter((s) => s.referenced).length} | orphan images: ${orphans.length} | ` +
+    `need generation: ${todo.length} | feed portraits missing: ${feedTodo.length}`,
+);
+if (!todo.length && !orphans.length && !feedTodo.length) { console.log("every kit already has a 立繪 — nothing to do"); process.exit(0); }
 
 const offset = Number(process.env.PORTRAIT_OFFSET || 0);
 // Prefer wiring an orphan: the image already exists, so it costs nothing.
-const repairOnly = orphans.length > 0;
-const card = repairOnly ? orphans[offset % orphans.length] : todo[offset % todo.length];
+// A feed portrait that is referenced but missing shows as a broken image on the
+// live card, so repair those before spending a generation on a new card.
+const repairOnly = feedTodo.length === 0 && orphans.length > 0;
+const card = feedTodo.length
+  ? feedTodo[offset % feedTodo.length]
+  : repairOnly
+    ? orphans[offset % orphans.length]
+    : todo[offset % todo.length];
 console.log(
   repairOnly
     ? `target: ${card.id} (${card.name}) — image already on disk, wiring only, no API call`
@@ -159,29 +203,31 @@ if (!key && !repairOnly) { console.error("MINIMAX_API_KEY missing"); process.exi
 const base = (process.env.MINIMAX_BASE_URL || "https://api.minimax.io/v1").replace(/\/$/, "");
 
 if (!repairOnly) {
-const res = await fetch(`${base}/image_generation`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-  body: JSON.stringify({
-    model: process.env.MINIMAX_IMAGE_MODEL || "image-01",
-    prompt, width: W, height: H, n: 1,
-    response_format: "url",
-    prompt_optimizer: false,
-  }),
-});
-if (!res.ok) { console.error(`image_generation HTTP ${res.status}:`, (await res.text()).slice(0, 600)); process.exit(1); }
-const body = await res.json();
-if (body.base_resp?.status_code && body.base_resp.status_code !== 0) {
-  console.error("api:", body.base_resp.status_code, body.base_resp.status_msg); process.exit(1);
-}
-const url = body.data?.image_urls?.[0] || body.data?.[0]?.url || body.data?.url || null;
-if (!url) { console.error("no image url in response. body:", JSON.stringify(body).slice(0, 1000)); process.exit(1); }
+  const res = await fetch(`${base}/image_generation`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      model: process.env.MINIMAX_IMAGE_MODEL || "image-01",
+      prompt, width: W, height: H, n: 1,
+      response_format: "url",
+      prompt_optimizer: false,
+    }),
+  });
+  if (!res.ok) { console.error(`image_generation HTTP ${res.status}:`, (await res.text()).slice(0, 600)); process.exit(1); }
+  const body = await res.json();
+  if (body.base_resp?.status_code && body.base_resp.status_code !== 0) {
+    console.error("api:", body.base_resp.status_code, body.base_resp.status_msg); process.exit(1);
+  }
+  // The service nests the link under data.image_urls[0]; the published reference
+  // shows data[0].url, which is wrong and cost two paid generations.
+  const url = body.data?.image_urls?.[0] || body.data?.[0]?.url || body.data?.url || null;
+  if (!url) { console.error("no image url in response. body:", JSON.stringify(body).slice(0, 1000)); process.exit(1); }
 
-// the signed url dies in 24h — pull the bytes now
-const img = await fetch(url);
-if (!img.ok) { console.error(`image download HTTP ${img.status}`); process.exit(1); }
-const bytes = Buffer.from(await img.arrayBuffer());
-if (bytes.length < 4096) { console.error(`image too small (${bytes.length}B)`); process.exit(1); }
+  // the signed url dies in 24h — pull the bytes now
+  const img = await fetch(url);
+  if (!img.ok) { console.error(`image download HTTP ${img.status}`); process.exit(1); }
+  const bytes = Buffer.from(await img.arrayBuffer());
+  if (bytes.length < 4096) { console.error(`image too small (${bytes.length}B)`); process.exit(1); }
   mkdirSync(PORTRAITS, { recursive: true });
   writeFileSync(resolve(PORTRAITS, `${card.id}.jpg`), bytes);
   console.log(`saved public/portraits/${card.id}.jpg (${bytes.length} bytes)`);
@@ -190,25 +236,31 @@ if (bytes.length < 4096) { console.error(`image too small (${bytes.length}B)`); 
 }
 
 // ------------------------------------------------- wire into catalog.ts source
-const patched =
-  // the seed already ends with a trailing comma — drop it before adding ours,
-  // otherwise the edit emits `,,` and the file stops parsing
-  src.slice(0, card.insertAt).trimEnd().replace(/,$/, "") +
-  `,\n    portrait: pub("portraits/${card.id}.jpg"),\n  ` +
-  src.slice(card.insertAt);
+// A feed kit is not a catalog seed: the feed already carries its own portrait
+// reference, so only the image file was missing and there is nothing to edit.
+if (card.feedOnly) {
+  console.log(`feed kit ${card.id} (${card.name}) — image only, no catalog edit`);
+} else {
+  const patched =
+    // the seed already ends with a trailing comma — drop it before adding ours,
+    // otherwise the edit emits `,,` and the file stops parsing
+    src.slice(0, card.insertAt).trimEnd().replace(/,$/, "") +
+    `,\n    portrait: pub("portraits/${card.id}.jpg"),\n  ` +
+    src.slice(card.insertAt);
 
-// The duplicate check has to run against the ORIGINAL text: `patched` by
-// definition contains the new reference, so testing `patched` is always true.
-const REF = /portrait:\s*pub\("portraits\/([a-z0-9-]+)\.jpg"\)/g;
-const already = [...src.matchAll(REF)].map((m) => m[1]);
-const found = [...patched.matchAll(REF)].map((m) => m[1]);
-if (already.includes(card.id)) { console.error(`${card.id} already referenced — aborting`); process.exit(1); }
-if (found.length !== already.length + 1) {
-  console.error(`expected ${already.length + 1} portrait refs after edit, found ${found.length} — aborting`);
-  process.exit(1);
+  // The duplicate check has to run against the ORIGINAL text: `patched` by
+  // definition contains the new reference, so testing `patched` is always true.
+  const REF = /portrait:\s*pub\("portraits\/([a-z0-9-]+)\.jpg"\)/g;
+  const already = [...src.matchAll(REF)].map((m) => m[1]);
+  const found = [...patched.matchAll(REF)].map((m) => m[1]);
+  if (already.includes(card.id)) { console.error(`${card.id} already referenced — aborting`); process.exit(1); }
+  if (found.length !== already.length + 1) {
+    console.error(`expected ${already.length + 1} portrait refs after edit, found ${found.length} — aborting`);
+    process.exit(1);
+  }
+  writeFileSync(CATALOG, patched, "utf8");
+  console.log(`catalog: ${card.id} -> portrait: pub("portraits/${card.id}.jpg")`);
 }
-writeFileSync(CATALOG, patched, "utf8");
-console.log(`catalog: ${card.id} -> portrait: pub("portraits/${card.id}.jpg")`);
 
 // -------------------------------------------------------------------- commit
 if (process.env.COMMIT === "1") {
