@@ -48,7 +48,17 @@ jobs:
           PAGES_REPO: yip-lgtm/yip-lgtm.github.io
         run: |
           set -euo pipefail
-          git clone --depth 1 "https://x-access-token:${PAGES_TOKEN}@github.com/${PAGES_REPO}.git" pages
+          # Ask for the token through a helper instead of embedding it in the URL.
+          # A failed clone echoes the remote back, which would print the token into
+          # the run log.
+          cat > "$RUNNER_TEMP/askpass.sh" <<'SH'
+          #!/bin/sh
+          echo "$PAGES_TOKEN"
+          SH
+          chmod +x "$RUNNER_TEMP/askpass.sh"
+          export GIT_ASKPASS="$RUNNER_TEMP/askpass.sh" GIT_TERMINAL_PROMPT=0
+          git config --global --add safe.directory "$RUNNER_TEMP/pages"
+          git clone --depth 1 "https://github.com/${PAGES_REPO}.git" pages
           cd pages
 
           # The bundle is re-hashed every build, so clear the old one rather than
@@ -71,4 +81,5 @@ jobs:
           fi
           git commit -q -m "cute: publish build and portraits from steel-and-will"
           git push
+          rm -f "$RUNNER_TEMP/askpass.sh"
           echo "published; GitHub Pages will build it in a minute or two"
