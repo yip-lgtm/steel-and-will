@@ -389,6 +389,7 @@ export const UNITS: UnitDef[] = [
     armor: 10,
     skill: sk("repair", "搶修組", "恢復引擎與乘員。", 2),
     history: "美軍半自動步槍，八發彈夾。單兵火力上升，仍然喂不飽一場沒有油的裝甲戰。",
+    portrait: pub("portraits/garand.jpg"),
   }),
   unit({
     id: "type38",
