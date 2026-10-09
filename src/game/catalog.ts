@@ -402,6 +402,7 @@ export const UNITS: UnitDef[] = [
     pen: 18,
     armor: 8,
     history: "日軍主力步槍，口徑較小、後坐低。工業規模不足以同時餵飽陸軍與艦隊。",
+    portrait: pub("portraits/type38.jpg"),
   }),
   unit({
     id: "wzor",
