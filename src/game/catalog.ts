@@ -375,6 +375,7 @@ export const UNITS: UnitDef[] = [
     pen: 21,
     armor: 8,
     history: "蘇聯及多國使用的舊式步槍，便宜、耐用、數量驚人。人力是資源，也是消耗。",
+    portrait: pub("portraits/mosin.jpg"),
   }),
   unit({
     id: "garand",
