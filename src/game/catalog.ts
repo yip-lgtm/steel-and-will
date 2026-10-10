@@ -478,6 +478,7 @@ export const UNITS: UnitDef[] = [
     armor: 22,
     rof: 2.7,
     history: "快、薄、砲小。它的懸吊與車體思路會流向 T-34，但 1939–41 的它擋不住後續的穿甲彈。",
+    portrait: pub("portraits/bt7.jpg"),
   }),
   unit({
     id: "t34",
