@@ -415,6 +415,7 @@ export const UNITS: UnitDef[] = [
     pen: 20,
     armor: 8,
     history: "波蘭以毛瑟系統生產的步槍。1939 年的問題不是勇敢，是對手的空地協同與時間。",
+    portrait: pub("portraits/wzor.jpg"),
   }),
   unit({
     id: "pz2",
