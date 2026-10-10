@@ -492,6 +492,7 @@ export const UNITS: UnitDef[] = [
     pen: 108,
     armor: 72,
     history: "85 公厘砲改善對虎式與豹式的劣勢。斜面裝甲與可量產性，比任何單車決鬥更決定東線。",
+    portrait: pub("portraits/t34.jpg"),
   }),
   unit({
     id: "sherman",
