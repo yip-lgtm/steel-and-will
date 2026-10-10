@@ -429,6 +429,7 @@ export const UNITS: UnitDef[] = [
     armor: 24,
     rof: 2.6,
     history: "戰前與戰爭初期的偵察輕戰車，20 公厘砲。閃擊戰前期它仍在一線，因為中型車不夠。",
+    portrait: pub("portraits/pz2.jpg"),
   }),
   unit({
     id: "p4h",
