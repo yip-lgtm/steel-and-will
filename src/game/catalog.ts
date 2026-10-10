@@ -443,6 +443,7 @@ export const UNITS: UnitDef[] = [
     pen: 92,
     armor: 68,
     history: "長管 75 公厘的四號是德軍真正的數量支柱。虎式上新聞，四號在撐戰線。",
+    portrait: pub("portraits/p4h.jpg"),
   }),
   unit({
     id: "tiger",
