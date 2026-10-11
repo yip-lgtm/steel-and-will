@@ -562,6 +562,7 @@ export const UNITS: UnitDef[] = [
     pen: 80,
     armor: 90,
     history: "裝甲厚、車體 75 砲加砲塔 47 砲。單人砲塔讓車長過載——結構問題，不是士氣問題。",
+    portrait: pub("portraits/charb1.jpg"),
   }),
   unit({
     id: "m13",
