@@ -548,6 +548,7 @@ export const UNITS: UnitDef[] = [
     pen: 84,
     armor: 96,
     history: "步兵戰車：厚、慢，用來伴隨徒步步兵。穿深要看砲型，車體本身是移動掩體。",
+    portrait: pub("portraits/churchill.jpg"),
   }),
   unit({
     id: "charb1",
