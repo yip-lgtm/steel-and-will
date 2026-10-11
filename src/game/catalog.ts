@@ -521,6 +521,7 @@ export const UNITS: UnitDef[] = [
     pen: 130,
     armor: 66,
     history: "以色列以謝爾曼車體改裝法制 105 公厘砲，約 1962 年服役。它是二戰底盤的戰後生命，不是 1948 年的裝備。",
+    portrait: pub("portraits/m51.jpg"),
   }),
   unit({
     id: "chiha",
