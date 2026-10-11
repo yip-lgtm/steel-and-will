@@ -507,6 +507,7 @@ export const UNITS: UnitDef[] = [
     armor: 64,
     skill: sk("repair", "戰地保修", "恢復引擎與乘員。美國工業的真正技能是把車修回前線。", 2),
     history: "可靠、好修、數量大，後期 76 公厘與螢火蟲等改裝補穿深。單車對虎常吃虧，師的妥善率則相反。",
+    portrait: pub("portraits/sherman.jpg"),
   }),
   unit({
     id: "m51",
