@@ -534,6 +534,7 @@ export const UNITS: UnitDef[] = [
     pen: 52,
     armor: 32,
     history: "日軍主力中戰車，初期夠用，對上謝爾曼與 T-34 時砲與裝甲都落後。陸軍資源永遠排在艦隊後面。",
+    portrait: pub("portraits/chiha.jpg"),
   }),
   unit({
     id: "churchill",
