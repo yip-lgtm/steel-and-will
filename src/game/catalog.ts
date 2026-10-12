@@ -575,6 +575,7 @@ export const UNITS: UnitDef[] = [
     pen: 58,
     armor: 38,
     history: "義大利北非主力中戰車。柴油引擎適合沙漠，鉚接裝甲與砲力在中後期不足。",
+    portrait: pub("portraits/m13.jpg"),
   }),
   unit({
     id: "l3",
