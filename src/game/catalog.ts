@@ -667,6 +667,7 @@ export const UNITS: UnitDef[] = [
     passive: "flak",
     skill: sk("sweep", "對空制壓", "暈眩敵方飛行單位。", 3),
     history: "高射砲被拉平打戰車，是應急也是砲術。它強，但陣地固定時很怕砲兵與飛機。",
+    portrait: pub("portraits/flak88.jpg"),
   }),
   unit({
     id: "p26",
