@@ -693,6 +693,7 @@ export const UNITS: UnitDef[] = [
     pen: 24,
     armor: 14,
     history: "1930 年代很先進的單翼機，西班牙內戰到蘇德戰爭初期仍在飛。爬升與火力逐步落後Bf 109。",
+    portrait: pub("portraits/i16.jpg"),
   }),
   unit({
     id: "a5m",
