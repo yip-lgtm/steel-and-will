@@ -680,6 +680,7 @@ export const UNITS: UnitDef[] = [
     pen: 18,
     armor: 10,
     history: "美軍第一種全金屬單翼戰鬥機，到二戰爆發已過時。孤立主義時期的家底就是這個速度。",
+    portrait: pub("portraits/p26.jpg"),
   }),
   unit({
     id: "i16",
