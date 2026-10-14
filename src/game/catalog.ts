@@ -601,6 +601,7 @@ export const UNITS: UnitDef[] = [
     pen: 18,
     armor: 12,
     history: "波蘭超輕偵察車，機槍為主。1939 年面對德軍時，偵察不等於防線。",
+    portrait: pub("portraits/tk3.jpg"),
   }),
   unit({
     id: "strvm42",
