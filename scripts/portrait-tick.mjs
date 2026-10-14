@@ -33,12 +33,13 @@ const CATALOG = resolve(ROOT, "src/game/catalog.ts");
 const PORTRAITS = resolve(ROOT, "public/portraits");
 
 // 1152x1728 = 2:3, both divisible by 8, both inside [512,2048].
-// Swapped from image-01 at the owner's request. The published reference for
-// /image_generation still documents image-01 as the only image model, so this
-// default is unverified against the live API -- if the service rejects it the
-// request comes back non-2xx and the response body is logged verbatim below.
-// Set MINIMAX_IMAGE_MODEL=image-01 to go back without touching the code.
-const IMAGE_MODEL = process.env.PORTRAIT_IMAGE_MODEL || "MiniMax-M3.1-Flash-Preview";
+// image-01 is the only image model the /image_generation reference documents,
+// and it is the one that worked: swapping this to MiniMax-M3.1-Flash-Preview
+// stopped every portrait run for two and a half days, 10-12 04:21 onwards.
+// That name is a text model and is used for the briefs and dossiers instead,
+// where it does work -- see MINIMAX_MODEL in the Pages repo.
+// MINIMAX_IMAGE_MODEL still overrides this.
+const IMAGE_MODEL = process.env.PORTRAIT_IMAGE_MODEL || "image-01";
 const W = 1152;
 const H = 1728;
 
