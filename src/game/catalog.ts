@@ -649,6 +649,7 @@ export const UNITS: UnitDef[] = [
     rounds: 8,
     skill: sk("siege", "要塞破壞", "對單一目標的裝甲與主砲造成重創，自身再裝填大幅變慢。", 5),
     history: "600 公厘自走臼砲，用來打塞瓦斯托波爾等要塞。戰略機動幾乎為零，沒有鐵路與工兵就只是一座倉庫。",
+    portrait: pub("portraits/karl.jpg"),
   }),
   unit({
     id: "flak88",
