@@ -588,6 +588,7 @@ export const UNITS: UnitDef[] = [
     pen: 24,
     armor: 14,
     history: "超輕戰車／機槍載具，數量多、防護極弱。它說明「有裝甲」和「有戰車兵種」不是同一件事。",
+    portrait: pub("portraits/l3.jpg"),
   }),
   unit({
     id: "tk3",
