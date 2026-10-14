@@ -614,6 +614,7 @@ export const UNITS: UnitDef[] = [
     pen: 72,
     armor: 58,
     history: "瑞典戰時自製中戰車，短管 75 砲。中立國的戰車是武裝中立的價錢，不是遠征的數量。",
+    portrait: pub("portraits/strvm42.jpg"),
   }),
   unit({
     id: "katyusha",
