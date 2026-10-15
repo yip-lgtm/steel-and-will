@@ -751,6 +751,7 @@ export const UNITS: UnitDef[] = [
     armor: 20,
     skill: sk("sweep", "截擊", "暈眩敵方戰機。", 3),
     history: "橢圓翼與梅林發動機的截擊機。Mk IX 用來對付 Fw 190 的性能壓迫。它贏的是本土防空網，不是單機神話。",
+    portrait: pub("portraits/spitfire.jpg"),
   }),
   unit({
     id: "hurri",
