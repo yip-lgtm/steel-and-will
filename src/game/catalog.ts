@@ -706,6 +706,7 @@ export const UNITS: UnitDef[] = [
     pen: 20,
     armor: 10,
     history: "日本海軍第一種單翼艦載戰鬥機。零戰的前代，輕、靈，幾乎沒有防護。",
+    portrait: pub("portraits/a5m.jpg"),
   }),
   unit({
     id: "zero",
