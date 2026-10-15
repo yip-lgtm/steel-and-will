@@ -723,6 +723,7 @@ export const UNITS: UnitDef[] = [
     skill: sk("sweep", "纏鬥", "暈眩敵方戰機。", 3),
     voice: "轉得過。挨不起。",
     history: "航程與水平機動極佳，無自封油箱、裝甲極薄。中途島之後面對有裝甲與俯衝速度的對手，優勢逆轉。",
+    portrait: pub("portraits/zero.jpg"),
   }),
   unit({
     id: "bf109",
