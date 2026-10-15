@@ -764,6 +764,7 @@ export const UNITS: UnitDef[] = [
     pen: 30,
     armor: 22,
     history: "不列顛之戰擊落數多於噴火。結構較傳統、好修，常被派去打轟炸機。",
+    portrait: pub("portraits/hurri.jpg"),
   }),
   unit({
     id: "f4f",
