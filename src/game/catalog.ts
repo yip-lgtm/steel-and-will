@@ -737,6 +737,7 @@ export const UNITS: UnitDef[] = [
     armor: 20,
     skill: sk("sweep", "躍升", "暈眩敵方戰機。", 3),
     history: "德國產量最大的戰鬥機，爬升與火力強，起落架窄、航程短。不列顛之戰裡航程比勇氣先耗盡。",
+    portrait: pub("portraits/bf109.jpg"),
   }),
   unit({
     id: "spitfire",
