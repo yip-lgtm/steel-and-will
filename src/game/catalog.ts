@@ -833,6 +833,7 @@ export const UNITS: UnitDef[] = [
     pen: 30,
     armor: 24,
     history: "中國戰場與美國志願大隊的標誌機。低空頑強、高空乏力。外援飛機改變戰術，不自動贏得戰爭。",
+    portrait: pub("portraits/p40.jpg"),
   }),
   unit({
     id: "j22",
