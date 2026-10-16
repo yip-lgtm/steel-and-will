@@ -806,6 +806,7 @@ export const UNITS: UnitDef[] = [
     pen: 26,
     armor: 16,
     history: "1940 年法國數量最多的戰鬥機，性能已落後 Bf 109。產量沒有換成制空權。",
+    portrait: pub("portraits/ms406.jpg"),
   }),
   unit({
     id: "macchi",
