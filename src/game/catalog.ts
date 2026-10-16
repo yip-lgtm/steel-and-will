@@ -777,6 +777,7 @@ export const UNITS: UnitDef[] = [
     pen: 32,
     armor: 24,
     history: "美國海軍早期艦戰。機動不及零戰，但有裝甲、自封油箱與俯衝加速，配合薩奇剪仍能交換。",
+    portrait: pub("portraits/f4f.jpg"),
   }),
   unit({
     id: "mustang",
