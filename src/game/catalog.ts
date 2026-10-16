@@ -819,6 +819,7 @@ export const UNITS: UnitDef[] = [
     pen: 30,
     armor: 18,
     history: "義大利最好的量產戰鬥機之一，機動優秀，火力與後期產量不足。",
+    portrait: pub("portraits/macchi.jpg"),
   }),
   unit({
     id: "p40",
