@@ -846,6 +846,7 @@ export const UNITS: UnitDef[] = [
     pen: 28,
     armor: 18,
     history: "瑞典因買不到足夠外國戰鬥機而自製。性能對上早期軸心戰機可一戰，工業背景是中立國的緊急狀態。",
+    portrait: pub("portraits/j22.jpg"),
   }),
   unit({
     id: "stuka",
