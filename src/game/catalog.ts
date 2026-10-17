@@ -878,6 +878,7 @@ export const UNITS: UnitDef[] = [
     targets: ["sea", "land", "air"],
     skill: sk("dive", "俯衝投彈", "打擊艦船或地面單位的彈藥庫。", 3),
     history: "中途島擊沉日本航艦的主力俯衝轟炸機。慢，但在正確的時間窗口裡決定艦隊決戰。",
+    portrait: pub("portraits/sbd.jpg"),
   }),
   unit({
     id: "il2",
