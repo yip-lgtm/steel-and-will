@@ -941,6 +941,7 @@ export const UNITS: UnitDef[] = [
     armor: 78,
     passive: "magazine",
     history: "戰間期最大的戰列巡洋艦，象徵帝國，水平防護不足。1941 年 5 月 24 日丹麥海峽一戰，彈藥庫殉爆，三分鐘沉沒。",
+    portrait: pub("portraits/hood.jpg"),
   }),
   unit({
     id: "bismarck",
