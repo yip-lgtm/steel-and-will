@@ -910,6 +910,7 @@ export const UNITS: UnitDef[] = [
     speed: "slow",
     targets: ["land", "sea", "air"],
     history: "四引擎日間轟炸機。自衛槍塔沒有取代護航。無護航的深遠突襲在 1943 年損失難以維持。",
+    portrait: pub("portraits/b17.jpg"),
   }),
   unit({
     id: "warspite",
