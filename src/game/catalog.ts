@@ -894,6 +894,7 @@ export const UNITS: UnitDef[] = [
     targets: ["land", "air"],
     skill: sk("dive", "對地突擊", "打擊陸地目標彈藥庫。", 3),
     history: "裝甲攻擊機，產量極大。早期後座機槍缺失付出過慘重代價——「飛行坦克」仍會被戰鬥機從上方打死。",
+    portrait: pub("portraits/il2.jpg"),
   }),
   unit({
     id: "b17",
