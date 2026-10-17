@@ -926,6 +926,7 @@ export const UNITS: UnitDef[] = [
     skill: sk("shore", "艦砲支援", "砲擊所有敵方陸地單位的裝甲與引擎。", 3),
     voice: "老船還能把砲抬上灘頭。",
     history: "伊莉莎白女王級。參加日德蘭，二戰再經地中海與諾曼第艦砲支援。長壽來自現代化改裝與還能開的輪機。",
+    portrait: pub("portraits/warspite.jpg"),
   }),
   unit({
     id: "hood",
