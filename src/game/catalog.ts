@@ -862,6 +862,7 @@ export const UNITS: UnitDef[] = [
     targets: ["land", "sea", "air"],
     skill: sk("dive", "俯衝", "打擊地面或海上目標的彈藥庫。", 3),
     history: "精確俯衝轟炸機，沒有制空權時非常脆弱。不列顛之戰證明：沒有戰鬥機保護的俯衝只是排隊損失。",
+    portrait: pub("portraits/stuka.jpg"),
   }),
   unit({
     id: "sbd",
