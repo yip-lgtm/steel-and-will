@@ -1022,6 +1022,7 @@ export const UNITS: UnitDef[] = [
     pen: 96,
     armor: 74,
     history: "法國高速戰列艦，主砲前置。1940 年凱比爾港遭英軍攻擊重創——盟友的砲口有時對準同一邊。",
+    portrait: pub("portraits/dunkerque.jpg"),
   }),
   unit({
     id: "littorio",
