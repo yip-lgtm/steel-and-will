@@ -1009,6 +1009,7 @@ export const UNITS: UnitDef[] = [
     armor: 26,
     skill: sk("sweep", "第一波", "開場壓制敵方艦載機。", 3),
     history: "由戰巡艦體改建的航艦。珍珠港的攻擊核心之一，中途島被無畏式命中，誘爆與火災導致沉沒。",
+    portrait: pub("portraits/akagi.jpg"),
   }),
   unit({
     id: "dunkerque",
