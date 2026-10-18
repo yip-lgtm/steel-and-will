@@ -1095,6 +1095,7 @@ export const UNITS: UnitDef[] = [
     pen: 18,
     armor: 8,
     history: "小口徑高速彈。越戰初期的卡彈來自保養與彈藥，不是口徑本身有魔法。",
+    portrait: pub("portraits/m16.jpg"),
   }),
   unit({
     id: "mig15",
