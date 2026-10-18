@@ -1052,6 +1052,7 @@ export const UNITS: UnitDef[] = [
     skill: sk("smoke", "煙幕", "水面單位短時間難以被選中。", 2),
     voice: "我只報告方位。戰爭自己會找上門。",
     history: "瑞典水上飛機巡洋艦。1941 年 5 月 20 日發現俾斯麥編隊，情報輾轉傳到英國。中立國的眼睛也是戰場的一部分。",
+    portrait: pub("portraits/gotland.jpg"),
   }),
   unit({
     id: "typevii",
