@@ -1082,6 +1082,7 @@ export const UNITS: UnitDef[] = [
     pen: 18,
     armor: 8,
     history: "突擊步槍。寬容的公差讓它在泥裡還能響，步兵火力從栓動步槍轉成中間威力彈。",
+    portrait: pub("portraits/ak47.jpg"),
   }),
   unit({
     id: "m16",
