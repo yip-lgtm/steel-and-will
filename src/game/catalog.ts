@@ -1069,6 +1069,7 @@ export const UNITS: UnitDef[] = [
     passive: "wolf",
     skill: sk("salvo", "狼群齊射", "下一發魚雷傷害提高。兩艘以上潛艇同時在場時開場隱蔽更久。", 2),
     history: "大西洋噸位戰的主力艇。早期缺口是盟軍護航與雷達，後期是超長程飛機、護衛航艦與破解恩尼格瑪後的獵殺。",
+    portrait: pub("portraits/typevii.jpg"),
   }),
   unit({
     id: "ak47",
