@@ -1108,6 +1108,7 @@ export const UNITS: UnitDef[] = [
     pen: 44,
     armor: 22,
     history: "後掠翼噴射戰鬥機。朝鮮空戰裡它壓過直線翼的一代，也被有雷達槍瞄的 F-86 交換。",
+    portrait: pub("portraits/mig15.jpg"),
   }),
   unit({
     id: "f86",
