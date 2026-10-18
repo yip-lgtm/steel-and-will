@@ -1036,6 +1036,7 @@ export const UNITS: UnitDef[] = [
     armor: 98,
     skill: sk("tcross", "橫T", "短時間提高我方海上火力。", 3),
     history: "維托里奧·維內托級。火力與速度出色，燃油短缺與缺乏雷達、夜戰訓練限制了出航。",
+    portrait: pub("portraits/littorio.jpg"),
   }),
   unit({
     id: "gotland",
