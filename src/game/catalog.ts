@@ -1121,6 +1121,7 @@ export const UNITS: UnitDef[] = [
     pen: 42,
     armor: 24,
     history: "北美的後掠翼噴射機。交換比常被講成神話，雷達瞄準和飛行員經驗是可以核對的部分。",
+    portrait: pub("portraits/f86.jpg"),
   }),
   unit({
     id: "b52",
