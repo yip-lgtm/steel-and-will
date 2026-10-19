@@ -1161,6 +1161,7 @@ export const UNITS: UnitDef[] = [
     pen: 132,
     armor: 100,
     history: "大量生產的主戰戰車。自動裝彈機省下一個人，也讓車體內的彈藥成為被擊穿後的風險。",
+    portrait: pub("portraits/t72.jpg"),
   }),
   unit({
     id: "m1",
