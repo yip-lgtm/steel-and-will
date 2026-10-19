@@ -1189,6 +1189,7 @@ export const UNITS: UnitDef[] = [
     armor: 28,
     passive: "wolf",
     history: "彈道飛彈潛艦。價值是不容易被一次打擊清掉。遊戲不模擬核爆。",
+    portrait: pub("portraits/ohio.jpg"),
   }),
   unit({
     id: "f16",
