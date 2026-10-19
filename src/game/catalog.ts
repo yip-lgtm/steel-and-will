@@ -1174,6 +1174,7 @@ export const UNITS: UnitDef[] = [
     pen: 150,
     armor: 120,
     history: "燃氣渦輪與複合裝甲。1991 年的優勢同時是夜視、訓練與後勤，不是單車無敵。",
+    portrait: pub("portraits/m1.jpg"),
   }),
   unit({
     id: "ohio",
