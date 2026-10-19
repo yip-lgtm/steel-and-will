@@ -1148,6 +1148,7 @@ export const UNITS: UnitDef[] = [
     pen: 40,
     armor: 16,
     history: "陸基洲際彈道飛彈，在遊戲裡只代表核威懾存在。不模擬爆炸，也不提供任何製造或運用細節。",
+    portrait: pub("portraits/minuteman.jpg"),
   }),
   unit({
     id: "t72",
