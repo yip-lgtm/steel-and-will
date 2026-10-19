@@ -1134,6 +1134,7 @@ export const UNITS: UnitDef[] = [
     pen: 70,
     armor: 36,
     history: "1955 年服役的戰略轟炸機，靠掛架和航電改裝活到二十一世紀。機體老，任務變了。",
+    portrait: pub("portraits/b52.jpg"),
   }),
   unit({
     id: "minuteman",
