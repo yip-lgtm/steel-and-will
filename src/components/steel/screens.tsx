@@ -829,7 +829,10 @@ function galleryEra(year: number, era: (typeof GALLERY_ERAS)[number]["id"]) {
   if (era === "p11") return year > 0 && year <= 1499;
   if (era === "p16") return year > 1499 && year <= 1799;
   if (era === "p19") return year > 1799 && year <= 1899;
-  if (era === "wwi") return year <= 1918;
+  // The buckets are a partition: every card falls into exactly one. The
+  // first-world-war bucket used to be "everything before 1919", which now
+  // swallows the four pre-1900 buckets, so it starts where they end.
+  if (era === "wwi") return year >= 1900 && year <= 1918;
   if (era === "inter") return year >= 1919 && year <= 1935;
   if (era === "ww2") return year >= 1936 && year <= 1945;
   if (era === "cold") return year >= 1946 && year <= 1990;
