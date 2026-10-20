@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { kitPortrait, loadPortraitIndex } from "./kit-portrait.mjs";
+import { postJsonOrThrow } from "./minimax.mjs";
 
 const key = process.env.MINIMAX_API_KEY;
 const out = process.env.FEED_OUT || "public/feed.json";
@@ -100,26 +101,32 @@ const prompt = `參考中文維基戰爭列表 https://zh.wikipedia.org/wiki/战
 
 const base = (process.env.MINIMAX_BASE_URL || "https://api.minimax.io/v1").replace(/\/$/, "");
 const model = process.env.MINIMAX_MODEL || "MiniMax-M2.7-highspeed";
+// Node's fetch cuts the request off at 300 seconds waiting for the headers.
+// A long generation needs more than that.
+const TIMEOUT_MS = Number(process.env.FEED_TIMEOUT_MS || 900_000);
 // The reason the last answer was rejected. The next attempt is told about it,
 // so one bad answer does not cost the whole hour.
 let lastError = "unknown";
 
 async function once() {
-  const res = await fetch(`${base}/chat/completions`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-    body: JSON.stringify({
-      model,
-      temperature: 0.6,
-      max_completion_tokens: Number(process.env.FEED_MAX_TOKENS || 16000),
-      messages: [
-        { role: "system", content: "只用繁體中文。最後只留一個 JSON 物件。不要長篇推理，直接輸出答案。" },
-        { role: "user", content: prompt + (lastError ? `\n上一份答案被拒絕：${lastError}。請修正後重新輸出。` : "") },
-      ],
-    }),
-  });
-  if (!res.ok) return null;
-  const body = await res.json();
+  let body;
+  try {
+    body = await postJsonOrThrow(
+      `${base}/chat/completions`,
+      {
+        model,
+        temperature: 0.6,
+        max_completion_tokens: Number(process.env.FEED_MAX_TOKENS || 16000),
+        messages: [
+          { role: "system", content: "只用繁體中文。最後只留一個 JSON 物件。不要長篇推理，直接輸出答案。" },
+          { role: "user", content: prompt + (lastError ? `\n上一份答案被拒絕：${lastError}。請修正後重新輸出。` : "") },
+        ],
+      },
+      { headers: { Authorization: `Bearer ${key}` }, timeoutMs: TIMEOUT_MS },
+    );
+  } catch {
+    return null;
+  }
   const raw = body.choices?.[0]?.message?.content ?? "";
   const cleaned = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
   const blob = cleaned.includes("{") ? cleaned : raw;
