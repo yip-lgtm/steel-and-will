@@ -28,8 +28,89 @@ const PLACES: Record<string, [number, number, number]> = {
   現代: [47.6, 29.3, 5],
 };
 
+/**
+ * The theater strings the campaign writer produces, mapped to a point.
+ *
+ * A dossier names its theater ("地中海與北大西洋", "伊拉克-伊朗邊境與波斯灣"),
+ * and the map needs a longitude and a latitude. The old lookup only knew the
+ * handful of theaters the hand-written campaigns used, so every campaign the
+ * writer added fell through to the default and was drawn on the same map in
+ * southern Germany -- a Barbary War frigate fight in the Mediterranean
+ * appeared over Ulm.
+ *
+ * These are the theaters in use across the feed. A campaign whose theater is
+ * not listed still gets a map, but it is centred on the Atlantic rather than
+ * on a German town.
+ */
+const THEATER_PLACES: Record<string, [number, number, number]> = {
+  "戰場": [12, 42, 4],
+  "西線": [2.7, 49.0, 6],
+  "東歐": [21.0, 52.2, 5],
+  "東線": [32.0, 54.2, 5],
+  "北歐與東歐交界": [25.0, 59.0, 5],
+  "巴爾幹": [20.0, 42.0, 6],
+  "芬蘭本土": [26.0, 62.0, 6],
+  "卡累利阿地峽與拉多加湖畔": [33.0, 61.0, 6],
+  "俄羅斯全境": [60.0, 56.0, 4],
+  "波蘭": [19.5, 52.2, 6],
+  "愛爾蘭": [-8.0, 53.3, 6],
+  "愛爾蘭都柏林": [-6.26, 53.35, 9],
+  "伊孫佐前線": [13.6, 45.9, 10],
+  "伊松佐河前線": [13.6, 45.9, 10],
+  "西班牙": [-3.7, 40.4, 6],
+  "伊比利亞半島葡萄牙與西班牙邊境": [-8.2, 40.2, 7],
+  "安納托利亞": [33.0, 39.0, 6],
+  "中國": [116.3, 39.8, 5],
+  "中國戰場": [114.0, 30.0, 5],
+  "華南至華北": [113.0, 30.0, 6],
+  "上海": [121.5, 31.2, 8],
+  "中原地区（中國華北、華中）": [114.0, 35.0, 7],
+  "中東戰線": [38.0, 31.0, 5],
+  "巴勒斯坦與以色列": [34.8, 31.5, 8],
+  "西奈半島與戈蘭高地": [34.3, 31.0, 8],
+  "黎巴嫩": [35.8, 33.9, 8],
+  "黎巴嫩南部與黎以邊境地帶": [35.5, 33.2, 9],
+  "伊拉克": [43.5, 33.0, 6],
+  "伊拉克-伊朗邊境與波斯灣": [47.5, 30.0, 6],
+  "波斯灣": [51.0, 26.5, 6],
+  "埃及蘇伊士運河區": [32.5, 30.0, 8],
+  "阿爾及利亞山區、沿海平原與撒哈拉": [3.0, 28.0, 5],
+  "格蘭查科荒漠與沼澤地帶": [23.0, 12.0, 5],
+  "蘇丹南部與中部": [30.0, 12.0, 5],
+  "東非高原、厄立特里亞與意屬索馬里": [46.0, 7.0, 4],
+  "剛果共和國及其周邊": [23.0, -3.0, 5],
+  "安哥拉": [16.0, -12.0, 5],
+  "安哥拉（葡萄牙殖民時期）": [16.0, -12.0, 5],
+  "納戈爾諾-卡拉巴赫戰爭地帶": [46.5, 39.5, 7],
+  "車臣共和國（高加索）": [45.5, 43.3, 7],
+  "巴德梅邊境地區": [45.0, 36.0, 7],
+  "阿富汗山區": [66.0, 34.0, 6],
+  "阿富汗戰場": [66.0, 34.0, 6],
+  "喜馬拉雅邊境": [79.0, 32.0, 6],
+  "克什米爾與旁遮普前線": [74.5, 34.0, 7],
+  "印度西部與德幹高原": [77.0, 20.0, 5],
+  "孟加拉地區": [90.0, 24.0, 6],
+  "南亞": [78.0, 22.0, 4],
+  "東南亞": [103.0, 12.0, 4],
+  "奈及利亞東部": [12.5, 8.0, 6],
+  "中國與越南邊境": [106.0, 22.0, 6],
+  "朝鮮半島": [127.0, 38.0, 6],
+  "黑龍江省珍寶島地區": [134.0, 48.0, 8],
+  "南大西洋": [-15.0, -25.0, 3],
+  "地中海與北大西洋": [15.0, 35.0, 4],
+  "歐洲戰場": [10.0, 50.0, 4],
+  "歐洲與太平洋戰場": [30.0, 35.0, 3],
+  "太平洋": [-177.4, 28.2, 4],
+  "冷戰": [127.0, 37.6, 5],
+  "現代": [47.6, 29.3, 5],
+  "戰後": [34.8, 31.5, 6],
+};
+
+/** Where a map lands when nothing better is known: the Atlantic, not Ulm. */
+const FALLBACK: [number, number, number] = [-25, 20, 3];
+
 export function placeOf(name: string, theater: string): [number, number, number] {
-  return PLACES[name] ?? PLACES[theater] ?? [10, 48, 4];
+  return PLACES[name] ?? THEATER_PLACES[theater] ?? PLACES[theater] ?? FALLBACK;
 }
 
 const NAMED: Record<string, MapSpot[]> = {
@@ -63,17 +144,22 @@ function tileXY(lng: number, lat: number, zoom: number) {
 export function LiveMap({
   theater,
   label,
+  place,
   spots = [],
   active,
   onPick,
 }: {
   theater: string;
   label?: string;
+  /** Exact position for this campaign, when the dossier knows one. */
+  place?: { lng?: number; lat?: number; zoom?: number } | null;
   spots?: MapSpot[];
   active?: string | null;
   onPick?: (id: string) => void;
 }) {
-  const [lng, lat] = placeOf(label || "", theater);
+  const fallback = placeOf(label || "", theater);
+  const lng = typeof place?.lng === "number" ? place.lng : fallback[0];
+  const lat = typeof place?.lat === "number" ? place.lat : fallback[1];
   const span = label?.includes("伊孫佐") ? 0.12 : 0.8;
   const bbox = [lng - span, lat - span * 0.7, lng + span, lat + span * 0.7].join(",");
   const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}`;

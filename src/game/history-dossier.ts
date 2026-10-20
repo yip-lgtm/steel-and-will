@@ -1,6 +1,6 @@
 export type Dossier = {
-  theater: string;
-  en: string;
+  theater?: string;
+  en?: string;
   countries: string;
   countriesEn: string;
   people: string;
@@ -17,6 +17,16 @@ export type Dossier = {
   impactEn: string;
   result: string;
   resultEn: string;
+  /**
+   * A dossier fetched from `dossiers/` is the feed entry it was split from
+   * with the eight sections laid over it, so it carries the campaign's own
+   * battle and kit -- including the theater the map needs.
+   */
+  battle?: { y?: number; m?: number; name?: string; theater?: string; brief?: string };
+  kit?: { name?: string; designation?: string; year?: number; layer?: string; history?: string };
+  /** The point on the map the campaign belongs to. */
+  place?: { lng?: number; lat?: number; zoom?: number } | null;
+  id?: string;
 };
 
 type Fact = {

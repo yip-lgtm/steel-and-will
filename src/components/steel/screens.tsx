@@ -674,7 +674,11 @@ export function Debrief() {
 }
 
 const ERAS: { id: string; name: string; from: number; to: number; lead: string }[] = [
-  { id: "wwi", name: "一九一四至一九一八", from: 0, to: 1918, lead: "動員表比將軍準時。機槍、鐵絲網、鐵路與彈藥庫，比白刃先決定。" },
+  // The feed now reaches back before 1914, so the first era cannot start at
+  // zero: a campaign from 1801 filed under "一九一四至一九一八" is simply
+  // mislabelled. Anything older gets its own heading.
+  { id: "ancient", name: "上古至一九一三", from: -99999, to: 1913, lead: "火繩、長弓與攻城器械。勝負先由糧道和攻城器決定。" },
+  { id: "wwi", name: "一九一四至一九一八", from: 1914, to: 1918, lead: "動員表比將軍準時。機槍、鐵絲網、鐵路與彈藥庫，比白刃先決定。" },
   { id: "inter", name: "戰間期", from: 1919, to: 1935, lead: "停火沒有停掉產能。條約把石油、橡膠、鋼與船臺寫成下一場戰爭的理由。" },
   { id: "ww2", name: "一九三六至一九四五", from: 1936, to: 1945, lead: "油、護航距離與產量開始比單件名器重要。要害仍是彈藥、動力與乘員。" },
   { id: "cold", name: "冷戰", from: 1946, to: 1990, lead: "核威懾讓大國不敢直接對撞。局部戰爭仍用步槍、戰車與噴射機。這裡不計算爆心。" },
@@ -720,7 +724,7 @@ export function History() {
       .finally(() => setAsking((prev) => ({ ...prev, [pickedId]: false })));
   }, [pickedId, pickedUrl, dossiers, asking]);
   if (picked) {
-    const d =
+    const d: Dossier =
       (picked.play ? dossiers[picked.play.id] : undefined) ??
       picked.play?.dossier ??
       dossierFor(picked.t, picked.b, picked.y);
@@ -731,7 +735,11 @@ export function History() {
         <h1 className="font-display text-3xl">{picked.t}</h1>
         <p className="font-mono text-xs text-subtle">{picked.y}.{String(picked.m).padStart(2, "0")} · {zh.length} 字</p>
         <div className="h-56 overflow-hidden rounded-2xl">
-          <LiveMap theater={d.theater || "西線"} label={picked.t} />
+          <LiveMap
+            theater={d.theater || d.battle?.theater || "西線"}
+            place={d.place}
+            label={picked.t}
+          />
         </div>
         <Panel>
           <p className="text-xs text-subtle">English</p>
@@ -762,9 +770,9 @@ export function History() {
       <div>
         <h1 className="font-display text-3xl">歷史</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          從馬恩河排到鏈路。只寫部隊與裝備，不寫平民。每小時從
+          從上古排到鏈路。只寫部隊與裝備，不寫平民。每小時從
           <a className="text-accent" href="https://zh.wikipedia.org/wiki/%E6%88%98%E4%BA%89%E5%88%97%E8%A1%A8">中文維基戰爭列表</a>
-          補一場尚未寫過的衝突，由 MiniMax 寫裝備。
+          及其按世紀分出的各頁，補一場尚未寫過的衝突，由 MiniMax 寫裝備。
         </p>
       </div>
       {ERAS.map((era) => {
@@ -776,7 +784,22 @@ export function History() {
               <h2 className="font-display text-xl">{era.name}</h2>
               <p className="mt-1 text-sm leading-relaxed text-muted">{era.lead}</p>
               <div className="mt-2 h-40 overflow-hidden rounded-2xl">
-                <LiveMap theater={era.id === "wwi" ? "西線" : era.id === "inter" ? "東歐" : era.id === "ww2" ? "東線" : era.id === "cold" ? "冷戰" : "現代"} label={era.name} />
+                <LiveMap
+                  theater={
+                    era.id === "wwi"
+                      ? "西線"
+                      : era.id === "inter"
+                        ? "東歐"
+                        : era.id === "ww2"
+                          ? "東線"
+                          : era.id === "cold"
+                            ? "冷戰"
+                            : era.id === "ancient"
+                              ? "地中海與北大西洋"
+                              : "現代"
+                  }
+                  label={era.name}
+                />
               </div>
             </div>
             {list.map((e) => (
