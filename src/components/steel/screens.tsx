@@ -736,8 +736,8 @@ export function History() {
         <p className="font-mono text-xs text-subtle">{picked.y}.{String(picked.m).padStart(2, "0")} · {zh.length} 字</p>
         <div className="h-56 overflow-hidden rounded-2xl">
           <LiveMap
-            theater={d.theater || d.battle?.theater || "西線"}
-            place={d.place}
+            theater={d.theater || d.battle?.theater || picked.play?.theater || "西線"}
+            place={d.place ?? picked.play?.place}
             label={picked.t}
           />
         </div>
@@ -829,7 +829,7 @@ export function History() {
   );
 }
 
-function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: string; theater?: string; brief?: string }; kit?: { name?: string; designation?: string; year?: number; layer?: Layer; history?: string }; dossier?: Dossier; dossierUrl?: string }[] } | null): FeedPlay[] {
+function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: string; theater?: string; brief?: string }; kit?: { name?: string; designation?: string; year?: number; layer?: Layer; history?: string }; place?: { lng?: number; lat?: number } | null; dossier?: Dossier; dossierUrl?: string }[] } | null): FeedPlay[] {
   return (data?.items ?? [])
     .filter((it) => it.battle?.name && it.kit?.name)
     .map((it) => ({
@@ -843,6 +843,7 @@ function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: str
       year: it.kit!.year || it.battle!.y || 1914,
       layer: it.kit!.layer || "land",
       history: it.kit!.history || "",
+      place: it.place ?? null,
       dossierUrl: it.dossierUrl,
       dossier: it.dossier,
     }));

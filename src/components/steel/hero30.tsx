@@ -19,6 +19,8 @@ export type FeedPlay = {
   year: number;
   layer: Layer;
   history: string;
+  /** Where the campaign happened, in map coordinates. */
+  place?: { lng?: number; lat?: number } | null;
   /** The dossier is a file of its own; the feed only points at it. */
   dossierUrl?: string;
   dossier?: {
