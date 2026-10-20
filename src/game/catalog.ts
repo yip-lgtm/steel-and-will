@@ -1202,6 +1202,7 @@ export const UNITS: UnitDef[] = [
     pen: 68,
     armor: 28,
     history: "輕型多用途戰鬥機。電傳飛控讓它機動，掛載和數據鏈讓它留到四代半。",
+    portrait: pub("portraits/f16.jpg"),
   }),
   unit({
     id: "himars",
