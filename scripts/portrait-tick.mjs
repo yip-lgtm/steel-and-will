@@ -552,7 +552,16 @@ if (!repairOnly) {
       prompt_optimizer: false,
     }),
   });
-  if (!res.ok) { console.error(`image_generation HTTP ${res.status}:`, (await res.text()).slice(0, 600)); process.exit(1); }
+  if (!res.ok) {
+    const body = (await res.text()).slice(0, 600);
+    console.error(`image_generation HTTP ${res.status}:`, body);
+    // The plan's usage limit is a hard cap, not a burst limit. The next run
+    // picks the same card up; it needs credits, not a retry.
+    if (res.status === 429 || /Token Plan usage limit/i.test(body)) {
+      console.error("The MiniMax plan's usage limit is reached. Nothing is lost; the next run resumes.");
+    }
+    process.exit(1);
+  }
   const body = await res.json();
   if (body.base_resp?.status_code && body.base_resp.status_code !== 0) {
     console.error("api:", body.base_resp.status_code, body.base_resp.status_msg); process.exit(1);
