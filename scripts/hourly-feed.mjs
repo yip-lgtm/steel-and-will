@@ -100,7 +100,7 @@ const prompt = `參考中文維基戰爭列表 https://zh.wikipedia.org/wiki/战
 不要輸出欄位說明本身。`;
 
 const base = (process.env.MINIMAX_BASE_URL || "https://api.minimax.io/v1").replace(/\/$/, "");
-const model = process.env.MINIMAX_MODEL || "MiniMax-M2.7-highspeed";
+const model = process.env.MINIMAX_MODEL || "MiniMax-M3.1-Flash-Preview";
 // Node's fetch cuts the request off at 300 seconds waiting for the headers.
 // A long generation needs more than that.
 const TIMEOUT_MS = Number(process.env.FEED_TIMEOUT_MS || 900_000);

@@ -21,7 +21,7 @@ countries, countriesEn, people, peopleEn, kits, kitsEn, tactics, tacticsEn, data
 中文每段至少 80 字，合共超過 500 字。英文每段是對應翻譯，不要另寫一場戰爭。`;
 
 const base = (process.env.MINIMAX_BASE_URL || "https://api.minimax.io/v1").replace(/\/$/, "");
-const model = process.env.MINIMAX_MODEL || "MiniMax-M2.7-highspeed";
+const model = process.env.MINIMAX_MODEL || "MiniMax-M3.1-Flash-Preview";
 const res = await fetch(`${base}/chat/completions`, {
   method: "POST",
   headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
