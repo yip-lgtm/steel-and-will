@@ -1215,6 +1215,7 @@ export const UNITS: UnitDef[] = [
     pen: 90,
     armor: 14,
     history: "輪式多管火箭。它吃的是座標、彈藥和會不會被反砲兵找到，不是口號。",
+    portrait: pub("portraits/himars.jpg"),
   }),
   unit({
     id: "mq9",
