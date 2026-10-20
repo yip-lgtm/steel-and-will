@@ -114,6 +114,7 @@ const THEATER_PLACES: Record<string, [number, number, number]> = {
   "納戈爾諾-卡拉巴赫": [46.5, 39.4, 7],
   "烏克蘭全境": [33.0, 48.5, 5],
   "加薩走廊與以色列南部": [34.5, 31.4, 7],
+  "黃河沿岸澶州（今河南濮陽一帶）": [115.03, 35.76, 8],
 };
 
 /** Where a map lands when nothing better is known: the Atlantic, not Ulm. */
