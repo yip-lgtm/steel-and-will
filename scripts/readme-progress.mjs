@@ -4,7 +4,7 @@ const index = JSON.parse(readFileSync(process.argv[2] || "public/war-index.json"
 const feed = JSON.parse(readFileSync(process.argv[3] || "public/feed.json", "utf8"));
 const done = new Set((feed.items ?? []).map((it) => it.battle?.name).filter(Boolean));
 const doss = new Set((feed.items ?? []).filter((it) => it.dossier?.countries).map((it) => it.battle?.name));
-const labels = { wwi: "一戰", inter: "戰間", ww2a: "二戰前期", ww2b: "二戰後期", cold: "冷戰", now: "1991 以後" };
+const labels = { p01: "公元前", p11: "1000-1499", p16: "1500-1799", p19: "1800-1899", wwi: "一戰", inter: "戰間", ww2a: "二戰前期", ww2b: "二戰後期", cold: "冷戰", now: "1991 以後" };
 const rows = Object.keys(labels).map((id) => {
   const wars = index.wars.filter((w) => w.span === id);
   const fed = wars.filter((w) => done.has(w.name)).length;

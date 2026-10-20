@@ -801,8 +801,19 @@ function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: str
     }));
 }
 
+/** Nations that only ever appear on a campaign card. */
+const FEED_NATIONS: Record<string, string> = { gr: "希臘", tr: "鄂圖曼" };
+
+function nationName(id: string): string {
+  return NATIONS[id as NationId]?.name ?? FEED_NATIONS[id] ?? id;
+}
+
 const GALLERY_ERAS = [
   { id: "all", name: "全部" },
+  { id: "p01", name: "公元前" },
+  { id: "p11", name: "1000–1499" },
+  { id: "p16", name: "1500–1799" },
+  { id: "p19", name: "1800–1899" },
   { id: "wwi", name: "一戰" },
   { id: "inter", name: "戰間" },
   { id: "ww2", name: "二戰" },
@@ -812,6 +823,12 @@ const GALLERY_ERAS = [
 
 function galleryEra(year: number, era: (typeof GALLERY_ERAS)[number]["id"]) {
   if (era === "all") return true;
+  // The pre-1900 spans. A BC service date is a negative year, which is how
+  // the catalog stores it and how the war index stores the battle.
+  if (era === "p01") return year <= 0;
+  if (era === "p11") return year > 0 && year <= 1499;
+  if (era === "p16") return year > 1499 && year <= 1799;
+  if (era === "p19") return year > 1799 && year <= 1899;
   if (era === "wwi") return year <= 1918;
   if (era === "inter") return year >= 1919 && year <= 1935;
   if (era === "ww2") return year >= 1936 && year <= 1945;
@@ -837,7 +854,10 @@ export function Gallery() {
             name: it.kit!.name,
             designation: it.kit!.designation,
             epithet: "每小時考證",
-            nation: (["de", "us", "ussr", "uk", "jp", "cn", "fr", "it", "se", "il"].includes(it.kit!.nation) ? it.kit!.nation : "us") as NationId,
+            // "gr" and "tr" are campaign-only nations: the game roster has no
+            // campaign for them, but a campaign card still needs to say which
+            // country the weapon belongs to.
+            nation: (["de", "us", "ussr", "uk", "jp", "cn", "fr", "it", "se", "il", "gr", "tr"].includes(it.kit!.nation) ? it.kit!.nation : "us") as NationId,
             layer: it.kit!.layer,
             kind: "infantry" as const,
             year: it.kit!.year,
@@ -893,7 +913,7 @@ export function Gallery() {
           <div className="border-t border-accent px-3 py-3">
             <h2 className="font-display text-3xl">{shown.name}</h2>
             <p className="text-sm text-muted">{shown.designation}</p>
-            <p className="mt-1 text-xs text-subtle">{NATIONS[shown.nation]?.name ?? shown.nation} · {layerName(shown.layer)} · {kindName(shown.kind)}</p>
+            <p className="mt-1 text-xs text-subtle">{nationName(shown.nation)} · {layerName(shown.layer)} · {kindName(shown.kind)}</p>
           </div>
           <div className="grid gap-3 px-3 pb-4">
             <div>
@@ -942,7 +962,7 @@ export function Gallery() {
               </div>
               <div className="bg-surface px-2 py-2">
                 <p className="font-medium leading-tight">{u.name}</p>
-                <p className="text-xs text-subtle">{NATIONS[u.nation]?.name ?? u.nation} · {layerName(u.layer)}</p>
+                <p className="text-xs text-subtle">{nationName(u.nation)} · {layerName(u.layer)}</p>
               </div>
             </button>
           );
@@ -1025,7 +1045,12 @@ export function Story() {
 }
 
 export function NationPick() {
-  const ids = Object.keys(NATIONS) as NationId[];
+  // A country in NATIONS with no campaign has nothing to play, so it is not
+  // offered here. Greece and the Ottomans are in the roster as card art
+  // only, and become playable the day they get a campaign.
+  const ids = (Object.keys(NATIONS) as NationId[]).filter((id) =>
+    FOCUSES.some((f) => f.nation === id),
+  );
   return (
     <div className="grid gap-4">
       <div>

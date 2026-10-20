@@ -1228,6 +1228,7 @@ export const UNITS: UnitDef[] = [
     pen: 52,
     armor: 10,
     history: "遠端駕駛的察打無人機。依賴衛星鏈路和起降場。鏈路斷了，它就不是武器。",
+    portrait: pub("portraits/mq9.jpg"),
   }),
   unit({
     id: "f35",
@@ -1240,6 +1241,7 @@ export const UNITS: UnitDef[] = [
     pen: 74,
     armor: 34,
     history: "低可探測性與感測器融合。它貴，維修工時也算進戰鬥力。",
+    portrait: pub("portraits/f35.jpg"),
   }),
   unit({
     id: "j20",
@@ -1252,6 +1254,7 @@ export const UNITS: UnitDef[] = [
     pen: 72,
     armor: 34,
     history: "中國列裝的低可探測戰鬥機。紙面外形不能代替掛載、數量、飛手和地面體系。",
+    portrait: pub("portraits/j20.jpg"),
   }),
   unit({
     id: "xq58",
@@ -1265,6 +1268,7 @@ export const UNITS: UnitDef[] = [
     pen: 36,
     armor: 12,
     history: "2019 年已試飛的僚機驗證機。軟體可以幫忙看畫面。它不是會自己決定開火的完成體。",
+    portrait: pub("portraits/xq58.jpg"),
   }),
 ];
 
@@ -1338,6 +1342,21 @@ export const NATIONS: Record<
     trait: "二戰剩餘物資",
     blurb: "1948 不是二戰章節。裝備多半是剩餘謝爾曼與活塞機，M51 是更晚的改裝。",
   },
+  gr: {
+    name: "希臘",
+    trait: "方陣與長矛",
+    blurb: "重步兵的方陣靠地形與士氣，不是靠火器。火器改變的是波斯人和羅馬人的處境，不是希臘人的。",
+  },
+  tr: {
+    name: "鄂圖曼",
+    trait: "砲與禁軍",
+    blurb: "巨砲改變了攻城戰，也改變了帝國的財政。蘇丹的砲台和禁軍是一份預算的兩半。",
+  },
+  es: {
+    name: "西班牙",
+    trait: "方陣與火繩槍",
+    blurb: "銀子買來的無敵兵團，在美洲把它換成了征服，在歐洲把它換成了連年的耗損。",
+  },
 };
 
 export function nationTitle(id: NationId, modifiers: string[]): string {
@@ -1374,6 +1393,9 @@ export const STARTS: Record<NationId, StartPack> = {
   it: { civ: 4, mil: 3, steel: 11, oil: 4, rubber: 2, alu: 4, mp: 24, pp: 14, supply: 50, eq: 11, units: ["l3", "littorio", "macchi"], y: 1936, m: 1, modifiers: [] },
   se: { civ: 4, mil: 2, steel: 20, oil: 4, rubber: 2, alu: 4, mp: 12, pp: 16, supply: 72, eq: 12, units: ["gotland", "strvm42", "j22"], y: 1936, m: 1, modifiers: ["neutral"] },
   il: { civ: 3, mil: 2, steel: 8, oil: 5, rubber: 1, alu: 2, mp: 16, pp: 18, supply: 44, eq: 14, units: ["sherman", "spitfire"], y: 1948, m: 5, modifiers: ["epilogue"] },
+  gr: { civ: 3, mil: 2, steel: 7, oil: 3, rubber: 1, alu: 3, mp: 44, pp: 16, supply: 44, eq: 11, units: ["hoplite", "gongnu"], y: -500, m: 1, modifiers: [] },
+  tr: { civ: 3, mil: 2, steel: 7, oil: 3, rubber: 1, alu: 3, mp: 44, pp: 16, supply: 44, eq: 11, units: ["ottomanbow", "ottomanfieldgun"], y: 1500, m: 1, modifiers: [] },
+  es: { civ: 3, mil: 2, steel: 7, oil: 3, rubber: 1, alu: 3, mp: 44, pp: 16, supply: 44, eq: 11, units: ["matchlock", "arquebus"], y: 1550, m: 1, modifiers: [] },
 };
 
 export const FOCUSES: FocusDef[] = [

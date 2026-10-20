@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { UnitDef } from "@/game/types";
 import { layerName } from "@/game/catalog";
 
@@ -25,13 +26,27 @@ const NATION_TINT: Record<string, string> = {
   se: "#5C6266",
   cn: "#6B6F4E",
   il: "#5C6144",
+  gr: "#5A6E8C",
+  tr: "#8C5A4A",
+  es: "#8C7A4A",
 };
 
 type FaceUnit = Pick<UnitDef, "name" | "nation" | "layer" | "portrait">;
 
 export function CardFace({ unit, size = "sm" }: { unit: FaceUnit; size?: "sm" | "lg" }) {
-  if (unit.portrait) {
-    return <img src={unit.portrait} alt="" className="h-full w-full object-cover" />;
+  // A campaign card points at a file the portrait job has not produced yet.
+  // That is a broken image icon, which reads as a bug; the placeholder is the
+  // honest state. Fall back to it when the load fails.
+  const [failed, setFailed] = useState(false);
+  if (unit.portrait && !failed) {
+    return (
+      <img
+        src={unit.portrait}
+        alt=""
+        onError={() => setFailed(true)}
+        className="h-full w-full object-cover"
+      />
+    );
   }
   const tint = NATION_TINT[unit.nation] ?? "#4A5240";
   return (

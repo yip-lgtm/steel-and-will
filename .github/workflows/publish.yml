@@ -37,6 +37,11 @@ jobs:
       # friends. npx would otherwise fetch a stray vite and fail on the plugins.
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
+      # The catalog's designation -> 立繪 map. The hourly writer in the Pages
+      # repo needs it to point a campaign card at art the roster already has,
+      # instead of paying for a second picture of the same weapon.
+      - name: Publish the portrait index
+        run: node scripts/portrait-index.mjs
       - name: Build the static site
         run: npx vite build -c vite.pages.config.ts
       # The Pages repository is the live site and deploys itself on push, so this
@@ -89,6 +94,9 @@ jobs:
 
           rm -rf cute/portraits
           cp -r ../dist-pages/portraits cute/portraits
+
+          # The map the hourly writer reads, next to the war index.
+          cp ../dist-pages/portrait-index.json cute/portrait-index.json
 
           git config user.name "yip-lmt"
           git config user.email "258986088+yip-lmt@users.noreply.github.com"

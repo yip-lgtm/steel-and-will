@@ -8,7 +8,10 @@ export type NationId =
   | "fr"
   | "it"
   | "se"
-  | "il";
+  | "il"
+  | "gr"
+  | "tr"
+  | "es";
 
 export type Layer = "air" | "land" | "sea";
 
