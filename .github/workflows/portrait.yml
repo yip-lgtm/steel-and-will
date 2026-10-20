@@ -29,4 +29,7 @@ jobs:
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
           COMMIT: "1"
           PUSH: "1"
-        run: node scripts/portrait-tick.mjs
+          # A campaign the bulk writer produced needs its own picture, and one
+          # card an hour cannot keep up with twenty campaigns an hour.
+          PORTRAIT_BATCH: "5"
+        run: node scripts/portrait-bulk.mjs

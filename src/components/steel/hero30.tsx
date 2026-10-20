@@ -19,6 +19,8 @@ export type FeedPlay = {
   year: number;
   layer: Layer;
   history: string;
+  /** The dossier is a file of its own; the feed only points at it. */
+  dossierUrl?: string;
   dossier?: {
     countries: string;
     countriesEn: string;

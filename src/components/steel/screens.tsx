@@ -685,6 +685,11 @@ export function History() {
   const nation = useGame((s) => s.nation);
   const [extra, setExtra] = useState<FeedPlay[]>([]);
   const [open, setOpen] = useState<string | null>(null);
+  // The dossier is a file of its own now -- eight sections in two languages
+  // for every campaign, and the feed holds a brief for all of them. It is
+  // fetched when a campaign is opened rather than with the list.
+  const [dossiers, setDossiers] = useState<Record<string, Dossier>>({});
+  const [asking, setAsking] = useState<Record<string, boolean>>({});
   useEffect(() => {
     void fetch(`${import.meta.env.BASE_URL}feed.json`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
@@ -698,9 +703,27 @@ export function History() {
     ...NODES.map((n) => ({ y: n.y, m: n.m, t: n.name, b: n.brief, play: null as FeedPlay | null })),
     ...extra.map((n) => ({ y: n.y, m: 1, t: n.name, b: n.brief, play: n })),
   ].sort((a, b) => a.y - b.y || a.m - b.m);
+
   const picked = events.find((e) => `${e.y}-${e.t}` === open);
+  const pickedId = picked?.play?.id;
+  const pickedUrl = picked?.play?.dossierUrl;
+  useEffect(() => {
+    if (!pickedId || !pickedUrl) return;
+    if (dossiers[pickedId] || asking[pickedId]) return;
+    setAsking((prev) => ({ ...prev, [pickedId]: true }));
+    void fetch(`${import.meta.env.BASE_URL}${pickedUrl}`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((d) => {
+        if (d) setDossiers((prev) => ({ ...prev, [pickedId]: d as Dossier }));
+      })
+      .catch(() => undefined)
+      .finally(() => setAsking((prev) => ({ ...prev, [pickedId]: false })));
+  }, [pickedId, pickedUrl, dossiers, asking]);
   if (picked) {
-    const d = picked.play?.dossier ?? dossierFor(picked.t, picked.b, picked.y);
+    const d =
+      (picked.play ? dossiers[picked.play.id] : undefined) ??
+      picked.play?.dossier ??
+      dossierFor(picked.t, picked.b, picked.y);
     const zh = [d.countries, d.people, d.kits, d.tactics, d.data, d.cause, d.impact, d.result].join("");
     return (
       <div className="grid gap-3">
@@ -783,7 +806,7 @@ export function History() {
   );
 }
 
-function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: string; theater?: string; brief?: string }; kit?: { name?: string; designation?: string; year?: number; layer?: Layer; history?: string }; dossier?: Dossier }[] } | null): FeedPlay[] {
+function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: string; theater?: string; brief?: string }; kit?: { name?: string; designation?: string; year?: number; layer?: Layer; history?: string }; dossier?: Dossier; dossierUrl?: string }[] } | null): FeedPlay[] {
   return (data?.items ?? [])
     .filter((it) => it.battle?.name && it.kit?.name)
     .map((it) => ({
@@ -797,6 +820,7 @@ function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: str
       year: it.kit!.year || it.battle!.y || 1914,
       layer: it.kit!.layer || "land",
       history: it.kit!.history || "",
+      dossierUrl: it.dossierUrl,
       dossier: it.dossier,
     }));
 }
