@@ -42,6 +42,9 @@ jobs:
       # instead of paying for a second picture of the same weapon.
       - name: Publish the portrait index
         run: node scripts/portrait-index.mjs
+      # The Pages repo builds the card deck and needs the catalog to do it.
+      - name: Publish the catalog
+        run: node scripts/catalog-dump.mjs
       - name: Build the static site
         run: npx vite build -c vite.pages.config.ts
       # The Pages repository is the live site and deploys itself on push, so this
@@ -97,6 +100,8 @@ jobs:
 
           # The map the hourly writer reads, next to the war index.
           cp ../dist-pages/portrait-index.json cute/portrait-index.json
+          # The catalog the card deck is built from.
+          cp ../dist-pages/catalog.json cute/catalog.json
 
           git config user.name "yip-lmt"
           git config user.email "258986088+yip-lmt@users.noreply.github.com"
