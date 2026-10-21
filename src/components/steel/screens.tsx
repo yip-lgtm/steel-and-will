@@ -1118,8 +1118,11 @@ export function Title({ onStart }: { onStart: () => void }) {
           ))}
         </div>
         <p className="text-xs leading-relaxed text-subtle">{DIFFICULTY_COPY[difficulty]}</p>
-        <Btn testid="btn-start" kind="primary" onClick={() => useGame.getState().setScreen("gallery")}>
-          兵器娘卡牌
+        <Btn testid="btn-start" kind="primary" onClick={() => useGame.getState().setScreen("clash")}>
+          卡牌對撞
+        </Btn>
+        <Btn kind="primary" onClick={() => useGame.getState().setScreen("hold")}>
+          占三格
         </Btn>
         <div className="grid grid-cols-2 gap-2">
           <Btn testid="nav-history" onClick={() => useGame.getState().setScreen("history")}>

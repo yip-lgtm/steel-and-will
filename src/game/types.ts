@@ -140,4 +140,6 @@ export type Screen =
   | "lecture"
   | "battle"
   | "hero30"
+  | "clash"
+  | "hold"
   | "debrief";

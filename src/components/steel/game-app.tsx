@@ -4,6 +4,7 @@ import { unlockAudio } from "@/game/sfx";
 import { useGame } from "@/game/store";
 import type { Screen } from "@/game/types";
 import { Hero30 } from "./hero30";
+import { Clash, Hold } from "./modes";
 import { Codex, Debrief, FocusScreen, Gallery, History, Hq, Industry, Lecture, MapScreen, NationPick, Story, Template, Title } from "./screens";
 
 const NAV: { id: Screen; label: string; icon: typeof Map }[] = [
@@ -70,6 +71,8 @@ export function GameApp() {
               {screen === "map" && <MapScreen />}
               {screen === "history" && <History />}
               {screen === "gallery" && <Gallery />}
+              {screen === "clash" && <Clash />}
+              {screen === "hold" && <Hold />}
               {screen === "codex" && <Codex />}
               {screen === "lecture" && <Lecture />}
               {screen === "debrief" && <Debrief />}
