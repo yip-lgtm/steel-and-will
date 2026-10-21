@@ -910,8 +910,17 @@ export function History() {
 }
 
 function toFeed(data: { items?: { id?: string; battle?: { y?: number; name?: string; theater?: string; brief?: string }; kit?: { name?: string; designation?: string; year?: number; layer?: Layer; history?: string }; place?: { lng?: number; lat?: number } | null; dossier?: Dossier; dossierUrl?: string }[] } | null): FeedPlay[] {
+  // One card per war. A build once appended the same war 34 times and the
+  // grid showed 34 copies of one card, 34 of them without a full text.
+  const seen = new Set<string>();
   return (data?.items ?? [])
     .filter((it) => it.battle?.name && it.kit?.name)
+    .filter((it) => {
+      const id = it.id || it.battle!.name!;
+      if (seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    })
     .map((it) => ({
       id: it.id || it.battle!.name!,
       y: it.battle!.y || it.kit!.year || 1914,
