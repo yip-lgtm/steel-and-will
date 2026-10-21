@@ -104,6 +104,10 @@ jobs:
           cp ../dist-pages/catalog.json cute/catalog.json
           # The weapons a campaign may carry, and the picture each one has.
           cp ../dist-pages/weapon-library.json cute/weapon-library.json
+          # The full text of the 1900+ scenario wars, found by name.
+          if [ -f ../dist-pages/history-dossiers.json ]; then
+            cp ../dist-pages/history-dossiers.json cute/history-dossiers.json
+          fi
 
           git config user.name "yip-lmt"
           git config user.email "258986088+yip-lmt@users.noreply.github.com"

@@ -721,6 +721,9 @@ export function History() {
   // fetched when a campaign is opened rather than with the list.
   const [dossiers, setDossiers] = useState<Record<string, Dossier>>({});
   const [asking, setAsking] = useState<Record<string, boolean>>({});
+  // The 1900+ scenarios of the history screen are not cards in the feed, so
+  // their full text lives in its own file and is found by name.
+  const [nodeUrls, setNodeUrls] = useState<Record<string, string>>({});
   // The whole pool of wars the source lists document, so the page can say
   // how much of it has been written and show the rest.
   const [pool, setPool] = useState<{ y: number; name: string }[]>([]);
@@ -732,6 +735,10 @@ export function History() {
     void fetch(`${import.meta.env.BASE_URL}feed.json`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => setExtra(toFeed(data)))
+      .catch(() => undefined);
+    void fetch(`${import.meta.env.BASE_URL}history-dossiers.json`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setNodeUrls((data ?? {}) as Record<string, string>))
       .catch(() => undefined);
     void fetch(`${import.meta.env.BASE_URL}war-index.json`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
@@ -747,17 +754,23 @@ export function History() {
   }, []);
   const written = new Set(extra.map((n) => n.name));
   const unwritten = pool.filter((w) => !written.has(w.name)).sort((a, b) => a.y - b.y);
+  // A scenario that is also a card in the feed is shown once, as the card:
+  // the card carries the real full text and the portrait.
+  const feedNames = new Set(extra.map((n) => n.name));
   const events = [
     { y: 1914, m: 6, t: "薩拉熱窩以後", b: "各國按動員表前進。這一週比任何一次白刃衝鋒更早決定。", play: null as FeedPlay | null },
     { y: 1919, m: 6, t: "凡爾賽", b: "帳單寫進條約。產能還在，下一場戰爭的理由也寫好了。", play: null },
     { y: 1945, m: 8, t: "威懾寫進名冊", b: "核武是天花板，不是這一關的傷害數字，也不寫製造。", play: null },
     ...NODES.map((n) => ({ y: n.y, m: n.m, t: n.name, b: n.brief, play: null as FeedPlay | null })),
     ...extra.map((n) => ({ y: n.y, m: 1, t: n.name, b: n.brief, play: n })),
-  ].sort((a, b) => a.y - b.y || a.m - b.m);
+  ]
+    .filter((e) => e.play || !feedNames.has(e.t))
+    .sort((a, b) => a.y - b.y || a.m - b.m);
 
   const picked = events.find((e) => `${e.y}-${e.t}` === open);
-  const pickedId = picked?.play?.id;
-  const pickedUrl = picked?.play?.dossierUrl;
+  // A feed card brings its own file; a scenario war is found by name.
+  const pickedId = picked?.play?.id ?? (picked ? `node:${picked.t}` : undefined);
+  const pickedUrl = picked?.play?.dossierUrl ?? (picked ? nodeUrls[picked.t] : undefined);
   useEffect(() => {
     if (!pickedId || !pickedUrl) return;
     if (dossiers[pickedId] || asking[pickedId]) return;
@@ -769,10 +782,11 @@ export function History() {
       })
       .catch(() => undefined)
       .finally(() => setAsking((prev) => ({ ...prev, [pickedId]: false })));
-  }, [pickedId, pickedUrl, dossiers, asking]);
+  }, [pickedId, pickedUrl, dossiers, asking, nodeUrls]);
   if (picked) {
     const d: Dossier =
       (picked.play ? dossiers[picked.play.id] : undefined) ??
+      dossiers[`node:${picked.t}`] ??
       picked.play?.dossier ??
       dossierFor(picked.t, picked.b, picked.y);
     const zh = [d.countries, d.people, d.kits, d.tactics, d.data, d.cause, d.impact, d.result].join("");
