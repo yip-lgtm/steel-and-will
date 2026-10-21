@@ -677,16 +677,40 @@ export function Debrief() {
 }
 
 const ERAS: { id: string; name: string; from: number; to: number; lead: string }[] = [
-  // The feed now reaches back before 1914, so the first era cannot start at
-  // zero: a campaign from 1801 filed under "一九一四至一九一八" is simply
-  // mislabelled. Anything older gets its own heading.
-  { id: "ancient", name: "上古至一九一三", from: -99999, to: 1913, lead: "火繩、長弓與攻城器械。勝負先由糧道和攻城器決定。" },
+  { id: "bc", name: "公元前", from: -99999, to: -1, lead: "方陣、長矛、戰車。城破以前先看糧道。" },
+  { id: "early", name: "公元至一四九九", from: 0, to: 1499, lead: "弩、長弓、攻城器。騎兵改變會戰，城牆仍在。" },
+  { id: "earlymodern", name: "一五〇〇至一七九九", from: 1500, to: 1799, lead: "火繩槍、輪發槍、線列。砲開始拆城。" },
+  { id: "c19", name: "一八〇〇至一九一三", from: 1800, to: 1913, lead: "燧發槍、線膛砲、蒸汽鐵甲。鐵路把兵送出去。" },
   { id: "wwi", name: "一九一四至一九一八", from: 1914, to: 1918, lead: "動員表比將軍準時。機槍、鐵絲網、鐵路與彈藥庫，比白刃先決定。" },
   { id: "inter", name: "戰間期", from: 1919, to: 1935, lead: "停火沒有停掉產能。條約把石油、橡膠、鋼與船臺寫成下一場戰爭的理由。" },
   { id: "ww2", name: "一九三六至一九四五", from: 1936, to: 1945, lead: "油、護航距離與產量開始比單件名器重要。要害仍是彈藥、動力與乘員。" },
   { id: "cold", name: "冷戰", from: 1946, to: 1990, lead: "核威懾讓大國不敢直接對撞。局部戰爭仍用步槍、戰車與噴射機。這裡不計算爆心。" },
   { id: "now", name: "一九九一以後", from: 1991, to: 9999, lead: "夜視、精確導引與數據鏈沒有取消油料和維修。鏈路斷了，無人機就不是武器。" },
 ];
+
+const REGIONS = [
+  { id: "all", name: "全部地區" },
+  { id: "east", name: "東亞" },
+  { id: "europe", name: "歐洲" },
+  { id: "mideast", name: "中東與北非" },
+  { id: "south", name: "南亞" },
+  { id: "americas", name: "美洲" },
+  { id: "africa", name: "非洲" },
+  { id: "other", name: "其他" },
+] as const;
+
+function regionOf(name: string) {
+  const rules: [typeof REGIONS[number]["id"], string[]][] = [
+    ["east", ["中國", "漢", "唐", "宋", "明", "清", "日本", "朝鮮", "蒙古", "匈奴", "契丹", "女真", "金朝", "遼", "西夏", "越南", "安南", "高句麗", "新羅", "百濟", "琉球", "台灣", "臺灣", "滿洲", "北伐", "抗日", "中原", "鴉片"]],
+    ["europe", ["羅馬", "希臘", "英國", "法國", "德", "俄", "波蘭", "西班牙", "意大利", "義大利", "奧地利", "普魯士", "拜占庭", "瑞典", "丹麥", "荷蘭", "比利時", "芬蘭", "愛爾蘭", "葡萄牙", "匈牙利", "拿破崙", "反法", "巴爾幹", "塞爾維亞", "克里米亞"]],
+    ["mideast", ["埃及", "波斯", "阿拉伯", "奧斯曼", "土耳其", "以色列", "伊拉克", "敘利亞", "伊朗", "巴比倫", "亞述", "赫梯", "巴勒斯坦", "黎巴嫩", "約旦", "也門", "沙特"]],
+    ["south", ["印度", "馬拉塔", "莫卧兒", "莫臥兒", "錫克", "巴基斯坦", "孟加拉", "阿富汗", "尼泊爾", "斯里蘭卡"]],
+    ["americas", ["美國", "墨西哥", "阿根廷", "智利", "秘魯", "巴西", "加拿大", "古巴", "印加", "阿茲特克", "哥倫比亞", "委內瑞拉"]],
+    ["africa", ["衣索", "埃塞", "南非", "剛果", "安哥拉", "奈及利亞", "尼日利亞", "蘇丹", "摩洛哥", "阿爾及利亞", "突尼斯", "迦太基", "祖魯", "馬里"]],
+  ];
+  for (const [id, words] of rules) if (words.some((w) => name.includes(w))) return id;
+  return "other";
+}
 
 export function History() {
   const nation = useGame((s) => s.nation);
@@ -701,6 +725,9 @@ export function History() {
   // how much of it has been written and show the rest.
   const [pool, setPool] = useState<{ y: number; name: string }[]>([]);
   const [showPool, setShowPool] = useState(false);
+  const [eraId, setEraId] = useState(ERAS[0]!.id);
+  const [region, setRegion] = useState<(typeof REGIONS)[number]["id"]>("all");
+  const [page, setPage] = useState(0);
   useEffect(() => {
     void fetch(`${import.meta.env.BASE_URL}feed.json`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
@@ -807,76 +834,62 @@ export function History() {
           </div>
         ) : null}
       </div>
-      {showPool ? (
-        <section className="grid gap-2">
-          <h2 className="font-display text-xl">未寫嘅戰爭</h2>
-          <p className="text-sm leading-relaxed text-muted">
-            總池入面仲未寫的一場一場。寫到就會自己出現喺上面，唔使等。
-          </p>
-          <div className="grid gap-1">
-            {unwritten.map((w) => (
-              <div
-                key={`${w.y}-${w.name}`}
-                className="flex items-baseline justify-between gap-3 rounded-xl border border-line px-3 py-1.5"
-              >
-                <span className="text-sm text-muted">{w.name}</span>
-                <span className="font-mono text-xs text-subtle">
-                  {w.y < 0 ? `前${-w.y}` : w.y}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : null}
-      {ERAS.map((era) => {
-        const list = events.filter((e) => e.y >= era.from && e.y <= era.to);
-        if (!list.length) return null;
+      {(() => {
+        const era = ERAS.find((e) => e.id === eraId) ?? ERAS[0]!;
+        const writtenNames = new Set(events.map((e) => e.t));
+        const rows = [
+          ...events.map((e) => ({ ...e, written: Boolean(e.play) })),
+          ...pool
+            .filter((w) => !writtenNames.has(w.name))
+            .map((w) => ({ y: w.y, m: 1, t: w.name, b: "尚未寫全文。", play: null as FeedPlay | null, written: false })),
+        ]
+          .filter((e) => e.y >= era.from && e.y <= era.to)
+          .filter((e) => region === "all" || regionOf(e.t) === region)
+          .sort((a, b) => a.y - b.y || a.t.localeCompare(b.t, "zh-Hant"));
+        const pageSize = 20;
+        const pages = Math.max(1, Math.ceil(rows.length / pageSize));
+        const safePage = Math.min(page, pages - 1);
+        const slice = rows.slice(safePage * pageSize, safePage * pageSize + pageSize);
         return (
-          <section key={era.id} className="grid gap-3">
+          <section className="grid gap-3">
+            <div className="flex gap-2 overflow-x-auto">
+              {ERAS.map((e) => (
+                <Btn key={e.id} kind={eraId === e.id ? "primary" : "ghost"} onClick={() => { setEraId(e.id); setPage(0); }}>{e.name}</Btn>
+              ))}
+            </div>
+            <div className="flex gap-2 overflow-x-auto">
+              {REGIONS.map((r) => (
+                <Btn key={r.id} kind={region === r.id ? "primary" : "ghost"} onClick={() => { setRegion(r.id); setPage(0); }}>{r.name}</Btn>
+              ))}
+            </div>
             <div>
               <h2 className="font-display text-xl">{era.name}</h2>
-              <p className="mt-1 text-sm leading-relaxed text-muted">{era.lead}</p>
-              <div className="mt-2 h-40 overflow-hidden rounded-2xl">
-                <LiveMap
-                  theater={
-                    era.id === "wwi"
-                      ? "西線"
-                      : era.id === "inter"
-                        ? "東歐"
-                        : era.id === "ww2"
-                          ? "東線"
-                          : era.id === "cold"
-                            ? "冷戰"
-                            : era.id === "ancient"
-                              ? "地中海與北大西洋"
-                              : "現代"
-                  }
-                  label={era.name}
-                />
-              </div>
+              <p className="mt-1 text-sm leading-relaxed text-muted">{era.lead} 本頁 {slice.length} / {rows.length} 場。</p>
             </div>
-            {list.map((e) => (
-              <Panel key={`${e.y}-${e.m}-${e.t}`}>
+            {slice.map((e) => (
+              <Panel key={`${e.y}-${e.t}`}>
                 <div className="flex items-baseline justify-between gap-2">
                   <h3 className="font-medium">{e.t}</h3>
-                  <span className="font-mono text-xs text-subtle">
-                    {e.y}.{String(e.m).padStart(2, "0")}
-                  </span>
+                  <span className="font-mono text-xs text-subtle">{e.y < 0 ? `前${-e.y}` : e.y}</span>
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{e.b}</p>
-                <div className="mt-3">
-                  <Btn kind="primary" onClick={() => setOpen(`${e.y}-${e.t}`)}>戰役全文</Btn>
-                </div>
-                {e.play ? (
-                  <div className="mt-3">
-                    <Btn kind="primary" onClick={() => openFeed30(e.play!)}>三十秒</Btn>
+                <p className="mt-1 text-xs text-subtle">{REGIONS.find((r) => r.id === regionOf(e.t))?.name} · {e.written ? "已寫" : "未寫"}</p>
+                {e.written ? (
+                  <div className="mt-3 flex gap-2">
+                    <Btn kind="primary" onClick={() => setOpen(`${e.y}-${e.t}`)}>戰役全文</Btn>
+                    {e.play ? <Btn onClick={() => openFeed30(e.play!)}>三十秒</Btn> : null}
                   </div>
                 ) : null}
               </Panel>
             ))}
+            <div className="flex items-center justify-between gap-2">
+              <Btn onClick={() => setPage((p) => Math.max(0, p - 1))}>上一頁</Btn>
+              <span className="font-mono text-xs text-subtle">{safePage + 1} / {pages}</span>
+              <Btn onClick={() => setPage((p) => Math.min(pages - 1, p + 1))}>下一頁</Btn>
+            </div>
           </section>
         );
-      })}
+      })()}
       {!nation ? <Btn onClick={() => useGame.getState().setScreen("title")}>回到封面</Btn> : null}
     </div>
   );
