@@ -395,7 +395,10 @@ export function MapScreen() {
   }, []);
   return (
     <div className="grid gap-3">
-      <h1 className="font-display text-3xl">三十秒</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-3xl">三十秒</h1>
+        <Btn onClick={() => useGame.getState().setScreen("title")}>封面</Btn>
+      </div>
       <p className="text-sm text-muted">一張圖看戰場。點關卡再走三十秒。</p>
       <div className="h-64 overflow-hidden rounded-3xl">
         <LiveMap theater="西線" label="戰役地圖" />

@@ -1,5 +1,5 @@
 import { Component, useEffect, type ReactNode } from "react";
-import { BookOpen, Map, ScrollText } from "lucide-react";
+import { BookOpen, Home, Map, ScrollText } from "lucide-react";
 import { unlockAudio } from "@/game/sfx";
 import { useGame } from "@/game/store";
 import type { Screen } from "@/game/types";
@@ -8,6 +8,7 @@ import { Clash, Hold, Identify } from "./modes";
 import { Codex, Debrief, FocusScreen, Gallery, History, Hq, Industry, Lecture, MapScreen, NationPick, Story, Template, Title } from "./screens";
 
 const NAV: { id: Screen; label: string; icon: typeof Map }[] = [
+  { id: "title", label: "封面", icon: Home },
   { id: "map", label: "三十秒", icon: Map },
   { id: "history", label: "歷史", icon: ScrollText },
   { id: "gallery", label: "鑑賞", icon: BookOpen },
@@ -40,7 +41,7 @@ export function GameApp() {
     window.addEventListener("pointerdown", unlock, { once: true });
     return () => window.removeEventListener("pointerdown", unlock);
   }, []);
-  const showNav = screen === "map" || screen === "history" || screen === "gallery";
+  const showNav = screen === "title" || screen === "map" || screen === "history" || screen === "gallery";
   return (
     <div className="phone-stage text-fg">
       <div className="phone-shell">

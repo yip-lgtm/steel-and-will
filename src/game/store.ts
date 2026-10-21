@@ -601,10 +601,8 @@ export const useGame = create<GameData & Actions>()(
       skipHydration: true,
       storage: createJSONStorage(() => localStorage),
       partialize: (s) => {
-        const screen: Screen = "map";
         return {
           version: s.version,
-          screen,
           difficulty: s.difficulty,
           muted: s.muted,
           nation: s.nation,
@@ -640,9 +638,7 @@ export const useGame = create<GameData & Actions>()(
       },
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        if (state.screen === "battle" || state.screen === "hq" || state.screen === "story" || state.screen === "nation") {
-          state.screen = "map";
-        }
+        state.screen = "title";
         if (state.autoResearch == null) state.autoResearch = false;
         sync(state.extras ?? []);
       },
