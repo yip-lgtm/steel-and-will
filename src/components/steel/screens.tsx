@@ -1124,6 +1124,9 @@ export function Title({ onStart }: { onStart: () => void }) {
         <Btn kind="primary" onClick={() => useGame.getState().setScreen("hold")}>
           占三格
         </Btn>
+        <Btn kind="primary" onClick={() => useGame.getState().setScreen("identify")}>
+          鑑定關
+        </Btn>
         <div className="grid grid-cols-2 gap-2">
           <Btn testid="nav-history" onClick={() => useGame.getState().setScreen("history")}>
             歷史

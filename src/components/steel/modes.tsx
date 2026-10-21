@@ -129,3 +129,68 @@ export function Hold() {
     </div>
   );
 }
+
+function round() {
+  const pool = allCatalog().filter((u) => u.year >= 1891 && u.year <= 1991);
+  const answer = pool[Math.floor(Math.random() * pool.length)]!;
+  const later = pool.filter((u) => u.year > answer.year && u.id !== answer.id);
+  const decoys = [...later].sort(() => Math.random() - 0.5).slice(0, 2);
+  while (decoys.length < 2) {
+    const extra = pool[Math.floor(Math.random() * pool.length)]!;
+    if (extra.id !== answer.id && !decoys.some((d) => d.id === extra.id)) decoys.push(extra);
+  }
+  return { year: answer.year, answer, cards: [answer, ...decoys].sort(() => Math.random() - 0.5) };
+}
+
+export function Identify() {
+  const [q, setQ] = useState(round);
+  const [pick, setPick] = useState<string | null>(null);
+  const [streak, setStreak] = useState(0);
+  const [points, setPoints] = useState(0);
+  const [unlocked, setUnlocked] = useState<string[]>([]);
+  const right = pick === q.answer.id;
+  function choose(id: string) {
+    if (pick) return;
+    setPick(id);
+    if (id === q.answer.id) {
+      setStreak((n) => n + 1);
+      setPoints((n) => n + 10);
+      setUnlocked((list) => (list.includes(q.answer.id) ? list : [...list, q.answer.id]));
+    } else {
+      setStreak(0);
+      setPoints((n) => Math.max(0, n - 5));
+    }
+  }
+  return (
+    <div className="grid gap-3">
+      <Btn onClick={() => useGame.getState().setScreen("title")}>返回</Btn>
+      <h1 className="font-display text-3xl">鑑定關</h1>
+      <p className="font-mono text-xs text-subtle">{points} 研究點 · 連續 {streak}</p>
+      <Panel>
+        <p className="text-sm leading-relaxed text-muted">
+          {q.year} 年這一仗，哪一件已經列裝？選晚於這一年的，就是時代錯誤。
+        </p>
+      </Panel>
+      <div className="grid grid-cols-3 gap-2">
+        {q.cards.map((u) => (
+          <button key={u.id} type="button" onClick={() => choose(u.id)} className={`overflow-hidden rounded-2xl border text-left ${pick === u.id ? "border-accent" : "border-line"}`}>
+            <CardFace unit={u} />
+            <p className="bg-surface px-2 py-2 text-xs">{u.name}</p>
+            <p className="bg-surface px-2 pb-2 text-[10px] text-subtle">{u.year}</p>
+          </button>
+        ))}
+      </div>
+      {pick ? (
+        <Panel>
+          <p className="text-sm leading-relaxed text-muted">
+            {right ? `對。${q.answer.name} 於 ${q.answer.year} 年列裝。` : `錯。${q.answer.name} 才是 ${q.year} 年或更早的型號。`}
+          </p>
+          {unlocked.includes(q.answer.id) ? <p className="mt-2 text-xs text-subtle">{q.answer.history}</p> : null}
+          <div className="mt-3">
+            <Btn kind="primary" onClick={() => { setQ(round()); setPick(null); }}>下一題</Btn>
+          </div>
+        </Panel>
+      ) : null}
+    </div>
+  );
+}

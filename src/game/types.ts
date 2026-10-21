@@ -142,4 +142,5 @@ export type Screen =
   | "hero30"
   | "clash"
   | "hold"
+  | "identify"
   | "debrief";
