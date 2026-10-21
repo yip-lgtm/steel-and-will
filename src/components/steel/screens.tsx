@@ -919,6 +919,18 @@ const GALLERY_ERAS = [
   { id: "now", name: "現代" },
 ] as const;
 
+function uniqueKits<T extends { designation?: string; name: string }>(list: T[]) {
+  const seen = new Set<string>();
+  const out: T[] = [];
+  for (const unit of list) {
+    const key = (unit.designation || unit.name).trim().toLowerCase().replace(/\s+/g, " ");
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(unit);
+  }
+  return out;
+}
+
 function galleryEra(year: number, era: (typeof GALLERY_ERAS)[number]["id"]) {
   if (era === "all") return true;
   // The pre-1900 spans. A BC service date is a negative year, which is how
@@ -977,7 +989,7 @@ export function Gallery() {
       })
       .catch(() => undefined);
   }, []);
-  const units = [...allCatalog(), ...extras, ...feedKits]
+  const units = uniqueKits([...allCatalog(), ...extras, ...feedKits])
     .filter((u) => (layer === "all" || u.layer === layer) && galleryEra(u.year, era))
     .sort((a, b) => a.year - b.year || a.name.localeCompare(b.name, "zh-Hant"));
   const shown = units.find((u) => u.id === pick) ?? units[0];
@@ -986,7 +998,7 @@ export function Gallery() {
     <div className="grid gap-4">
       <div>
         <h1 className="font-display text-3xl">軍武鑑賞</h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted">翻看型號、年份和它在體系裡的位置。海陸空與槍械都在名冊裡，從一戰列到現役。這裡不列裝。</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">翻看型號、年份和它在體系裡的位置。同一正式型號只留一張卡，戰役裡重複出現的兵器不再疊出來。</p>
       </div>
       <div className="flex gap-2 overflow-x-auto">
         {(["all", "land", "air", "sea"] as const).map((l) => (
