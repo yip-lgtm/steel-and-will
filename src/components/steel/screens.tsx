@@ -694,12 +694,29 @@ export function History() {
   // fetched when a campaign is opened rather than with the list.
   const [dossiers, setDossiers] = useState<Record<string, Dossier>>({});
   const [asking, setAsking] = useState<Record<string, boolean>>({});
+  // The whole pool of wars the source lists document, so the page can say
+  // how much of it has been written and show the rest.
+  const [pool, setPool] = useState<{ y: number; name: string }[]>([]);
+  const [showPool, setShowPool] = useState(false);
   useEffect(() => {
     void fetch(`${import.meta.env.BASE_URL}feed.json`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => setExtra(toFeed(data)))
       .catch(() => undefined);
+    void fetch(`${import.meta.env.BASE_URL}war-index.json`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const wars = (data?.wars ?? []) as { y?: number; name?: string }[];
+        setPool(
+          wars
+            .filter((w) => typeof w.y === "number" && w.name)
+            .map((w) => ({ y: w.y as number, name: w.name as string })),
+        );
+      })
+      .catch(() => undefined);
   }, []);
+  const written = new Set(extra.map((n) => n.name));
+  const unwritten = pool.filter((w) => !written.has(w.name)).sort((a, b) => a.y - b.y);
   const events = [
     { y: 1914, m: 6, t: "薩拉熱窩以後", b: "各國按動員表前進。這一週比任何一次白刃衝鋒更早決定。", play: null as FeedPlay | null },
     { y: 1919, m: 6, t: "凡爾賽", b: "帳單寫進條約。產能還在，下一場戰爭的理由也寫好了。", play: null },
@@ -770,11 +787,44 @@ export function History() {
       <div>
         <h1 className="font-display text-3xl">歷史</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          從上古排到鏈路。只寫部隊與裝備，不寫平民。每小時從
+          從上古排到鏈路。只寫部隊與裝備，不寫平民。來源總池有
+          <b className="text-accent">{pool.length || "一"}</b>{" "}
+          場，取自
           <a className="text-accent" href="https://zh.wikipedia.org/wiki/%E6%88%98%E4%BA%89%E5%88%97%E8%A1%A8">中文維基戰爭列表</a>
-          及其按世紀分出的各頁，補一場尚未寫過的衝突，由 MiniMax 寫裝備。
+          及其按世紀分出的各頁；已寫的每場都有裝備同中英雙語全文。
         </p>
+        {pool.length ? (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="font-mono text-xs text-subtle">
+              已寫 {written.size} / 總池 {pool.length}
+            </span>
+            <Btn onClick={() => setShowPool((v) => !v)}>
+              {showPool ? "收起未寫嘅戰爭" : `睇未寫嘅 ${unwritten.length} 場`}
+            </Btn>
+          </div>
+        ) : null}
       </div>
+      {showPool ? (
+        <section className="grid gap-2">
+          <h2 className="font-display text-xl">未寫嘅戰爭</h2>
+          <p className="text-sm leading-relaxed text-muted">
+            總池入面仲未寫的一場一場。寫到就會自己出現喺上面，唔使等。
+          </p>
+          <div className="grid gap-1">
+            {unwritten.map((w) => (
+              <div
+                key={`${w.y}-${w.name}`}
+                className="flex items-baseline justify-between gap-3 rounded-xl border border-line px-3 py-1.5"
+              >
+                <span className="text-sm text-muted">{w.name}</span>
+                <span className="font-mono text-xs text-subtle">
+                  {w.y < 0 ? `前${-w.y}` : w.y}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
       {ERAS.map((era) => {
         const list = events.filter((e) => e.y >= era.from && e.y <= era.to);
         if (!list.length) return null;
