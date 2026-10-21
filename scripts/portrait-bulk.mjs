@@ -20,6 +20,8 @@ const tick = resolve(HERE, "portrait-tick.mjs");
 const batch = Number(process.env.PORTRAIT_BATCH || 10);
 
 let drawn = 0;
+let pending = 0;
+let failed = false;
 for (let i = 0; i < batch; i++) {
   const run = spawnSync("node", [tick], {
     env: { ...process.env, COMMIT: "0" },
@@ -30,8 +32,11 @@ for (let i = 0; i < batch; i++) {
   process.stdout.write(out);
   if (run.status !== 0) {
     console.error("  the run stopped; the rest of the batch is left for the next one.");
+    failed = true;
     break;
   }
+  const need = out.match(/need generation: (\d+)/);
+  if (need) pending = Number(need[1]);
   if (/every kit already has/.test(out)) break;
   if (/saved public\/portraits/.test(out)) drawn++;
 }
@@ -66,4 +71,15 @@ if (process.env.COMMIT === "1") {
     run("push", ["origin", "HEAD:main"]);
     console.log("pushed");
   }
+}
+
+// A green run that drew nothing while cards are still waiting is a lie the
+// schedule cannot act on. Say so with a non-zero exit, and say what is left.
+if (failed) {
+  console.error(`portrait batch failed with ${pending} card(s) still waiting`);
+  process.exit(3);
+}
+if (drawn === 0 && pending > 0) {
+  console.error(`portrait batch drew nothing; ${pending} card(s) still waiting`);
+  process.exit(3);
 }
