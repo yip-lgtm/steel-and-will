@@ -104,7 +104,7 @@ export function Hq() {
           {s.y}年{s.m}月 · {difficultyLabel(s.difficulty)}
         </p>
         <h1 className="font-display text-3xl">{nationTitle(s.nation, s.modifiers)}</h1>
-        <p className="mt-2 text-sm leading-relaxed text-muted">勇者30。這一版先打三十秒，再管工廠。</p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">先出卡，再翻歷史。三十秒玩法已取消。</p>
       </div>
       <DailyCard />
       {s.chronicle.length ? (
@@ -139,13 +139,7 @@ export function Hq() {
           {s.modifiers.includes("radar") ? " · 雷達" : ""}
         </p>
       </Panel>
-      <Btn kind="primary" testid="btn-hero30" onClick={() => openHero30("marne")}>
-        三十秒 · 馬恩河
-      </Btn>
       <div className="grid grid-cols-2 gap-2">
-        <Btn kind="primary" testid="nav-map" onClick={() => setScreen("map")}>
-          戰役
-        </Btn>
         <Btn onClick={() => setScreen("history")}>歷史</Btn>
         <Btn onClick={() => setScreen("gallery")}>軍武鑑賞</Btn>
         <Btn onClick={() => setScreen("focus")}>國家專注</Btn>
@@ -822,7 +816,6 @@ export function History() {
             <p className="mt-2 text-sm leading-relaxed text-subtle">{en}</p>
           </Panel>
         ))}
-        {picked.play ? <Btn kind="primary" onClick={() => openFeed30(picked.play!)}>三十秒</Btn> : null}
       </div>
     );
   }
@@ -891,7 +884,6 @@ export function History() {
                 {e.written ? (
                   <div className="mt-3 flex gap-2">
                     <Btn kind="primary" onClick={() => setOpen(`${e.y}-${e.t}`)}>戰役全文</Btn>
-                    {e.play ? <Btn onClick={() => openFeed30(e.play!)}>三十秒</Btn> : null}
                   </div>
                 ) : null}
               </Panel>
@@ -1137,7 +1129,6 @@ export function Title({ onStart }: { onStart: () => void }) {
     { t: "卡牌對撞", d: "海克陸，空克海，陸克空。先到兩分。", go: () => go("clash") },
     { t: "占三格", d: "灘頭、高地、補給。先占兩格。", go: () => go("hold") },
     { t: "鑑定關", d: "這一年，哪一件已經列裝。", go: () => go("identify") },
-    { t: "三十秒", d: "真實地名上打怪、換裝備、撥鐘。", go: () => go("map") },
     { t: "歷史", d: "1289 場，按年代同地區翻。", go: () => go("history") },
     { t: "軍武鑑賞", d: "兵器娘卡，同一型號只留一張。", go: () => go("gallery") },
   ];
@@ -1168,7 +1159,7 @@ export function Title({ onStart }: { onStart: () => void }) {
       <div>
         <h1 className="font-display text-4xl leading-tight">銅與碲</h1>
         <p className="mt-2 text-sm text-muted">從馬恩河走到鏈路。兵器娘卡，真實軍武，真實戰役。</p>
-        <p className="mt-3 text-sm leading-relaxed">每一場只有三十秒，也可以只出一張卡。</p>
+        <p className="mt-3 text-sm leading-relaxed">出一張卡，或翻一場真實戰役。</p>
       </div>
       <div className="grid grid-cols-4 gap-2 text-center">
         {[["1289", "戰役"], ["3", "玩法"], ["海陸空", "三線"], ["卡", "兵器"]].map(([n, l]) => (
