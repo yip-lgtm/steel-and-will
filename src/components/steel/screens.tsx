@@ -1127,28 +1127,82 @@ export function Gallery() {
 
 export function Title({ onStart }: { onStart: () => void }) {
   const difficulty = useGame((s) => s.difficulty);
-  const nation = useGame((s) => s.nation);
   const muted = useGame((s) => s.muted);
+  const [menu, setMenu] = useState(false);
+  const go = (screen: "clash" | "hold" | "identify" | "map" | "history" | "gallery") => {
+    setMenu(false);
+    useGame.getState().setScreen(screen);
+  };
+  const cats = [
+    { t: "卡牌對撞", d: "海克陸，空克海，陸克空。先到兩分。", go: () => go("clash") },
+    { t: "占三格", d: "灘頭、高地、補給。先占兩格。", go: () => go("hold") },
+    { t: "鑑定關", d: "這一年，哪一件已經列裝。", go: () => go("identify") },
+    { t: "三十秒", d: "真實地名上打怪、換裝備、撥鐘。", go: () => go("map") },
+    { t: "歷史", d: "1289 場，按年代同地區翻。", go: () => go("history") },
+    { t: "軍武鑑賞", d: "兵器娘卡，同一型號只留一張。", go: () => go("gallery") },
+  ];
+  const why = [
+    ["每一張卡，都是一件真兵器", "年份、型號、海陸空都在卡面上。選錯年份就是時代錯誤。"],
+    ["三條線同時打", "卡牌對撞是一張對一張。占三格是同一套克制，放到三個點上。"],
+    ["戰役是可以翻的", "1289 場從上古排到現在。已寫的開全文，未寫的只標年份。"],
+    ["輸一局，不是結局", "對撞、占格、鑑定都可以再來。研究點會扣，不會清掉已看過的卡。"],
+  ];
   return (
-    <div className="grid min-h-full content-between gap-8">
-      <div>
-        <p className="text-xs tracking-widest text-accent">Cu · Te</p>
-        <div className="mt-3 h-40 overflow-hidden rounded-3xl">
-          <LiveMap theater="西線" label="西線" />
-        </div>
-        <h1 className="mt-3 font-display text-4xl leading-none">
-          Copper
-          <span className="block">and Tellurium</span>
-        </h1>
-        <p className="mt-2 text-sm text-muted">銅與碲 · 勇者30</p>
-        <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
-          每一場只有三十秒。選兵器娘，在真實地名上打怪、換裝備。時間不夠就回補給站把鐘撥回去。
-        </p>
-        <div className="mt-4">
-          <DailyCard />
-        </div>
+    <div className="grid gap-6">
+      <div className="flex items-center justify-between">
+        <button type="button" className="text-xl" onClick={() => setMenu((v) => !v)} aria-label="選單">☰</button>
+        <span className="text-xs text-subtle">銅與碲</span>
+        <button type="button" className="text-xs text-subtle" onClick={() => useGame.getState().toggleMute()}>{muted ? "聲關" : "聲開"}</button>
       </div>
-      <div className="grid gap-3">
+      {menu ? (
+        <Panel>
+          <div className="grid gap-2">
+            {cats.map((c) => (
+              <button key={c.t} type="button" className="flex items-center justify-between py-2 text-left" onClick={c.go}>
+                <span>{c.t}</span><span className="text-accent">→</span>
+              </button>
+            ))}
+          </div>
+        </Panel>
+      ) : null}
+      <div>
+        <h1 className="font-display text-4xl leading-tight">銅與碲</h1>
+        <p className="mt-2 text-sm text-muted">從馬恩河走到鏈路。兵器娘卡，真實軍武，真實戰役。</p>
+        <p className="mt-3 text-sm leading-relaxed">每一場只有三十秒，也可以只出一張卡。</p>
+      </div>
+      <div className="grid grid-cols-4 gap-2 text-center">
+        {[["1289", "戰役"], ["3", "玩法"], ["海陸空", "三線"], ["卡", "兵器"]].map(([n, l]) => (
+          <div key={l} className="rounded-2xl border border-line bg-surface py-3">
+            <p className="font-display text-xl">{n}</p>
+            <p className="text-[10px] text-subtle">{l}</p>
+          </div>
+        ))}
+      </div>
+      <section className="grid gap-2">
+        <h2 className="font-display text-xl">玩法分類</h2>
+        <p className="text-sm text-muted">先選一種打法。歷史同鑑賞可以先看。</p>
+        {cats.map((c) => (
+          <button key={c.t} type="button" onClick={c.go} className="flex items-center justify-between rounded-2xl border border-line bg-surface px-4 py-3 text-left">
+            <span>
+              <span className="block font-medium">{c.t}</span>
+              <span className="mt-1 block text-xs text-subtle">{c.d}</span>
+            </span>
+            <span className="text-accent">→</span>
+          </button>
+        ))}
+      </section>
+      <section className="grid gap-3">
+        <h2 className="font-display text-xl">為什麼這樣玩</h2>
+        {why.map(([t, b], i) => (
+          <div key={t} className="rounded-2xl border border-line bg-surface p-4">
+            <p className="font-mono text-xs text-accent">0{i + 1}</p>
+            <h3 className="mt-1 font-medium">{t}</h3>
+            <p className="mt-1 text-sm leading-relaxed text-muted">{b}</p>
+          </div>
+        ))}
+      </section>
+      <section className="grid gap-2">
+        <h2 className="font-display text-xl">難度</h2>
         <div className="grid grid-cols-3 gap-2">
           {(["arcade", "realistic", "simulator"] as const).map((d) => (
             <Btn key={d} testid={`diff-${d}`} kind={difficulty === d ? "primary" : "ghost"} onClick={() => useGame.getState().setDifficulty(d)}>
@@ -1157,27 +1211,8 @@ export function Title({ onStart }: { onStart: () => void }) {
           ))}
         </div>
         <p className="text-xs leading-relaxed text-subtle">{DIFFICULTY_COPY[difficulty]}</p>
-        <Btn testid="btn-start" kind="primary" onClick={() => useGame.getState().setScreen("clash")}>
-          卡牌對撞
-        </Btn>
-        <Btn kind="primary" onClick={() => useGame.getState().setScreen("hold")}>
-          占三格
-        </Btn>
-        <Btn kind="primary" onClick={() => useGame.getState().setScreen("identify")}>
-          鑑定關
-        </Btn>
-        <div className="grid grid-cols-2 gap-2">
-          <Btn testid="nav-history" onClick={() => useGame.getState().setScreen("history")}>
-            歷史
-          </Btn>
-          <Btn testid="nav-gallery" onClick={() => useGame.getState().setScreen("gallery")}>
-            軍武鑑賞
-          </Btn>
-        </div>
-        <Btn kind="quiet" onClick={() => useGame.getState().toggleMute()}>
-          {muted ? "聲音關" : "聲音開"}
-        </Btn>
-      </div>
+        <Btn testid="btn-start" kind="primary" onClick={onStart}>進入故事</Btn>
+      </section>
     </div>
   );
 }
