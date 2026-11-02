@@ -1007,7 +1007,6 @@ export function Arena() {
   const [dayId, setDayId] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const [missing, setMissing] = useState(false);
-  const [shown, setShown] = useState(0);
   useEffect(() => {
     void fetch(`${import.meta.env.BASE_URL}arena.json`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
@@ -1032,7 +1031,7 @@ export function Arena() {
         {days.length > 1 ? (
           <div className="mt-3 flex gap-2 overflow-x-auto">
             {days.map((d) => (
-              <Btn key={`${d.date}-${d.topic.id}`} kind={d.date === day?.date ? "primary" : "ghost"} onClick={() => { setDayId(d.date); setOpen(null); setShown(0); }}>
+              <Btn key={`${d.date}-${d.topic.id}`} kind={d.date === day?.date ? "primary" : "ghost"} onClick={() => { setDayId(d.date); setOpen(null); }}>
                 {d.topic.name}
               </Btn>
             ))}
@@ -1050,15 +1049,7 @@ export function Arena() {
           <div className="lihkg-thread">
             <div className="lihkg-title">{day?.topic.name} · {day?.date}</div>
             <p className="px-3 py-2 text-xs text-[#888]">{day?.topic.brief}</p>
-            <div className="px-3 pb-3">
-              <Btn kind="primary" onClick={() => setShown((n) => (n >= rounds.length ? 1 : n + 1))}>
-                {shown >= rounds.length && rounds.length ? "再戰一次" : "筆戰"}
-              </Btn>
-            </div>
-            {shown === 0 ? (
-              <p className="px-3 pb-3 text-sm text-[#888]">撳「筆戰」，下一樓先出。</p>
-            ) : (
-              rounds.slice(0, shown).reverse().map((r) => {
+            {[...rounds].reverse().map((r) => {
                 const floor = rounds.indexOf(r) + 1;
                 const up = 8 + ((r.name.length * 7 + floor * 13) % 150);
                 const replies = 1 + (floor % 6);
@@ -1079,8 +1070,7 @@ export function Arena() {
                     </div>
                   </article>
                 );
-              })
-            )}
+              })}
           </div>
         </>
       )}
