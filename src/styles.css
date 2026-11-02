@@ -153,6 +153,8 @@
   font-size: 0.75rem;
   padding: 0.2rem 0.55rem;
 }
+
+@keyframes steel-shake {
   0%,
   100% {
     transform: translateX(0);
