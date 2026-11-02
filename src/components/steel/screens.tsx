@@ -1023,7 +1023,7 @@ export function Arena() {
   return (
     <div className="grid gap-5">
       <div>
-        <h1 className="font-display text-3xl">每日互噴</h1>
+        <h1 className="font-display text-3xl">每日筆戰</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted">
           五十五件兵器自己開枱。今日講
           <b className="text-accent">{day?.topic.name ?? "軍工"}</b>
@@ -1042,7 +1042,7 @@ export function Arena() {
       {missing || !days.length ? (
         <Panel>
           <p className="text-sm text-muted">
-            今日嘅互噴仲未開台。寫手每輪出一批，出咗就會出現喺呢度。
+            今日嘅筆戰仲未開台。寫手每輪出一批，出咗就會出現喺呢度。
           </p>
         </Panel>
       ) : (
@@ -1053,10 +1053,10 @@ export function Arena() {
               <span className="font-mono text-xs text-subtle">{day?.date}</span>
             </div>
             <p className="mt-2 text-sm leading-relaxed text-muted">{day?.topic.brief}</p>
-            <p className="mt-2 font-mono text-xs text-subtle">{rounds.length} 件兵器開咗口 · 已噴 {Math.min(shown, rounds.length)}</p>
+            <p className="mt-2 font-mono text-xs text-subtle">{rounds.length} 件兵器開咗口 · 已戰 {Math.min(shown, rounds.length)}</p>
           </Panel>
           <Btn kind="primary" onClick={() => setShown((n) => (n >= rounds.length ? 1 : n + 1))}>
-            {shown >= rounds.length && rounds.length ? "再噴一次" : "噴"}
+            {shown >= rounds.length && rounds.length ? "再戰一次" : "筆戰"}
           </Btn>
           {shown > 0 ? (
             <section className="grid gap-2">
@@ -1071,7 +1071,7 @@ export function Arena() {
                       <span className="font-display text-base">{r.name}</span>
                       <span className="ml-2 font-mono text-xs text-subtle">
                         {r.weapon} · {r.year < 0 ? `前${-r.year}` : r.year}
-                        {i === shown - 1 ? " · 剛噴" : ""}
+                        {i === shown - 1 ? " · 剛寫" : ""}
                       </span>
                     </span>
                     <span className="text-accent">{open === r.id ? "−" : "+"}</span>
@@ -1085,7 +1085,7 @@ export function Arena() {
               ))}
             </section>
           ) : (
-            <Panel><p className="text-sm text-muted">撳「噴」，下一件兵器先開口。</p></Panel>
+            <Panel><p className="text-sm text-muted">撳「筆戰」，下一件兵器先開口。</p></Panel>
           )}
         </>
       )}

@@ -9,7 +9,7 @@ import { Arena, Codex, Debrief, FocusScreen, Gallery, History, Hq, Industry, Lec
 const NAV: { id: Screen; label: string; icon: typeof Map }[] = [
   { id: "title", label: "封面", icon: Home },
   { id: "history", label: "歷史", icon: ScrollText },
-  { id: "arena", label: "互噴", icon: Flame },
+  { id: "arena", label: "筆戰", icon: Flame },
   { id: "gallery", label: "鑑賞", icon: BookOpen },
 ];
 
