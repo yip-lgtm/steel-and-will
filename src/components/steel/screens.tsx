@@ -1058,8 +1058,8 @@ export function Arena() {
             {shown === 0 ? (
               <p className="px-3 pb-3 text-sm text-[#888]">撳「筆戰」，下一樓先出。</p>
             ) : (
-              rounds.slice(0, shown).map((r, i) => {
-                const floor = i + 1;
+              rounds.slice(0, shown).reverse().map((r) => {
+                const floor = rounds.indexOf(r) + 1;
                 const up = 8 + ((r.name.length * 7 + floor * 13) % 150);
                 const replies = 1 + (floor % 6);
                 const hue = (r.name.charCodeAt(0) * 47) % 360;
