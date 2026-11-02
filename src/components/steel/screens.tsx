@@ -980,6 +980,110 @@ function galleryEra(year: number, era: (typeof GALLERY_ERAS)[number]["id"]) {
   return year >= 1991;
 }
 
+type ArenaRound = {
+  id: string;
+  name: string;
+  weapon: string;
+  year: number;
+  text: string;
+};
+
+type ArenaDay = {
+  date: string;
+  topic: { id: string; name: string; brief: string };
+  rounds: ArenaRound[];
+};
+
+/**
+ * The daily trash talk.
+ *
+ * Every round the fifty-five 兵器娘 argue about one topic of the day -- 軍工,
+ * 科技, 機械, 時局, 新聞 -- using the real history of the weapon they are.
+ * The lines are written by the agents themselves and published as
+ * arena.json, so the page never invents anything the characters did not say.
+ */
+export function Arena() {
+  const [days, setDays] = useState<ArenaDay[]>([]);
+  const [dayId, setDayId] = useState<string | null>(null);
+  const [open, setOpen] = useState<string | null>(null);
+  const [missing, setMissing] = useState(false);
+  useEffect(() => {
+    void fetch(`${import.meta.env.BASE_URL}arena.json`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const list = (data?.days ?? []) as ArenaDay[];
+        setDays(list);
+        setDayId((cur) => cur ?? list[0]?.date ?? null);
+      })
+      .catch(() => setMissing(true));
+  }, []);
+  const day = days.find((d) => d.date === dayId) ?? days[0] ?? null;
+  const rounds = day?.rounds ?? [];
+  return (
+    <div className="grid gap-5">
+      <div>
+        <h1 className="font-display text-3xl">每日互噴</h1>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          五十五件兵器自己開枱。今日講
+          <b className="text-accent">{day?.topic.name ?? "軍工"}</b>
+          ，每句都係佢哋親身打過嘅仗，唔會編。有啲兵器到今日仲未開過口。
+        </p>
+        {days.length > 1 ? (
+          <div className="mt-3 flex gap-2 overflow-x-auto">
+            {days.map((d) => (
+              <Btn key={d.date} kind={d.date === day?.date ? "primary" : "ghost"} onClick={() => { setDayId(d.date); setOpen(null); }}>
+                {d.date.slice(5)} {d.topic.name}
+              </Btn>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      {missing || !days.length ? (
+        <Panel>
+          <p className="text-sm text-muted">
+            今日嘅互噴仲未開台。寫手每輪出一批，出咗就會出現喺呢度。
+          </p>
+        </Panel>
+      ) : (
+        <>
+          <Panel>
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className="font-display text-xl">{day?.topic.name}</h2>
+              <span className="font-mono text-xs text-subtle">{day?.date}</span>
+            </div>
+            <p className="mt-2 text-sm leading-relaxed text-muted">{day?.topic.brief}</p>
+            <p className="mt-2 font-mono text-xs text-subtle">{rounds.length} 件兵器開咗口</p>
+          </Panel>
+          <section className="grid gap-2">
+            {rounds.map((r) => (
+              <div key={r.id} className="rounded-2xl border border-line bg-card">
+                <button
+                  type="button"
+                  className="flex w-full items-baseline justify-between gap-3 px-3 py-3 text-left"
+                  onClick={() => setOpen(open === r.id ? null : r.id)}
+                >
+                  <span>
+                    <span className="font-display text-base">{r.name}</span>
+                    <span className="ml-2 font-mono text-xs text-subtle">
+                      {r.weapon} · {r.year < 0 ? `前${-r.year}` : r.year}
+                    </span>
+                  </span>
+                  <span className="text-accent">{open === r.id ? "−" : "+"}</span>
+                </button>
+                {open === r.id ? (
+                  <p className="whitespace-pre-wrap border-t border-line px-3 py-3 text-sm leading-relaxed text-muted">
+                    {r.text}
+                  </p>
+                ) : null}
+              </div>
+            ))}
+          </section>
+        </>
+      )}
+    </div>
+  );
+}
+
 export function Gallery() {
   const extras = useGame((s) => s.extras);
   const playing = useGame((s) => s.nation);

@@ -1,14 +1,15 @@
 import { Component, useEffect, type ReactNode } from "react";
-import { BookOpen, Home, Map, ScrollText } from "lucide-react";
+import { BookOpen, Flame, Home, Map, ScrollText } from "lucide-react";
 import { unlockAudio } from "@/game/sfx";
 import { useGame } from "@/game/store";
 import type { Screen } from "@/game/types";
 import { Clash, Hold, Identify } from "./modes";
-import { Codex, Debrief, FocusScreen, Gallery, History, Hq, Industry, Lecture, NationPick, Story, Template, Title } from "./screens";
+import { Arena, Codex, Debrief, FocusScreen, Gallery, History, Hq, Industry, Lecture, NationPick, Story, Template, Title } from "./screens";
 
 const NAV: { id: Screen; label: string; icon: typeof Map }[] = [
   { id: "title", label: "封面", icon: Home },
   { id: "history", label: "歷史", icon: ScrollText },
+  { id: "arena", label: "互噴", icon: Flame },
   { id: "gallery", label: "鑑賞", icon: BookOpen },
 ];
 
@@ -39,7 +40,7 @@ export function GameApp() {
     window.addEventListener("pointerdown", unlock, { once: true });
     return () => window.removeEventListener("pointerdown", unlock);
   }, []);
-  const showNav = screen === "title" || screen === "history" || screen === "gallery";
+  const showNav = screen === "title" || screen === "history" || screen === "arena" || screen === "gallery";
   return (
     <div className="phone-stage text-fg">
       <div className="phone-shell">
@@ -63,6 +64,7 @@ export function GameApp() {
               {screen === "template" && <Template />}
               {screen === "focus" && <FocusScreen />}
               {screen === "history" && <History />}
+              {screen === "arena" && <Arena />}
               {screen === "gallery" && <Gallery />}
               {screen === "clash" && <Clash />}
               {screen === "hold" && <Hold />}

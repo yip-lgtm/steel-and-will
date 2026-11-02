@@ -135,6 +135,7 @@ export type Screen =
   | "focus"
   | "map"
   | "history"
+  | "arena"
   | "gallery"
   | "codex"
   | "lecture"
