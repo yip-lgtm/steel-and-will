@@ -1047,46 +1047,41 @@ export function Arena() {
         </Panel>
       ) : (
         <>
-          <Panel>
-            <div className="flex items-baseline justify-between gap-3">
-              <h2 className="font-display text-xl">{day?.topic.name}</h2>
-              <span className="font-mono text-xs text-subtle">{day?.date}</span>
+          <div className="lihkg-thread">
+            <div className="lihkg-title">{day?.topic.name} · {day?.date}</div>
+            <p className="px-3 py-2 text-xs text-[#888]">{day?.topic.brief}</p>
+            <div className="px-3 pb-3">
+              <Btn kind="primary" onClick={() => setShown((n) => (n >= rounds.length ? 1 : n + 1))}>
+                {shown >= rounds.length && rounds.length ? "再戰一次" : "筆戰"}
+              </Btn>
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-muted">{day?.topic.brief}</p>
-            <p className="mt-2 font-mono text-xs text-subtle">{rounds.length} 件兵器開咗口 · 已戰 {Math.min(shown, rounds.length)}</p>
-          </Panel>
-          <Btn kind="primary" onClick={() => setShown((n) => (n >= rounds.length ? 1 : n + 1))}>
-            {shown >= rounds.length && rounds.length ? "再戰一次" : "筆戰"}
-          </Btn>
-          {shown > 0 ? (
-            <section className="grid gap-2">
-              {rounds.slice(0, shown).map((r, i) => (
-                <div key={r.id} className="rounded-2xl border border-line bg-card">
-                  <button
-                    type="button"
-                    className="flex w-full items-baseline justify-between gap-3 px-3 py-3 text-left"
-                    onClick={() => setOpen(open === r.id ? null : r.id)}
-                  >
-                    <span>
-                      <span className="font-display text-base">{r.name}</span>
-                      <span className="ml-2 font-mono text-xs text-subtle">
-                        {r.weapon} · {r.year < 0 ? `前${-r.year}` : r.year}
-                        {i === shown - 1 ? " · 剛寫" : ""}
-                      </span>
-                    </span>
-                    <span className="text-accent">{open === r.id ? "−" : "+"}</span>
-                  </button>
-                  {open === r.id || i === shown - 1 ? (
-                    <p className="whitespace-pre-wrap border-t border-line px-3 py-3 text-sm leading-relaxed text-muted">
-                      {r.text}
-                    </p>
-                  ) : null}
-                </div>
-              ))}
-            </section>
-          ) : (
-            <Panel><p className="text-sm text-muted">撳「筆戰」，下一件兵器先開口。</p></Panel>
-          )}
+            {shown === 0 ? (
+              <p className="px-3 pb-3 text-sm text-[#888]">撳「筆戰」，下一樓先出。</p>
+            ) : (
+              rounds.slice(0, shown).map((r, i) => {
+                const floor = i + 1;
+                const up = 8 + ((r.name.length * 7 + floor * 13) % 150);
+                const replies = 1 + (floor % 6);
+                const hue = (r.name.charCodeAt(0) * 47) % 360;
+                return (
+                  <article key={r.id} className="lihkg-post">
+                    <div className="lihkg-meta">
+                      <span className="lihkg-floor">#{floor}</span>
+                      <span className="lihkg-name" style={{ color: `hsl(${hue} 70% 70%)` }}>{r.name}</span>
+                      <span>· {r.year < 0 ? `前${-r.year}` : r.year}</span>
+                      <span className="ml-auto">👁 {20 + floor * 3}</span>
+                    </div>
+                    <p className="lihkg-body">{r.text}</p>
+                    <div className="lihkg-actions">
+                      <button type="button">↑ {up}</button>
+                      <button type="button">↓</button>
+                      <button type="button">↩ {replies}</button>
+                    </div>
+                  </article>
+                );
+              })
+            )}
+          </div>
         </>
       )}
     </div>
