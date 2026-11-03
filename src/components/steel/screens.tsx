@@ -1011,7 +1011,7 @@ export function Arena() {
     void fetch(`${import.meta.env.BASE_URL}arena.json`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        const list = (data?.days ?? []) as ArenaDay[];
+        const list = ((data?.days ?? []) as ArenaDay[]).slice().sort((a, b) => b.date.localeCompare(a.date));
         setDays(list);
         setDayId((cur) => cur ?? list[0]?.date ?? null);
       })
@@ -1032,7 +1032,7 @@ export function Arena() {
           <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
             {days.map((d) => (
               <Btn key={`${d.date}-${d.topic.id}`} kind={d.date === day?.date ? "primary" : "ghost"} onClick={() => { setDayId(d.date); setOpen(null); }}>
-                {d.topic.name}
+                {d.date.slice(5, 16)} {d.topic.name}
               </Btn>
             ))}
           </div>
@@ -1049,7 +1049,7 @@ export function Arena() {
           <div className="lihkg-thread">
             <div className="lihkg-title">{day?.topic.name} · {day?.date}</div>
             <p className="px-3 py-2 text-xs text-[#888]">{day?.topic.brief}</p>
-            {[...rounds].reverse().map((r) => {
+            {[...rounds].reverse().map((r, i) => {
                 const floor = rounds.indexOf(r) + 1;
                 const up = 8 + ((r.name.length * 7 + floor * 13) % 150);
                 const replies = 1 + (floor % 6);
@@ -1057,7 +1057,7 @@ export function Arena() {
                 return (
                   <article key={r.id} className="lihkg-post">
                     <div className="lihkg-meta">
-                      <span className="lihkg-floor">#{floor}</span>
+                      <span className="lihkg-floor">#{floor}{i === 0 ? " 最新" : ""}</span>
                       <span className="lihkg-name" style={{ color: `hsl(${hue} 70% 70%)` }}>{r.name}</span>
                       <span>· {r.year < 0 ? `前${-r.year}` : r.year}</span>
                       <span className="ml-auto">👁 {20 + floor * 3}</span>
