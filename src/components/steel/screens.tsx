@@ -1026,7 +1026,7 @@ export function Arena() {
         <p className="mt-2 text-sm leading-relaxed text-muted">
           五十五件兵器自己開枱。今日講
           <b className="text-accent">{day?.topic.name ?? "軍工"}</b>
-          。對住 4chan 軍工、科技、時事、政局熱帖，各寫約 50 字，連登串，只用自己打過的仗。
+          。今日一個話題，每件兵器用自己打過嘅仗寫約 50 字，連登仔咁串，唔會重複。
         </p>
         {days.length > 1 ? (
           <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
