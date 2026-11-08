@@ -940,15 +940,15 @@ function nationName(id: string): string {
 
 const GALLERY_ERAS = [
   { id: "all", name: "全部" },
-  { id: "p01", name: "公元前" },
-  { id: "p11", name: "1000–1499" },
-  { id: "p16", name: "1500–1799" },
-  { id: "p19", name: "1800–1899" },
-  { id: "wwi", name: "一戰" },
-  { id: "inter", name: "戰間" },
-  { id: "ww2", name: "二戰" },
-  { id: "cold", name: "冷戰" },
   { id: "now", name: "現代" },
+  { id: "cold", name: "冷戰" },
+  { id: "ww2", name: "二戰" },
+  { id: "inter", name: "戰間" },
+  { id: "wwi", name: "一戰" },
+  { id: "p19", name: "1800–1899" },
+  { id: "p16", name: "1500–1799" },
+  { id: "p11", name: "1000–1499" },
+  { id: "p01", name: "公元前" },
 ] as const;
 
 function uniqueKits<T extends { designation?: string; name: string }>(list: T[]) {
@@ -1131,7 +1131,7 @@ export function Gallery() {
   }, []);
   const units = uniqueKits([...allCatalog(), ...extras, ...feedKits])
     .filter((u) => (layer === "all" || u.layer === layer) && galleryEra(u.year, era))
-    .sort((a, b) => a.year - b.year || a.name.localeCompare(b.name, "zh-Hant"));
+    .sort((a, b) => b.year - a.year || a.name.localeCompare(b.name, "zh-Hant"));
   const shown = units.find((u) => u.id === pick) ?? units[0];
   const spec = shown ? cardSpec(shown.id, shown.year, shown.history) : null;
   return (
