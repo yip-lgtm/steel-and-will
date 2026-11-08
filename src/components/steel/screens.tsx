@@ -722,7 +722,8 @@ export function History() {
   // how much of it has been written and show the rest.
   const [pool, setPool] = useState<{ y: number; name: string }[]>([]);
   const [showPool, setShowPool] = useState(false);
-  const [eraId, setEraId] = useState(ERAS[0]!.id);
+  // The newest era opens first: the reader wants the latest, not the oldest.
+  const [eraId, setEraId] = useState(ERAS[ERAS.length - 1]!.id);
   const [region, setRegion] = useState<(typeof REGIONS)[number]["id"]>("all");
   const [page, setPage] = useState(0);
   useEffect(() => {
@@ -747,7 +748,7 @@ export function History() {
       .catch(() => undefined);
   }, []);
   const written = new Set(extra.map((n) => n.name));
-  const unwritten = pool.filter((w) => !written.has(w.name)).sort((a, b) => a.y - b.y);
+  const unwritten = pool.filter((w) => !written.has(w.name)).sort((a, b) => b.y - a.y);
   // A scenario that is also a card in the feed is shown once, as the card:
   // the card carries the real full text and the portrait.
   const feedNames = new Set(extra.map((n) => n.name));
@@ -759,7 +760,7 @@ export function History() {
     ...extra.map((n) => ({ y: n.y, m: 1, t: n.name, b: n.brief, play: n })),
   ]
     .filter((e) => e.play || !feedNames.has(e.t))
-    .sort((a, b) => a.y - b.y || a.m - b.m);
+    .sort((a, b) => b.y - a.y || b.m - a.m);
 
   const picked = events.find((e) => `${e.y}-${e.t}` === open);
   // A feed card brings its own file; a scenario war is found by name.
@@ -852,7 +853,7 @@ export function History() {
         ]
           .filter((e) => e.y >= era.from && e.y <= era.to)
           .filter((e) => region === "all" || regionOf(e.t) === region)
-          .sort((a, b) => a.y - b.y || a.t.localeCompare(b.t, "zh-Hant"));
+          .sort((a, b) => b.y - a.y || a.t.localeCompare(b.t, "zh-Hant"));
         const pageSize = 20;
         const pages = Math.max(1, Math.ceil(rows.length / pageSize));
         const safePage = Math.min(page, pages - 1);
@@ -860,7 +861,7 @@ export function History() {
         return (
           <section className="grid gap-3">
             <div className="flex gap-2 overflow-x-auto">
-              {ERAS.map((e) => (
+              {[...ERAS].reverse().map((e) => (
                 <Btn key={e.id} kind={eraId === e.id ? "primary" : "ghost"} onClick={() => { setEraId(e.id); setPage(0); }}>{e.name}</Btn>
               ))}
             </div>
