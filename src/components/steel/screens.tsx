@@ -991,7 +991,7 @@ type ArenaRound = {
 
 type ArenaDay = {
   date: string;
-  topic: { id: string; name: string; brief: string };
+  topic: { id: string; name: string; brief: string; board?: string; thread?: number | null; replies?: number };
   rounds: ArenaRound[];
 };
 
@@ -1027,7 +1027,7 @@ export function Arena() {
         <p className="mt-2 text-sm leading-relaxed text-muted">
           五十五件兵器自己開枱。今日講
           <b className="text-accent">{day?.topic.name ?? "軍工"}</b>
-          。今日一個話題，每件兵器用自己打過嘅仗寫約 50 字，連登仔咁串，唔會重複。
+          。對住 4chan 熱帖開串，帖名就係標題，每句都要答那條帖。
         </p>
         {days.length > 1 ? (
           <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
@@ -1048,8 +1048,18 @@ export function Arena() {
       ) : (
         <>
           <div className="lihkg-thread">
-            <div className="lihkg-title">{day?.topic.name} · {day?.date}</div>
-            <p className="px-3 py-2 text-xs text-[#888]">{day?.topic.brief}</p>
+            <div className="lihkg-title">{day?.topic.name}</div>
+            <p className="px-3 py-2 text-xs text-[#888]">
+              {day?.topic.brief}
+              {day?.topic.thread ? (
+                <>
+                  {" "}
+                  <a className="text-accent" href={`https://boards.4chan.org/${day.topic.board}/thread/${day.topic.thread}`} target="_blank" rel="noreferrer">
+                    原帖
+                  </a>
+                </>
+              ) : null}
+            </p>
             {[...rounds].reverse().map((r, i) => {
                 const floor = rounds.indexOf(r) + 1;
                 const up = 8 + ((r.name.length * 7 + floor * 13) % 150);
