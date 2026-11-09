@@ -1008,14 +1008,23 @@ export function Arena() {
   const [open, setOpen] = useState<string | null>(null);
   const [missing, setMissing] = useState(false);
   useEffect(() => {
-    void fetch(`${import.meta.env.BASE_URL}arena.json`, { cache: "no-store" })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        const list = ((data?.days ?? []) as ArenaDay[]).slice().sort((a, b) => b.date.localeCompare(a.date));
-        setDays(list);
-        setDayId((cur) => cur ?? list[0]?.date ?? null);
-      })
-      .catch(() => setMissing(true));
+    // Two writers publish this page: the hourly threads (arena.json) and the
+    // daily board, one 4chan hot thread a day (arena-daily.json).
+    const get = (file: string) =>
+      fetch(`${import.meta.env.BASE_URL}${file}`, { cache: "no-store" })
+        .then((res) => (res.ok ? res.json() : null))
+        .catch(() => null);
+    void Promise.all([get("arena.json"), get("arena-daily.json")]).then(([hourly, daily]) => {
+      const list = [
+        ...((hourly?.days ?? []) as ArenaDay[]),
+        ...((daily?.days ?? []) as ArenaDay[]),
+      ]
+        .filter((d, i, arr) => arr.findIndex((x) => x.date === d.date) === i)
+        .sort((a, b) => b.date.localeCompare(a.date));
+      setDays(list);
+      setDayId((cur) => cur ?? list[0]?.date ?? null);
+      if (!list.length) setMissing(true);
+    });
   }, []);
   const day = days.find((d) => d.date === dayId) ?? days[0] ?? null;
   const rounds = day?.rounds ?? [];
