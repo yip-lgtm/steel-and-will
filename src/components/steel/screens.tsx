@@ -988,10 +988,26 @@ type ArenaRound = {
   text: string;
 };
 
+type ArenaThread = {
+  id: string;
+  title: string;
+  war?: {
+    name?: string;
+    year?: number;
+    month?: number | null;
+    theater?: string;
+    brief?: string;
+    dossier?: string | null;
+  };
+  rounds: ArenaRound[];
+};
+
 type ArenaDay = {
   date: string;
   topic: { id: string; name: string; brief: string; board?: string; thread?: number | null; replies?: number };
   rounds: ArenaRound[];
+  /** The war edition: one thread per written war. */
+  threads?: ArenaThread[];
 };
 
 /**
@@ -1033,9 +1049,9 @@ export function Arena() {
       <div className="min-w-0">
         <h1 className="font-display text-3xl">每日筆戰</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          五十五件兵器自己開枱。今日講
-          <b className="text-accent">{day?.topic.name ?? "軍工"}</b>
-          。對住 4chan 熱帖開串，帖名就係標題，每句都要答那條帖。
+          兵器娘自己開枱。今日講
+          <b className="text-accent">{day?.topic.name ?? "歷史戰爭"}</b>
+          。每場都係本站已經寫咗全文嘅戰爭，佢哋用自己打過嘅仗互相駁嘴，年份、地點同史實全部查得返。
         </p>
         {days.length > 1 ? (
           <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
@@ -1055,45 +1071,79 @@ export function Arena() {
         </Panel>
       ) : (
         <>
-          <div className="lihkg-thread">
-            <div className="lihkg-title">{day?.topic.name}</div>
-            <p className="px-3 py-2 text-xs text-[#888]">
-              {day?.topic.brief}
-              {day?.topic.thread ? (
-                <>
-                  {" "}
-                  <a className="text-accent" href={`https://boards.4chan.org/${day.topic.board}/thread/${day.topic.thread}`} target="_blank" rel="noreferrer">
-                    原帖
-                  </a>
-                </>
-              ) : null}
-            </p>
-            {[...rounds].reverse().map((r, i) => {
-                const floor = rounds.indexOf(r) + 1;
-                const up = 8 + ((r.name.length * 7 + floor * 13) % 150);
-                const replies = 1 + (floor % 6);
-                const hue = (r.name.charCodeAt(0) * 47) % 360;
-                return (
-                  <article key={r.id} className="lihkg-post">
-                    <div className="lihkg-meta">
-                      <span className="lihkg-floor">#{floor}{i === 0 ? " 最新" : ""}</span>
-                      <span className="lihkg-name" style={{ color: `hsl(${hue} 70% 70%)` }}>{r.name}</span>
-                      <span>· {r.year < 0 ? `前${-r.year}` : r.year}</span>
-                      <span className="ml-auto">👁 {20 + floor * 3}</span>
-                    </div>
-                    <p className="lihkg-body">{r.text}</p>
-                    <div className="lihkg-actions">
-                      <button type="button">↑ {up}</button>
-                      <button type="button">↓</button>
-                      <button type="button">↩ {replies}</button>
-                    </div>
-                  </article>
-                );
-              })}
-          </div>
+          {(day?.threads?.length
+            ? day.threads.map((t) => ({
+                id: t.id,
+                title: t.title,
+                war: t.war,
+                rounds: t.rounds,
+                head: null as string | null,
+                link: t.war?.dossier ? { href: `${import.meta.env.BASE_URL}${t.war.dossier}`, label: "全文" } : null,
+              }))
+            : [
+                {
+                  id: day?.topic.id ?? "legacy",
+                  title: day?.topic.name ?? "筆戰",
+                  war: null,
+                  rounds: [...rounds].reverse(),
+                  head: day?.topic.brief ?? "",
+                  link: day?.topic.thread
+                    ? { href: `https://boards.4chan.org/${day.topic.board}/thread/${day.topic.thread}`, label: "原帖" }
+                    : null,
+                },
+              ]).map((t) => (
+                <div key={t.id} className="lihkg-thread">
+                  <div className="lihkg-title">{t.title}</div>
+                  <p className="px-3 py-2 text-xs text-[#888]">
+                    {t.war ? (
+                      <>
+                        {t.war.year ? `${t.war.year < 0 ? `前${-t.war.year}` : t.war.year} · ` : ""}
+                        {t.war.theater ?? ""}
+                        {t.head ? <> {t.head}</> : null}
+                      </>
+                    ) : (
+                      t.head
+                    )}
+                    {t.link ? (
+                      <>
+                        {" "}
+                        <a className="text-accent" href={t.link.href} target="_blank" rel="noreferrer">
+                          {t.link.label}
+                        </a>
+                      </>
+                    ) : null}
+                  </p>
+                  {t.rounds.map((r, i) => (
+                    <ArenaPost key={r.id} round={r} floor={i + 1} last={i === t.rounds.length - 1} />
+                  ))}
+                </div>
+              ))}
         </>
       )}
     </div>
+  );
+}
+
+/** One post in a thread. */
+function ArenaPost({ round, floor, last }: { round: ArenaRound; floor: number; last: boolean }) {
+  const up = 8 + ((round.name.length * 7 + floor * 13) % 150);
+  const replies = 1 + (floor % 6);
+  const hue = (round.name.charCodeAt(0) * 47) % 360;
+  return (
+    <article className="lihkg-post">
+      <div className="lihkg-meta">
+        <span className="lihkg-floor">#{floor}{last ? " 最新" : ""}</span>
+        <span className="lihkg-name" style={{ color: `hsl(${hue} 70% 70%)` }}>{round.name}</span>
+        <span>· {round.year < 0 ? `前${-round.year}` : round.year}</span>
+        <span className="ml-auto">👁 {20 + floor * 3}</span>
+      </div>
+      <p className="lihkg-body">{round.text}</p>
+      <div className="lihkg-actions">
+        <button type="button">↑ {up}</button>
+        <button type="button">↓</button>
+        <button type="button">↩ {replies}</button>
+      </div>
+    </article>
   );
 }
 
