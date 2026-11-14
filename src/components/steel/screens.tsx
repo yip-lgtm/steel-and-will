@@ -1019,110 +1019,142 @@ type ArenaDay = {
  * arena.json, so the page never invents anything the characters did not say.
  */
 export function Arena() {
-  const [days, setDays] = useState<ArenaDay[]>([]);
-  const [dayId, setDayId] = useState<string | null>(null);
-  const [open, setOpen] = useState<string | null>(null);
+  const [warDays, setWarDays] = useState<ArenaDay[]>([]);
+  const [chanDays, setChanDays] = useState<ArenaDay[]>([]);
+  const [warId, setWarId] = useState<string | null>(null);
+  const [chanId, setChanId] = useState<string | null>(null);
   const [missing, setMissing] = useState(false);
   useEffect(() => {
-    // Two writers publish this page: the hourly threads (arena.json) and the
-    // daily board, one 4chan hot thread a day (arena-daily.json).
+    // Two writers publish this page: the hourly 4chan threads (arena.json) and
+    // the daily war board (arena-daily.json). They are two different shows, so
+    // they get their own shelf instead of one mixed tab strip.
     const get = (file: string) =>
       fetch(`${import.meta.env.BASE_URL}${file}`, { cache: "no-store" })
         .then((res) => (res.ok ? res.json() : null))
         .catch(() => null);
     void Promise.all([get("arena.json"), get("arena-daily.json")]).then(([hourly, daily]) => {
-      const list = [
+      const all = [
         ...((hourly?.days ?? []) as ArenaDay[]),
         ...((daily?.days ?? []) as ArenaDay[]),
       ]
         .filter((d, i, arr) => arr.findIndex((x) => x.date === d.date) === i)
         .sort((a, b) => b.date.localeCompare(a.date));
-      setDays(list);
-      setDayId((cur) => cur ?? list[0]?.date ?? null);
-      if (!list.length) setMissing(true);
+      const wars = all.filter((d) => d.threads?.length);
+      const chans = all.filter((d) => !d.threads?.length);
+      setWarDays(wars);
+      setChanDays(chans);
+      setWarId((cur) => cur ?? wars[0]?.date ?? null);
+      setChanId((cur) => cur ?? chans[0]?.date ?? null);
+      if (!all.length) setMissing(true);
     });
   }, []);
-  const day = days.find((d) => d.date === dayId) ?? days[0] ?? null;
-  const rounds = day?.rounds ?? [];
+
+  const war = warDays.find((d) => d.date === warId) ?? warDays[0] ?? null;
+  const chan = chanDays.find((d) => d.date === chanId) ?? chanDays[0] ?? null;
+
   return (
     <div className="grid gap-5">
       <div className="min-w-0">
         <h1 className="font-display text-3xl">每日筆戰</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          兵器娘自己開枱。今日講
-          <b className="text-accent">{day?.topic.name ?? "歷史戰爭"}</b>
-          。每場都係本站已經寫咗全文嘅戰爭，佢哋用自己打過嘅仗互相駁嘴，年份、地點同史實全部查得返。
+          兵器娘自己開枱。上面係<b className="text-accent">每日戰爭互噴</b>：每場都係本站已經寫咗全文嘅戰爭，
+          佢哋用自己打過嘅仗互相駁嘴，年份、地點同史實全部查得返。下面係每鐘更新嘅 4chan 熱帖串。
         </p>
-        {days.length > 1 ? (
-          <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
-            {days.map((d) => (
-              <Btn key={`${d.date}-${d.topic.id}`} kind={d.date === day?.date ? "primary" : "ghost"} onClick={() => { setDayId(d.date); setOpen(null); }}>
-                {d.date.slice(5, 16)} {d.topic.name}
-              </Btn>
+      </div>
+
+      {missing ? (
+        <Panel>
+          <p className="text-sm text-muted">今日嘅筆戰仲未開台。寫手每輪出一批，出咗就會出現喺呢度。</p>
+        </Panel>
+      ) : null}
+
+      {war ? (
+        <section className="min-w-0">
+          <div className="mb-2 flex items-baseline gap-3">
+            <h2 className="font-display text-xl text-accent">每日戰爭互噴</h2>
+            <span className="text-xs text-subtle">{war.topic.brief}</span>
+          </div>
+          {warDays.length > 1 ? (
+            <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
+              {warDays.map((d) => {
+                const first = d.threads?.[0]?.title ?? d.topic.name;
+                const more = (d.threads?.length ?? 1) - 1;
+                return (
+                  <Btn
+                    key={`${d.date}-${d.topic.id}`}
+                    kind={d.date === war?.date ? "primary" : "ghost"}
+                    onClick={() => setWarId(d.date)}
+                  >
+                    {d.date.slice(5, 10)} {first}
+                    {more > 0 ? ` +${more}` : ""}
+                  </Btn>
+                );
+              })}
+            </div>
+          ) : null}
+          <div className="grid gap-4">
+            {(war.threads ?? []).map((t) => (
+              <div key={t.id} className="lihkg-thread">
+                <div className="lihkg-title">{t.title}</div>
+                <p className="px-3 py-2 text-xs text-[#888]">
+                  {t.war?.year ? `${t.war.year < 0 ? `前${-t.war.year}` : t.war.year} · ` : ""}
+                  {t.war?.theater ?? ""}
+                  {t.war?.dossier ? (
+                    <>
+                      {" "}
+                      <a className="text-accent" href={`${import.meta.env.BASE_URL}${t.war.dossier}`} target="_blank" rel="noreferrer">
+                        全文
+                      </a>
+                    </>
+                  ) : null}
+                </p>
+                {t.rounds.map((r, i) => (
+                  <ArenaPost key={r.id} round={r} floor={i + 1} last={i === t.rounds.length - 1} />
+                ))}
+              </div>
             ))}
           </div>
-        ) : null}
-      </div>
-      {missing || !days.length ? (
-        <Panel>
-          <p className="text-sm text-muted">
-            今日嘅筆戰仲未開台。寫手每輪出一批，出咗就會出現喺呢度。
-          </p>
-        </Panel>
-      ) : (
-        <>
-          {(day?.threads?.length
-            ? day.threads.map((t) => ({
-                id: t.id,
-                title: t.title,
-                war: t.war,
-                rounds: t.rounds,
-                head: null as string | null,
-                link: t.war?.dossier ? { href: `${import.meta.env.BASE_URL}${t.war.dossier}`, label: "全文" } : null,
-              }))
-            : [
-                {
-                  id: day?.topic.id ?? "legacy",
-                  title: day?.topic.name ?? "筆戰",
-                  war: null,
-                  rounds: [...rounds].reverse(),
-                  head: day?.topic.brief ?? "",
-                  link: day?.topic.thread
-                    ? { href: `https://boards.4chan.org/${day.topic.board}/thread/${day.topic.thread}`, label: "原帖" }
-                    : null,
-                },
-              ]).map((t) => (
-                <div key={t.id} className="lihkg-thread">
-                  <div className="lihkg-title">{t.title}</div>
-                  <p className="px-3 py-2 text-xs text-[#888]">
-                    {t.war ? (
-                      <>
-                        {t.war.year ? `${t.war.year < 0 ? `前${-t.war.year}` : t.war.year} · ` : ""}
-                        {t.war.theater ?? ""}
-                        {t.head ? <> {t.head}</> : null}
-                      </>
-                    ) : (
-                      t.head
-                    )}
-                    {t.link ? (
-                      <>
-                        {" "}
-                        <a className="text-accent" href={t.link.href} target="_blank" rel="noreferrer">
-                          {t.link.label}
-                        </a>
-                      </>
-                    ) : null}
-                  </p>
-                  {t.rounds.map((r, i) => (
-                    <ArenaPost key={r.id} round={r} floor={i + 1} last={i === t.rounds.length - 1} />
-                  ))}
-                </div>
+        </section>
+      ) : null}
+
+      {chan ? (
+        <section className="min-w-0">
+          <div className="mb-2 flex items-baseline gap-3">
+            <h2 className="font-display text-xl">4chan 熱帖串</h2>
+            <span className="text-xs text-subtle">每鐘開一串，答帖唔答自己</span>
+          </div>
+          {chanDays.length > 1 ? (
+            <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
+              {chanDays.map((d) => (
+                <Btn key={`${d.date}-${d.topic.id}`} kind={d.date === chan?.date ? "primary" : "ghost"} onClick={() => setChanId(d.date)}>
+                  {d.date.slice(5, 16)} {d.topic.name}
+                </Btn>
               ))}
-        </>
-      )}
+            </div>
+          ) : null}
+          <div className="lihkg-thread">
+            <div className="lihkg-title">{chan.topic.name}</div>
+            <p className="px-3 py-2 text-xs text-[#888]">
+              {chan.topic.brief}
+              {chan.topic.thread ? (
+                <>
+                  {" "}
+                  <a className="text-accent" href={`https://boards.4chan.org/${chan.topic.board}/thread/${chan.topic.thread}`} target="_blank" rel="noreferrer">
+                    原帖
+                  </a>
+                </>
+              ) : null}
+            </p>
+            {[...(chan.rounds ?? [])].reverse().map((r) => (
+              <ArenaPost key={r.id} round={r} floor={(chan.rounds ?? []).indexOf(r) + 1} last={false} />
+            ))}
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }
+
 
 /** One post in a thread. */
 function ArenaPost({ round, floor, last }: { round: ArenaRound; floor: number; last: boolean }) {
