@@ -7,6 +7,7 @@ export function Btn({
   disabled,
   testid,
   type = "button",
+  className = "",
 }: {
   children: ReactNode;
   onClick?: () => void;
@@ -14,6 +15,7 @@ export function Btn({
   disabled?: boolean;
   testid?: string;
   type?: "button" | "submit";
+  className?: string;
 }) {
   const look =
     kind === "primary"
@@ -27,7 +29,7 @@ export function Btn({
       data-testid={testid}
       disabled={disabled}
       onClick={onClick}
-      className={`min-h-11 rounded-2xl px-4 text-sm font-medium transition-opacity duration-150 disabled:opacity-40 ${look}`}
+      className={`min-h-11 rounded-2xl px-4 text-sm font-medium transition-opacity duration-150 disabled:opacity-40 ${look} ${className}`}
     >
       {children}
     </button>

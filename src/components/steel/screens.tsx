@@ -1083,6 +1083,7 @@ export function Arena() {
                   <Btn
                     key={`${d.date}-${d.topic.id}`}
                     kind={d.date === war?.date ? "primary" : "ghost"}
+                    className="shrink-0 whitespace-nowrap"
                     onClick={() => setWarId(d.date)}
                   >
                     {d.date.slice(5, 10)} {first}
@@ -1126,7 +1127,7 @@ export function Arena() {
           {chanDays.length > 1 ? (
             <div className="mb-3 flex gap-2 overflow-x-auto pb-1">
               {chanDays.map((d) => (
-                <Btn key={`${d.date}-${d.topic.id}`} kind={d.date === chan?.date ? "primary" : "ghost"} onClick={() => setChanId(d.date)}>
+                <Btn key={`${d.date}-${d.topic.id}`} kind={d.date === chan?.date ? "primary" : "ghost"} className="shrink-0 whitespace-nowrap" onClick={() => setChanId(d.date)}>
                   {d.date.slice(5, 16)} {d.topic.name}
                 </Btn>
               ))}
