@@ -986,6 +986,8 @@ type ArenaRound = {
   weapon: string;
   year: number;
   text: string;
+  /** The 立繪 of the weapon this girl is. */
+  portrait?: string | null;
 };
 
 type ArenaThread = {
@@ -1165,6 +1167,13 @@ function ArenaPost({ round, floor, last }: { round: ArenaRound; floor: number; l
   return (
     <article className="lihkg-post">
       <div className="lihkg-meta">
+        {round.portrait ? (
+          <img
+            src={`${import.meta.env.BASE_URL}${round.portrait}`}
+            alt=""
+            className="h-8 w-8 shrink-0 rounded-full border border-line object-cover"
+          />
+        ) : null}
         <span className="lihkg-floor">#{floor}{last ? " 最新" : ""}</span>
         <span className="lihkg-name" style={{ color: `hsl(${hue} 70% 70%)` }}>{round.name}</span>
         <span>· {round.year < 0 ? `前${-round.year}` : round.year}</span>
