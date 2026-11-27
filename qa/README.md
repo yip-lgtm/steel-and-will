@@ -51,6 +51,14 @@ the plan allowance cannot cover this image generation and credit auto-consumptio
 
 實測每輪大概得 3～5 張成，唔好因為剩低嘅多就加大 batch 硬撞。
 
+⚠️ 2026-11-27 實測：10 個 request 報「成功 5／失敗 5」，但**只有 2 張落地**。
+另外 3 個 success 嘅 `file_name` 對唔上 request 嘅 `output_file`，所以被
+`batch.some((w) => w.id === id)` 靜靜篩走（script 呢個分支唔會 log 任何嘢）。
+`/tmp/mcode-tools-0/mcode-tools.log` 只有 2 次 `get_asset_url` call，可以對數。
+已經生成過嘅 id（例如 redo 嗰 3 個坦克）會撞名，好可能就係咁被改咗名。
+**未改 script**：`failed_items[]` 有 `index` 欄，`success_items[]` 大概率都有，
+用 index 對返 request 就可以唔靠 `file_name` 認人；等額度重置同用戶拍板先郁。
+
 ## Prompt 分類（kind → 姿勢）
 
 `poseFor()` 一定要按 `kind` 分流，唔好落去預設句：
@@ -82,4 +90,4 @@ curl -sS -o /dev/null -w "%{http_code}\n" -X POST \
 
 ## 進度
 
-21／182（2026-11-26 第三批之後）。仲有 28 件坦克未畫，總共 161 件未做。
+23／182 張新風格（當做完成 20／182；ft／a7v／mark1 有圖但要重畫）。仲有 159 件未畫。
