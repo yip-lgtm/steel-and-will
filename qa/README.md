@@ -55,9 +55,24 @@ the plan allowance cannot cover this image generation and credit auto-consumptio
 另外 3 個 success 嘅 `file_name` 對唔上 request 嘅 `output_file`，所以被
 `batch.some((w) => w.id === id)` 靜靜篩走（script 呢個分支唔會 log 任何嘢）。
 `/tmp/mcode-tools-0/mcode-tools.log` 只有 2 次 `get_asset_url` call，可以對數。
-已經生成過嘅 id（例如 redo 嗰 3 個坦克）會撞名，好可能就係咁被改咗名。
-**未改 script**：`failed_items[]` 有 `index` 欄，`success_items[]` 大概率都有，
-用 index 對返 request 就可以唔靠 `file_name` 認人；等額度重置同用戶拍板先郁。
+
+### 根因已確認（2026-11-27 11:0x）：Drive 撞名會改名，唔係 API 漏單
+
+`output_file: "ft.jpg"` 撞到資料空間同名檔 → 服務改名叫 **`ft (3).jpg`**（`ft (1)`、`ft (2)`…），
+所以 `success_items[].file_name` ≠ `output_file`，script 用 `name.replace(/\.jpg$/,"")` 對唔上 id，
+於係**生成咗、畀錢咗、但一張都冇落地**（呢個分支完全冇 log）。
+
+**證成做法**（一輪 BATCH=1 都會撞，唔關 batch 大小事）：
+
+1. 資料空間 `/AI Generated/` 係生成圖落腳處（`space_list` → `updated_at` 最新嗰個就係今輪）。
+2. `mcode-tools get_asset_url <node_id>` → `curl` 落 `src/public/portraits/<id>.jpg` + `pages/cute/portraits/<id>.jpg`。
+3. **落地前一定要肉眼睇 + 睇尺寸 1664×2496**：改名嘅檔未必係你今輪 request 嗰張，
+   同一個 id 可以有幾個版本（`ft (1)`/`ft (2)`/`ft (3)`）。
+   2026-11-27 逐張睇過：`ft (3)` ✅（坦克真實大小）、`ft (1)` ❌（似另一種重型坦克）、
+   `ft (2)` ❌（坦克畫成手掌咁細）；`a7v (1)` ✅（德軍鐵十字、巨大車體）、`a7v (2)` ❌（車太細）；
+   `mark1 (1)` ✅。**`ft (2)`／`a7v (2)` 係用錯 prompt 畫出嚟嘅，唔可以當新風格。**
+
+救返上批被丟嘅圖 = 慳返重生成嘅額度，唔好重跑 request。
 
 ## Prompt 分類（kind → 姿勢）
 
@@ -90,4 +105,4 @@ curl -sS -o /dev/null -w "%{http_code}\n" -X POST \
 
 ## 進度
 
-23／182 張新風格（當做完成 20／182；ft／a7v／mark1 有圖但要重畫）。仲有 159 件未畫。
+23／182 張新風格（ft／a7v／mark1 重畫完成，redo 清空）。仲有 159 件未畫。
