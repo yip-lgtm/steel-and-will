@@ -105,4 +105,4 @@ curl -sS -o /dev/null -w "%{http_code}\n" -X POST \
 
 ## 進度
 
-26／182 張新風格（lion 重畫完成，redo 清空）。仲有 156 件未畫。
+27／182 張新風格（derff 重畫完成，redo 清空）。仲有 155 件未畫。
