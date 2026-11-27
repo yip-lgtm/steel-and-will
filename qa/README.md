@@ -105,4 +105,4 @@ curl -sS -o /dev/null -w "%{http_code}\n" -X POST \
 
 ## 進度
 
-23／182 張新風格（ft／a7v／mark1 重畫完成，redo 清空）。仲有 159 件未畫。
+26／182 張新風格（lion 重畫完成，redo 清空）。仲有 156 件未畫。
