@@ -105,4 +105,4 @@ curl -sS -o /dev/null -w "%{http_code}\n" -X POST \
 
 ## 進度
 
-27／182 張新風格（derff 重畫完成，redo 清空）。仲有 155 件未畫。
+28／182 張新風格（spad 重畫完成，redo 清空）。仲有 154 件未畫。
